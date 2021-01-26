@@ -45,7 +45,7 @@
           ]
         },
         "config": {
-          "googleMapsApiKey": "AIzaSyCXdLnwLHedv3_1y0knfB2RHMH8ZPApb_w"
+          "googleMapsApiKey": "AIzaSyDFrMlfrDNnwEJTDE5cHRrnXUC9XJ_pjjM"
         },
         "googleServicesFile": "./GoogleService-Info.plist",
         "buildNumber": "1.0"
@@ -66,7 +66,7 @@
         "googleServicesFile": "./google-services.json",
         "config": {
           "googleMaps": {
-            "apiKey": "AIzaSyCXdLnwLHedv3_1y0knfB2RHMH8ZPApb_w"
+            "apiKey": "AIzaSyDFrMlfrDNnwEJTDE5cHRrnXUC9XJ_pjjM"
           }
         },
         "useNextNotificationsApi": true

@@ -16,6 +16,6 @@ export const MainConfig = {
         appId: "1:867999155301:web:609b0d43fa06ca2365b28c",
         measurementId: "G-EENC2BQ81C"
     },
-    Google_Map_Key: "AIzaSyCXdLnwLHedv3_1y0knfB2RHMH8ZPApb_w",
+    Google_Map_Key: "AIzaSyDFrMlfrDNnwEJTDE5cHRrnXUC9XJ_pjjM",
     facebookAppId: "500031064314372"
 }
