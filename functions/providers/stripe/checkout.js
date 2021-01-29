@@ -1,5 +1,5 @@
-const stripe = require('stripe')('XXXXXXXXXXXXXX');
-const stripe_public_key = 'XXXXXXXXXXXXXX';
+const stripe = require('stripe')('sk_test_62NqkokiOkTJKVORxn5UqJHq00q0fclqWD');
+const stripe_public_key = 'pk_test_5dphlIg0BnoI2M6XMQkdWhJi00SG6KvUnc';
 
 const templateLib = require('./template');
 
@@ -37,10 +37,10 @@ module.exports.render_checkout = function(request, response){
         (err, session) => {
             if (err) {
                 response.send({ "error": err });
-            } else if (session) {    
+            } else if (session) {
                 response.send(
                     templateLib.getTemplate(stripe_public_key,session.id)
-                );               
+                );
             } else {
                 response.send({ "error": "Some other problem" })
             }

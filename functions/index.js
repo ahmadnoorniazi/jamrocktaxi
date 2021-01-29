@@ -5,17 +5,7 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 const providers = [
-    'paypal',
-    'braintree',
     'stripe',
-    'paytm',
-    'payulatam',
-    'flutterwave',
-    'paystack',
-    'securepay',
-    'payfast',
-    'liqpay',
-    'culqi'
 ]
 
 let arr = [];
@@ -331,7 +321,7 @@ exports.send_notification = functions.https.onRequest((request, response) => {
     RequestPushMsg(request.body.token,request.body.title,request.body.msg).then((responseData)=>{
         response.send(responseData);
         return true;
-    }).catch(error=>{   
+    }).catch(error=>{
         response.send({error:error});
     });
 });
