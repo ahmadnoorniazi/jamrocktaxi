@@ -15,7 +15,7 @@ export default function ConfirmationDialogRaw(props) {
   const { onClose, value: valueProp, open, ...other } = props;
   const [value, setValue] = useState(valueProp);
   const radioGroupRef = useRef(null);
-  const options = useSelector(state => state.cancelreasondata.reasons);
+  const options = useSelector(state => state.cancelreasondata.simple);
 
   useEffect(() => {
     if (!open) {

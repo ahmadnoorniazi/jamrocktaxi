@@ -22,7 +22,7 @@ import { language } from 'config';
 var { width, height } = Dimensions.get('window');
 import { useSelector, useDispatch } from 'react-redux';
 import { FirebaseContext } from 'common/src';
-
+import StarRating from 'react-native-star-rating';
 
 export default function ProfileScreen(props) {
     const { api } = useContext(FirebaseContext);
@@ -245,7 +245,7 @@ export default function ProfileScreen(props) {
                                     type='feather'
                                     color={colors.GREY.btnPrimary}
                                 />
-                                <Text style={styles.emailStyle}>{language.referral_id}</Text>
+                                <Text style={styles.emailStyle}>{language.referralId}</Text>
                             </View>
                             <View style={{ flex: 1 }}>
                                 <Text style={styles.text2}>{profileData.referralId}</Text>
@@ -265,7 +265,35 @@ export default function ProfileScreen(props) {
                             <Text style={styles.text2}>{profileData ? profileData.usertype : ''}</Text>
                         </View>
                     </View>
-
+                    {profileData && profileData.usertype == 'driver'?
+                    <View style={styles.myViewStyle}>
+                        <View style={styles.iconViewStyle}>
+                            <Icon
+                                name='thumbs-up-outline'
+                                type='ionicon'
+                                color={colors.GREY.btnPrimary}
+                            />
+                            <Text style={styles.emailStyle}>{language.you_rated_text}</Text>
+                        </View>
+                        <View style={{ flex: 1, flexDirection:'row' }}>
+                            <Text style={styles.text2}>{profileData && profileData.usertype && profileData.ratings? profileData.ratings.userrating:0}</Text>
+                            <StarRating
+                                disabled={false}
+                                maxStars={5}
+                                starSize={15}
+                                fullStar={'ios-star'}
+                                halfStar={'ios-star-half'}
+                                emptyStar={'ios-star-outline'}
+                                iconSet={'Ionicons'}
+                                fullStarColor={colors.YELLOW.primary}
+                                emptyStarColor={colors.YELLOW.primary}
+                                halfStarColor={colors.YELLOW.primary}
+                                rating={profileData && profileData.usertype && profileData.ratings? parseFloat(profileData.ratings.userrating):0}
+                                containerStyle={styles.contStyle}
+                            />
+                        </View>
+                    </View>
+                    :null}
                 </View>
 
                 <View style={styles.flexView3}>
@@ -477,5 +505,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         padding: 10
+    },
+    contStyle: {
+        width:90,
+        marginLeft: 20
     }
 });

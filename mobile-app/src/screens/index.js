@@ -4,7 +4,6 @@ import FareScreen from './FareScreen';
 import BookedCabScreen from './BookedCabScreen';
 import RegistrationPage from './Registration';
 import DriverRating from './DriverRating';
-import MobileLoginScreen from './MobileLoginScreen';
 import ProfileScreen from './ProfileScreen';
 import PaymentDetails from './PaymentDetails'
 import RideDetails from './RideDetails';
@@ -15,10 +14,11 @@ import OnlineChat from './OnlineChat';
 import WalletDetails from './WalletDetails';
 import AddMoneyScreen from './AddMoney';
 import SelectGatewayPage from './SelectGatewayScreen';
-import EmailLoginScreen from './EmailLoginScreen';
+import LoginScreen from './LoginScreen';
 import IntroScreen from './IntroScreen';
 import DriverTrips from './DriverTrips';
 import WithdrawMoneyScreen from './WithdrawMoney';
+import DriverIncomeScreen from './DriverIncomeScreen';
 
 export {
     MapScreen,
@@ -27,7 +27,6 @@ export {
     DriverRating,
     RegistrationPage,
     RideListPage,
-    MobileLoginScreen,
     ProfileScreen,
     RideDetails,
     SearchScreen,
@@ -38,8 +37,9 @@ export {
     WalletDetails,
     AddMoneyScreen,
     SelectGatewayPage,
-    EmailLoginScreen,
+    LoginScreen,
     IntroScreen,
     DriverTrips,
-    WithdrawMoneyScreen
+    WithdrawMoneyScreen,
+    DriverIncomeScreen
 };

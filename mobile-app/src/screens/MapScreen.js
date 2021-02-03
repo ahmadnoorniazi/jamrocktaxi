@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { TouchableOpacity, BaseButton, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { MapComponent } from '../components';
-import { Icon, Button, Avatar, Header } from 'react-native-elements';
+import { Icon, Button, Avatar, Header, Tooltip } from 'react-native-elements';
 import { colors } from '../common/theme';
 import * as Location from 'expo-location';
 var { height, width } = Dimensions.get('window');
@@ -20,14 +20,13 @@ import { language } from 'config';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useSelector, useDispatch } from 'react-redux';
 import { NavigationEvents } from 'react-navigation';
-import { FirebaseContext } from 'common/src';
+import { store, FirebaseContext } from 'common/src';
 
 export default function MapScreen(props) {
     const { api } = useContext(FirebaseContext);
     const {
         fetchAddressfromCoords,
         fetchDrivers,
-        updateProfile,
         updateTripPickup,
         updateTripDrop,
         updatSelPointType,
@@ -40,16 +39,13 @@ export default function MapScreen(props) {
     } = api;
     const dispatch = useDispatch();
 
-    const settings = useSelector(state => state.settingsdata.settings);
     const cars = useSelector(state => state.cartypes.cars);
     const tripdata = useSelector(state => state.tripdata);
-    const auth = useSelector(state => state.auth);
     const drivers = useSelector(state => state.usersdata.users);
     const estimatedata = useSelector(state => state.estimatedata);
     const activeBookings = useSelector(state => state.bookinglistdata.active);
     const gps = useSelector(state => state.gpsdata);
 
-    const bonusAmmount = 0;
     const latitudeDelta = 0.0922;
     const longitudeDelta = 0.0421;
 
@@ -61,8 +57,8 @@ export default function MapScreen(props) {
         dateMode: 'date'
     });
     const [loadingModal, setLoadingModal] = useState(false);
+    const [mapMoved,setMapMoved] = useState(false);
     const [region,setRegion] = useState(null);
-    const [giftModal,setGiftModal] = useState(false);
     const pageActive = useRef(false);
 
     useEffect(() => {
@@ -96,7 +92,7 @@ export default function MapScreen(props) {
     },[estimatedata.estimate,estimatedata.error, estimatedata.error.flag]);
  
     useEffect(()=>{
-        if(tripdata.selected &&  tripdata.selected == 'pickup' && tripdata.pickup && tripdata.pickup.source == 'search'){
+        if(tripdata.selected &&  tripdata.selected == 'pickup' && tripdata.pickup && !mapMoved && tripdata.pickup.source == 'search'){
             setRegion({
                 latitude: tripdata.pickup.lat,
                 longitude: tripdata.pickup.lng,
@@ -104,7 +100,7 @@ export default function MapScreen(props) {
                 longitudeDelta: longitudeDelta
             });
         }
-        if(tripdata.selected &&  tripdata.selected == 'drop' && tripdata.drop  && tripdata.drop.source == 'search'){
+        if(tripdata.selected &&  tripdata.selected == 'drop' && tripdata.drop  && !mapMoved && tripdata.drop.source == 'search'){
             setRegion({
                 latitude: tripdata.drop.lat,
                 longitude: tripdata.drop.lng,
@@ -114,67 +110,97 @@ export default function MapScreen(props) {
         }
     },[tripdata.selected,tripdata.pickup,tripdata.drop]);
 
-    useEffect(() => {
+
+    useEffect(()=>{
         setLoadingModal(true);
+        setInterval(() => {
+            if(pageActive.current){
+                dispatch(fetchDrivers());
+            }
+        }, 30000);
+    },[])
+
+    useEffect(() => {  
         if(gps.location){  
-            _getLocationAsync();
-            setInterval(() => {
-                if(pageActive.current){
-                    dispatch(fetchDrivers());
-                }
-            }, 30000);
+            setRegion({
+                latitude: gps.location.lat,
+                longitude: gps.location.lng,
+                latitudeDelta: latitudeDelta,
+                longitudeDelta: longitudeDelta
+            });
+            updateMap({
+                latitude: gps.location.lat,
+                longitude: gps.location.lng
+            },tripdata.pickup?'geolocation':'init');
         }
     }, [gps.location]);
 
-    const _getLocationAsync = async () => {
-        var pos = {
-            latitude: gps.location.lat,
-            longitude: gps.location.lng
-        };
-        if (pos) {
-            if (tripdata.pickup) {
-                setRegion({
-                    latitude: pos.latitude,
-                    longitude: pos.longitude,
-                    latitudeDelta: latitudeDelta,
-                    longitudeDelta: longitudeDelta
+    const locateUser = async () => {
+        if(tripdata.selected == 'pickup'){
+            setLoadingModal(true);
+            let location = await Location.getCurrentPositionAsync({});
+            if (location) {
+                store.dispatch({
+                    type: 'UPDATE_GPS_LOCATION',
+                    payload: {
+                        lat: location.coords.latitude,
+                        lng: location.coords.longitude
+                    }
                 });
-                dispatch(updateProfile(auth.info, { location: { lat: pos.latitude, lng: pos.longitude } }));
-                dispatch(updateTripPickup({
-                    lat: pos.latitude,
-                    lng: pos.longitude,
-                    add: tripdata.pickup.add,
-                    source: 'geolocation'
-                }));
+            }else{
                 setLoadingModal(false);
             }
-            else {          
-                setRegion({
-                    latitude: pos.latitude,
-                    longitude: pos.longitude,
-                    latitudeDelta: latitudeDelta,
-                    longitudeDelta: longitudeDelta
-                });
-                let latlng = pos.latitude + ',' + pos.longitude;
-                fetchAddressfromCoords(latlng).then((res) => {
+        }
+    }
+
+    const updateMap = async (pos,source) => {
+        let latlng = pos.latitude + ',' + pos.longitude;
+        fetchAddressfromCoords(latlng).then((res) => {
+            if (res) {
+                if (tripdata.selected == 'pickup') {
                     dispatch(updateTripPickup({
                         lat: pos.latitude,
                         lng: pos.longitude,
                         add: res,
-                        source: 'init'
+                        source: source
                     }));
+                    if(source == 'init'){
+                        dispatch(updateTripDrop({
+                            lat: pos.latitude,
+                            lng: pos.longitude,
+                            add: null,
+                            source: source
+                        }));
+                    }
+                } else {
                     dispatch(updateTripDrop({
                         lat: pos.latitude,
                         lng: pos.longitude,
-                        source: 'init'
+                        add: res,
+                        source: source
                     }));
-                    updateProfile(auth.info, { location: { lat: pos.latitude, lng: pos.longitude } });
-                    setLoadingModal(false);
-                });
-                
+                }
             }
-        }
+            setLoadingModal(false);
+        });
     }  
+
+    const onRegionChangeComplete = (newregion) => {
+        setRegion(newregion);
+        if (mapMoved) {
+            setMapMoved(false);
+            updateMap({
+                latitude: newregion.latitude,
+                longitude: newregion.longitude
+            },'region-change');
+        }
+    }
+
+    const onPanDrag = (coordinate, position) => {
+        if (!mapMoved) {
+            setMapMoved(true);
+        }
+    }
 
     const selectCarType = (value, key) => {
         let carTypes = allCarTypes;
@@ -257,16 +283,21 @@ export default function MapScreen(props) {
                         text: language.no_driver_found_alert_OK_button,
                         onPress: () => setLoadingModal(false),
                     },
-                    { text: language.no_driver_found_alert_TRY_AGAIN_button, onPress: () => { _getLocationAsync() }, style: 'cancel', },
+                    { 
+                        text: language.no_driver_found_alert_TRY_AGAIN_button, 
+                        onPress: () => { 
+                            setLoadingModal(true);
+                            updateMap({
+                                latitude: tripdata.pickup.lat,
+                                longitude: tripdata.pickup.lng
+                            },'try-again'); 
+                        }, 
+                        style: 'cancel', },
                 ],
                 { cancelable: true },
             )
         }
 
-    }
-
-    const onPressCancel = () => {
-        setGiftModal(false);
     }
 
     const tapAddress = (selection) => {
@@ -296,32 +327,6 @@ export default function MapScreen(props) {
         }
 
     };
-
-    const onRegionChangeComplete = (newregion) => {
-        setRegion(newregion);
-        let latlng = newregion.latitude + ',' + newregion.longitude;
-        fetchAddressfromCoords(latlng).then((res) => {
-            if (res) {
-                if (tripdata.selected == 'pickup') {
-                    dispatch(updateTripPickup({
-                        lat: newregion.latitude,
-                        lng: newregion.longitude,
-                        add: res,
-                        source: 'region-change'
-                    }));
-
-                } else {
-                    dispatch(updateTripDrop({
-                        lat: newregion.latitude,
-                        lng: newregion.longitude,
-                        add: res,
-                        source: 'region-change'
-                    }));
-                }
-            }
-        });
-    }
-
 
     //Go to confirm booking page
     const onPressBook = () => {
@@ -435,6 +440,7 @@ export default function MapScreen(props) {
                 onRequestClose={() => {
                     setLoadingModal(false);
                 }}
+                
             >
                 <View style={{ flex: 1, backgroundColor: "rgba(22,22,22,0.8)", justifyContent: 'center', alignItems: 'center' }}>
                     <View style={{ width: '85%', backgroundColor: colors.GREY.Smoke_Grey, borderRadius: 10, flex: 1, maxHeight: 70 }}>
@@ -452,47 +458,6 @@ export default function MapScreen(props) {
             </Modal>
         )
     }
-
-    const bonusModal = () => {
-        return (
-            <Modal
-                animationType="fade"
-                transparent={true}
-                visible={giftModal}
-                onRequestClose={() => {
-                    setGiftModal(false);
-                }}
-            >
-                <View style={{ flex: 1, backgroundColor: "rgba(22,22,22,0.8)", justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ width: '80%', backgroundColor: colors.GREY.primary, borderRadius: 10, justifyContent: 'center', alignItems: 'center', flex: 1, maxHeight: 325 }}>
-                        <View style={{ marginTop: 0, alignItems: "center" }}>
-                            <Avatar
-                                rounded
-                                size={200}
-                                source={require('../../assets/images/gift.gif')}
-                                containerStyle={{ width: 200, height: 200, marginTop: 0, alignSelf: "center", position: "relative" }}
-                            />
-                            <Text style={{ color: colors.GREEN.medium, fontSize: 28, textAlign: "center", position: "absolute", marginTop: 170 }}>{language.congratulation}</Text>
-                            <View>
-                                <Text style={{ color: colors.BLACK, fontSize: 16, marginTop: 12, textAlign: "center" }}>{language.refferal_bonus_messege_text} {settings.code}{bonusAmmount}</Text>
-                            </View>
-                            <View style={styles.buttonContainer}>
-                                <Button
-                                    title={language.no_driver_found_alert_OK_button}
-                                    loading={false}
-                                    titleStyle={styles.buttonTitleText}
-                                    onPress={onPressCancel}
-                                    buttonStyle={styles.cancelButtonStyle}
-                                    containerStyle={{ marginTop: 20 }}
-                                />
-                            </View>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
-        );
-    }
-
 
     return (
         <View style={styles.mainViewStyle}>
@@ -557,6 +522,7 @@ export default function MapScreen(props) {
                         mapRegion={region}
                         nearby={freeCars}
                         onRegionChangeComplete={onRegionChangeComplete}
+                        onPanDrag={onPanDrag}
                     />
                 : null}
                 {tripdata.selected == 'pickup' ?
@@ -568,6 +534,41 @@ export default function MapScreen(props) {
                         <Image pointerEvents="none" style={{ marginBottom: 40, height: 40, resizeMode: "contain" }} source={require('../../assets/images/rsz_2red_pin.png')} />
                     </View>
                 }
+                <View  
+                    
+                    style={{ 
+                        position: 'absolute', 
+                        height: Platform.OS == 'ios'?55:42, 
+                        width: Platform.OS == 'ios'?55:42, 
+                        bottom: 11, 
+                        right: 11, 
+
+                        backgroundColor: '#fff', 
+                        borderRadius: Platform.OS == 'ios'?30:3, 
+                        elevation: 2,
+                        shadowOpacity: 0.3,
+                        shadowRadius: 3,
+                        shadowOffset: {
+                            height: 0,
+                            width: 0
+                        },
+                    }}
+                >
+                    <TouchableOpacity onPress={locateUser}
+                        style={{ 
+                            height: Platform.OS == 'ios'?55:42, 
+                            width: Platform.OS == 'ios'?55:42,
+                                alignItems: 'center', 
+                            justifyContent: 'center', 
+                        }}
+                    >
+                        <Icon
+                            name='gps-fixed'
+                            color={"#666699"}
+                            size={26}
+                        />
+                    </TouchableOpacity>
+                </View>
             </View>
             { activeBookings && activeBookings.length>=1?
             <View style={styles.compViewStyle}>
@@ -586,21 +587,46 @@ export default function MapScreen(props) {
             :null}
             <View style={styles.compViewStyle2}>
                 <Text style={styles.sampleTextStyle}>{language.cab_selection_subtitle}</Text>
-                <ScrollView horizontal={true} style={styles.adjustViewStyle} showsHorizontalScrollIndicator={false}>
+                <ScrollView horizontal={true} style={styles.adjustViewStyle} showsHorizontalScrollIndicator={true}>
                     {allCarTypes.map((prop, key) => {
                         return (
-                            <TouchableOpacity key={key} style={styles.cabDivStyle} onPress={() => { selectCarType(prop, key) }} /*disabled={prop.minTime == ''}*/ >
-                                <View style={[styles.imageStyle, {
+                            <View key={key} style={styles.cabDivStyle} >
+                                <TouchableOpacity onPress={() => { selectCarType(prop, key) }} style={[styles.imageStyle, {
                                     backgroundColor: prop.active == true ? colors.YELLOW.secondary : colors.WHITE
                                 }]
                                 }>
                                     <Image source={prop.image ? { uri: prop.image } : require('../../assets/images/microBlackCar.png')} style={styles.imageStyle1} />
-                                </View>
+                                </TouchableOpacity>
                                 <View style={styles.textViewStyle}>
                                     <Text style={styles.text1}>{prop.name.toUpperCase()}</Text>
-                                    <Text style={styles.text2}>{prop.minTime != '' ? prop.minTime : language.not_available}</Text>
+                                    <View style={{flexDirection:'row',alignItems:'center'}}> 
+                                        <Text style={styles.text2}>{prop.minTime != '' ? prop.minTime : language.not_available}</Text>
+                                        {
+                                        prop.extra_info && prop.extra_info !=''?
+                                            <Tooltip style={{marginLeft:3, marginRight:3}}
+                                                backgroundColor={"#fff"}
+                                                overlayColor={'rgba(50, 50, 50, 0.70)'}
+                                                height={10 + 30 * (prop.extra_info.split(',').length)}
+                                                width={180}
+                                                popover={
+                                                    <View style={{ justifyContent:'space-around', flexDirection:'column'}}>
+                                                        {
+                                                        prop.extra_info.split(',').map((ln)=> <Text key={ln} style={{margin:5}}>{ln}</Text> )
+                                                        }
+                                                    </View>
+                                                }>
+                                                <Icon
+                                                    name='information-circle-outline'
+                                                    type='ionicon'
+                                                    color='#517fa4'
+                                                    size={28}
+                                                />
+                                            </Tooltip>
+                                        :null}
+                                    </View>
+                                   
                                 </View>
-                            </TouchableOpacity>
+                            </View>
 
                         );
                     })}
@@ -626,9 +652,6 @@ export default function MapScreen(props) {
                 </View>
 
             </View>
-            {
-                bonusModal()
-            }
             {
                 LoadingModalBody()
             }
@@ -828,7 +851,7 @@ const styles = StyleSheet.create({
         //backgroundColor: colors.WHITE, 
         justifyContent: 'center',
         alignItems: 'center'
-    },
+    },    
     imageStyle1: {
         height: height / 20.5,
         width: height / 20.5

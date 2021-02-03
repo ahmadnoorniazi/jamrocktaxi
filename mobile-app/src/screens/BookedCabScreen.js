@@ -46,7 +46,7 @@ export default function BookedCabScreen(props) {
     const [searchModalVisible, setSearchModalVisible] = useState(false);
     const activeBookings = useSelector(state => state.bookinglistdata.active);
     const [curBooking, setCurBooking] = useState(null);
-    const cancelReasons = useSelector(state => state.cancelreasondata.reasons);
+    const cancelReasons = useSelector(state => state.cancelreasondata.complex);
     const role = useSelector(state => state.auth.info.profile.usertype);
     const [cancelReasonSelected, setCancelReasonSelected] = useState(null);
     const [otpModalVisible, setOtpModalVisible] = useState(false);
@@ -627,7 +627,7 @@ export default function BookedCabScreen(props) {
             <View style={styles.bottomContainer}>
 
                 <View style={styles.otpContainer}>
-                    <Text style={styles.cabText}>{language.booking_status}: <Text style={styles.cabBoldText}>{curBooking ? curBooking.status : null}</Text></Text>
+                    <Text style={styles.cabText}>{language.booking_status}: <Text style={styles.cabBoldText}>{curBooking ? language[curBooking.status] : null}</Text></Text>
                     {role=='rider' ?<Text style={styles.otpText}>{curBooking ? language.otp + curBooking.otp : null}</Text>: null}
 
                 </View>
@@ -737,7 +737,7 @@ const styles = StyleSheet.create({
     headerTitleStyle: {
         color: colors.WHITE,
         fontFamily: 'Roboto-Bold',
-        fontSize: 18
+        fontSize: 20
     },
     topContainer: { flex: 1.5, flexDirection: 'row', borderTopWidth: 0, alignItems: 'center', backgroundColor: colors.GREY.default, paddingEnd: 20 },
     topLeftContainer: {

@@ -8,7 +8,6 @@ import {store} from './store/store';
 
 import {
     fetchUser,
-    addProfile,
     emailSignUp,
     mobileSignIn,
     signIn,
@@ -23,7 +22,8 @@ import {
     requestPhoneOtpDevice,
     deleteUser,
     validateReferer,
-    monitorQueue
+    checkUserExists,
+    monitorProfileChanges
 } from './actions/authactions';
 import {
     addBooking,
@@ -36,7 +36,7 @@ import {
 } from './actions/bookinglistactions';
 import { 
     fetchCancelReasons,
-    fetchCancelReasonsApp
+    editCancellationReason
 } from './actions/cancelreasonactions';
 import { 
     fetchCarTypes,
@@ -58,11 +58,7 @@ import {
     editPromo
 } from './actions/promoactions';
 import {
-    fetchBonus,
-    editBonus,
-    clearReferralError
-} from './actions/referralactions';
-import {
+    addUser,
     fetchUsers,
     fetchDrivers,
     editUser
@@ -74,6 +70,7 @@ import {
 } from './actions/settingsactions';
 import { 
     fetchPaymentMethods,
+    addToWallet,
     updateWalletBalance,
     clearMessage
 } from './actions/paymentactions';
@@ -125,8 +122,7 @@ const FirebaseProvider  = ({ children }) => {
         app: null,
         database: null,
         auth: null,
-        storage: null,
-        fetchUser: null
+        storage: null
     }
 
     if (!app.apps.length) {
@@ -155,7 +151,6 @@ const FirebaseProvider  = ({ children }) => {
             promoEditRef:(id) => app.database().ref("offers/"+ id),
             notifyRef:app.database().ref("notifications/"),
             notifyEditRef:(id) => app.database().ref("notifications/"+ id),
-            referralRef:app.database().ref("referral/bonus/amount"),           
             singleUserRef:(uid) => app.database().ref("users/" + uid),
             profileImageRef:(uid) => app.storage().ref(`users/${uid}/profileImage`),
             driverDocsRef:(uid,timestamp) => app.storage().ref(`users/${uid}/driverDocuments/${timestamp}/`),          
@@ -163,13 +158,20 @@ const FirebaseProvider  = ({ children }) => {
             requestedDriversRef:(bookingKey ) => app.database().ref("bookings/" + bookingKey  + "/requestedDrivers"),
             walletBalRef:(uid) => app.database().ref("users/" + uid + "/walletBalance"),
             walletHistoryRef:(uid) => app.database().ref("users/" + uid + "/walletHistory"),  
-            refererIdRef:(referralId) => app.database().ref("users").orderByChild("referralId").equalTo(referralId),
+            referralIdRef:(referralId) => app.database().ref("users").orderByChild("referralId").equalTo(referralId),
             trackingRef: (bookingId) => app.database().ref('tracking/' + bookingId),
             tasksRef:() => app.database().ref('bookings').orderByChild('status').equalTo('NEW'),
             singleTaskRef:(uid,bookingId) => app.database().ref("bookings/" + bookingId  + "/requestedDrivers/" + uid),
-            bookingListRef:(uid,role) => role == 'rider'? app.database().ref('bookings').orderByChild('customer').equalTo(uid):
-                                           (role == 'driver'? app.database().ref('bookings').orderByChild('driver').equalTo(uid):
-                                           app.database().ref('bookings')),
+            bookingListRef:(uid,role) => 
+                role == 'rider'? app.database().ref('bookings').orderByChild('customer').equalTo(uid):
+                    (role == 'driver'? 
+                        app.database().ref('bookings').orderByChild('driver').equalTo(uid)
+                        :
+                        (role == 'fleetadmin'? 
+                            app.database().ref('bookings').orderByChild('fleetadmin').equalTo(uid)
+                            : app.database().ref('bookings')
+                        )
+                    ),
             chatRef:(bookingId) => app.database().ref('chats/' + bookingId + '/messages'),
             withdrawRef:app.database().ref('withdraws/'),
 
@@ -186,26 +188,27 @@ const FirebaseProvider  = ({ children }) => {
                 GetTripDistance: GetTripDistance, 
                 saveUserLocation: (uid,location) => app.database().ref('users/' + uid + '/location').set(location),
                 saveTracking: (bookingId, location) => app.database().ref('tracking/' + bookingId).push(location),
+
+                validateReferer:validateReferer,
+                checkUserExists:checkUserExists,
                 
                 fetchUser: () => (dispatch) => fetchUser()(dispatch)(firebase), 
-                addProfile: (userDetails) => (dispatch) => addProfile(userDetails)(dispatch)(firebase), 
-                emailSignUp: (email, password) => (dispatch) => emailSignUp(email, password)(dispatch)(firebase), 
+                emailSignUp: (data,platform) => emailSignUp(data,platform)(firebase), 
                 mobileSignIn: (verficationId, code) => (dispatch) => mobileSignIn(verficationId, code)(dispatch)(firebase), 
                 signIn: (email, password) => (dispatch) => signIn(email, password)(dispatch)(firebase), 
                 facebookSignIn: (token) => (dispatch) => facebookSignIn(token)(dispatch)(firebase), 
                 appleSignIn: (credentialData) => (dispatch) => appleSignIn(credentialData)(dispatch)(firebase), 
                 signOut: () => (dispatch) => signOut()(dispatch)(firebase), 
                 updateProfile: (userAuthData, updateData) => (dispatch) => updateProfile(userAuthData, updateData)(dispatch)(firebase), 
-                monitorQueue: () => (dispatch) => monitorQueue()(dispatch)(firebase), 
+                monitorProfileChanges: () => (dispatch) => monitorProfileChanges()(dispatch)(firebase), 
                 clearLoginError: () => (dispatch) => clearLoginError()(dispatch)(firebase), 
-                validateReferer: (regData) => (dispatch) => validateReferer(regData)(dispatch)(firebase), 
                 addBooking: (bookingData) => (dispatch) => addBooking(bookingData)(dispatch)(firebase), 
                 clearBooking: () => (dispatch) => clearBooking()(dispatch)(firebase), 
                 fetchBookings: (uid, role) => (dispatch) => fetchBookings(uid, role)(dispatch)(firebase), 
                 updateBooking: (booking) => (dispatch) => updateBooking(booking)(dispatch)(firebase), 
                 cancelBooking: (data) => (dispatch) => cancelBooking(data)(dispatch)(firebase), 
                 fetchCancelReasons: () => (dispatch) => fetchCancelReasons()(dispatch)(firebase), 
-                fetchCancelReasonsApp: () => (dispatch) => fetchCancelReasonsApp()(dispatch)(firebase), 
+                editCancellationReason: (reasons, method) => (dispatch) => editCancellationReason(reasons, method)(dispatch)(firebase), 
                 fetchCarTypes: () => (dispatch) => fetchCarTypes()(dispatch)(firebase), 
                 editCarType: (carTypes, method) => (dispatch) => editCarType(carTypes, method)(dispatch)(firebase), 
                 getEstimate: (bookingData) => (dispatch) => getEstimate(bookingData)(dispatch)(firebase), 
@@ -214,24 +217,23 @@ const FirebaseProvider  = ({ children }) => {
                 editSettings: (settings) => (dispatch) => editSettings(settings)(dispatch)(firebase), 
                 clearSettingsViewError: () => (dispatch) => clearSettingsViewError()(dispatch)(firebase), 
                 sendResetMail: (email) => (dispatch) => sendResetMail(email)(dispatch)(firebase), 
-                fetchDriverEarnings: () => (dispatch) => fetchDriverEarnings()(dispatch)(firebase), 
+                fetchDriverEarnings: (uid,role) => (dispatch) => fetchDriverEarnings(uid,role)(dispatch)(firebase), 
                 fetchEarningsReport: () => (dispatch) => fetchEarningsReport()(dispatch)(firebase), 
                 fetchNotifications: () => (dispatch) => fetchNotifications()(dispatch)(firebase), 
                 editNotifications: (notifications, method) => (dispatch) => editNotifications(notifications, method)(dispatch)(firebase), 
                 sendNotification: (notification) => (dispatch) => sendNotification(notification)(dispatch)(firebase), 
                 fetchPromos: () => (dispatch) => fetchPromos()(dispatch)(firebase), 
                 editPromo: (promos, method) => (dispatch) => editPromo(promos, method)(dispatch)(firebase), 
-                fetchBonus: () => (dispatch) => fetchBonus()(dispatch)(firebase), 
-                editBonus: (bonus, method) => (dispatch) => editBonus(bonus, method)(dispatch)(firebase), 
-                clearReferralError: () => (dispatch) => clearReferralError()(dispatch)(firebase), 
                 fetchUsers: () => (dispatch) => fetchUsers()(dispatch)(firebase), 
                 fetchDrivers: () => (dispatch) => fetchDrivers()(dispatch)(firebase), 
+                addUser: (userdata) => (dispatch) => addUser(userdata)(dispatch)(firebase),
                 editUser: (id, user) => (dispatch) => editUser(id, user)(dispatch)(firebase), 
                 updatePushToken: (userAuthData, token, platform) => (dispatch) => updatePushToken(userAuthData, token, platform)(dispatch)(firebase), 
                 updateProfileImage: (userAuthData, imageBlob) => (dispatch) => updateProfileImage(userAuthData, imageBlob)(dispatch)(firebase), 
                 requestPhoneOtpDevice: (phoneNumber, appVerifier) => (dispatch) => requestPhoneOtpDevice(phoneNumber, appVerifier)(dispatch)(firebase), 
                 deleteUser: (uid) => (dispatch) => deleteUser(uid)(dispatch)(firebase), 
                 fetchPaymentMethods: () => (dispatch) => fetchPaymentMethods()(dispatch)(firebase), 
+                addToWallet: (uid, amount) => (dispatch) => addToWallet(uid, amount)(dispatch)(firebase), 
                 updateWalletBalance: (balance, details) => (dispatch) => updateWalletBalance(balance, details)(dispatch)(firebase), 
                 clearMessage: () => (dispatch) => clearMessage()(dispatch)(firebase), 
                 updateTripPickup: (pickupAddress) => (dispatch) => updateTripPickup(pickupAddress)(dispatch)(firebase), 

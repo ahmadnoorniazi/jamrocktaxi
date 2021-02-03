@@ -6,12 +6,14 @@ import { List, ListItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "assets/jss/material-kit-react/components/footerStyle.js";
 import { useHistory } from 'react-router-dom';
-import { language, features } from "config";
+import { language } from "config";
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(styles);
 
 export default function Footer(props) {
   const classes = useStyles();
+  const settings = useSelector(state => state.settingsdata.settings);
   const { whiteFont } = props;
   const footerClasses = classNames({
     [classes.footer]: true,
@@ -65,16 +67,18 @@ export default function Footer(props) {
             </ListItem>
           </List>
         </div>
+        {settings && settings.CompanyWebsite?
         <div className={classes.right}>
           &copy; {1900 + new Date().getYear() + " "} 
           <a
-            href={features.CompanyWebsite}
+            href={settings.CompanyWebsite}
             className={aClasses}
             target="_blank"
           >
-            {features.CompanyName}
+            {settings.CompanyName}
           </a>
         </div>
+        :null}
       </div>
     </footer>
   );

@@ -7,28 +7,22 @@ import {
   USER_SIGN_OUT,
   CLEAR_LOGIN_ERROR,
   UPDATE_USER_PROFILE,
-  USER_NOT_REGISTERED,
-  USER_REGISTER,
-  USER_REGISTER_SUCCESS,
-  USER_REGISTER_FAILED,
-  USER_EMAIL_SIGNUP,
-  USER_EMAIL_SIGNUP_FAILED,
   SEND_RESET_EMAIL,
   SEND_RESET_EMAIL_SUCCESS,
   SEND_RESET_EMAIL_FAILED,
   USER_DELETED,
   REQUEST_OTP,
   REQUEST_OTP_SUCCESS,
-  REQUEST_OTP_FAILED,
-  VALIDATE_REFERER,
-  VALIDATE_REFERER_SUCCESS,
-  VALIDATE_REFERER_FAILED
+  REQUEST_OTP_FAILED
 } from "../store/types";
 
-import { language } from 'config';
+import {
+  language,
+  cloud_function_server_url
+} from 'config';
 
-export const monitorQueue = () => (dispatch) => (firebase) => {
-  const   {
+export const monitorProfileChanges = () => (dispatch) => (firebase) => {
+  const {
     auth,
     singleUserRef,
   } = firebase;
@@ -40,11 +34,18 @@ export const monitorQueue = () => (dispatch) => (firebase) => {
       });
     });
   });
+  singleUserRef(auth.currentUser.uid).child('walletHistory').on('value', res => {
+    singleUserRef(auth.currentUser.uid).once('value', res => {
+      dispatch({
+        type: UPDATE_USER_PROFILE,
+        payload: res.val()
+      });
+    });
+  });
 }
 
 export const fetchUser = () => (dispatch) => (firebase) => {
-
-  const   {
+  const {
     auth,
     singleUserRef,
     settingsRef
@@ -56,38 +57,40 @@ export const fetchUser = () => (dispatch) => (firebase) => {
   });
   auth.onAuthStateChanged(user => {
     if (user) {
-      singleUserRef(user.uid).once("value", snapshot => {
-        if (snapshot.val()) {
-          user.profile = snapshot.val();
-          if (user.profile.approved) {
-            dispatch({
-              type: FETCH_USER_SUCCESS,
-              payload: user
-            });
-          } else {
-            auth.signOut();
-            dispatch({
-              type: USER_SIGN_IN_FAILED,
-              payload: { code: language.auth_error, message: language.require_approval }
-            });
+      settingsRef.once("value", settingdata => {
+        let settings = settingdata.val();
+        let password_provider_found = false;
+        for(let i=0;i< user.providerData.length; i++){
+          if(user.providerData[i].providerId == 'password'){
+            password_provider_found = true;
+            break;
           }
-        } else {
-          settingsRef.once("value", settingdata => {
-            let settings = settingdata.val();
-            if ((user.providerData[0].providerId === "password" && settings.email_verify && user.emailVerified) || !settings.email_verify || user.providerData[0].providerId !== "password") {
-              dispatch({
-                type: USER_NOT_REGISTERED,
-                payload: user
-              });
+        }
+        if ((password_provider_found && settings.email_verify && user.emailVerified) || !settings.email_verify || !password_provider_found) {
+          singleUserRef(user.uid).once("value", snapshot => {
+            if (snapshot.val()) {
+              user.profile = snapshot.val();
+              if (user.profile.approved) {
+                dispatch({
+                  type: FETCH_USER_SUCCESS,
+                  payload: user
+                });
+              } else {
+                auth.signOut();
+                dispatch({
+                  type: USER_SIGN_IN_FAILED,
+                  payload: { code: language.auth_error, message: language.require_approval }
+                });
+              }
             }
-            else {
-              user.sendEmailVerification();
-              auth.signOut();
-              dispatch({
-                type: USER_SIGN_IN_FAILED,
-                payload: { code: language.auth_error, message: language.email_verify_message }
-              });
-            }
+          });
+        }
+        else {
+          user.sendEmailVerification();
+          auth.signOut();
+          dispatch({
+            type: USER_SIGN_IN_FAILED,
+            payload: { code: language.auth_error, message: language.email_verify_message }
           });
         }
       });
@@ -100,167 +103,63 @@ export const fetchUser = () => (dispatch) => (firebase) => {
   });
 };
 
-export const validateReferer = (regData) => (dispatch) => (firebase) => {
-
-  const {
-    referralRef,
-    refererIdRef,
-  } = firebase;
-
-  dispatch({
-    type: VALIDATE_REFERER,
-    payload: null
-  });
-  refererIdRef(regData.refererId).once("value", (snapshot) => {
-    ;
-    if (snapshot.val()) {
-      let users = snapshot.val();
-      for (let key in users) {
-        let referer = users[key];
-        if (referer) {
-          referralRef.once("value", (snapshot2) => {
-            if (snapshot2.val()) {
-              let amount = snapshot2.val();
-              dispatch({
-                type: VALIDATE_REFERER_SUCCESS,
-                payload: {
-                  refererUid: key,
-                  amount: parseFloat(amount),
-                  walletBalance: parseFloat(referer.walletBalance) + parseFloat(amount),
-                  regData: regData
-                }
-              });
-            }
-          });
-        }
-      }
-    } else {
-      dispatch({
-        type: VALIDATE_REFERER_FAILED,
-        payload: language.referer_not_found
-      });
-    }
-  });
-}
-
-
-export const addProfile = (userDetails) => (dispatch) => (firebase) => {
-
-  const   {
-    auth,
-    singleUserRef,
-    usersRef,
-    settingsRef,
-    walletHistoryRef,
-    driverDocsRef
-  } = firebase;
-
-  dispatch({
-    type: USER_REGISTER,
-    payload: userDetails
-  });
-
-  let regData = {
-    firstName: userDetails.firstName,
-    lastName: userDetails.lastName,
-    mobile: userDetails.mobile,
-    email: userDetails.email,
-    usertype: userDetails.usertype,
-    createdAt: new Date().toISOString(),
-    referralId: userDetails.firstName.toLowerCase() + Math.floor(1000 + Math.random() * 9000).toString(),
-    approved: true,
-    walletBalance: 0
-  };
-
-  if (userDetails.refererInfo) {
-    regData.refererId = userDetails.refererId;
-    singleUserRef(userDetails.refererInfo.refererUid).child('walletBalance').set(userDetails.refererInfo.walletBalance);
-    let details = {
-      type: 'Credit',
-      amount: userDetails.refererInfo.amount,
-      date: new Date().toString(),
-      txRef: regData.referralId
-    }
-    walletHistoryRef(userDetails.refererInfo.refererUid).push(details);
-  }
-
-  if (userDetails.usertype === 'driver') {
-    regData.vehicleNumber = userDetails.vehicleNumber;
-    regData.vehicleModel = userDetails.vehicleModel;
-
-    regData.carType = userDetails.carType;
-    regData.bankCode = userDetails.bankCode;
-    regData.bankName = userDetails.bankName;
-    regData.bankAccount = userDetails.bankAccount;
-    regData.queue = false;
-    regData.driverActiveStatus = true;
-    settingsRef.once("value", settingdata => {
-      let settings = settingdata.val();
-      if (settings.driver_approval) {
-        regData.approved = false;
-      }
-      let timestamp = new Date().getTime();
-      driverDocsRef(auth.currentUser.uid, timestamp).put(userDetails.licenseImage).then(() => {
-        return driverDocsRef(auth.currentUser.uid, timestamp).getDownloadURL()
-      }).then((url) => {
-        regData.licenseImage = url;
-        usersRef.child(auth.currentUser.uid).set(regData)
-          .then(() => {
-            dispatch({
-              type: USER_REGISTER_SUCCESS,
-              payload: regData
-            });
-          })
-          .catch(error => {
-            dispatch({
-              type: USER_REGISTER_FAILED,
-              payload: error.code + ": " + error.message
-            });
-          });
-      }).catch((error) => {
-        dispatch({
-          type: USER_REGISTER_FAILED,
-          payload: error.code + ": " + error.message
-        });
-      })
-    });
-  } else {
-    usersRef.child(auth.currentUser.uid).set(regData)
-      .then(() => {
-        dispatch({
-          type: USER_REGISTER_SUCCESS,
-          payload: regData
-        });
-      })
-      .catch(error => {
-        dispatch({
-          type: USER_REGISTER_FAILED,
-          payload: error.code + ": " + error.message
-        });
-      });
-  }
+export const validateReferer = async (referralId) => {
+  const response = await fetch(`${cloud_function_server_url}/validate_referrer`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      referralId: referralId
+    })
+  })
+  const json = await response.json();
+  return json;
 };
 
-export const emailSignUp = (email, password) => (dispatch) => (firebase) => {
+export const checkUserExists = async (regData) => {
+  const response = await fetch(`${cloud_function_server_url}/check_user_exists`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email: regData.email,
+      mobile: regData.mobile
+    })
+  })
+  const json = await response.json();
+  return json;
+};
 
-  const   {
-    auth,
+export const emailSignUp = (regData,platform) => async (firebase) => {
+
+  let url = `${cloud_function_server_url}/user_signup`;
+  let cors_proxy = 'https://cors-proxy.dev.exicube.com/';
+  url = platform == 'web'? cors_proxy + url : url;
+
+  const {
+    driverDocsRef
   } = firebase;
-
-  dispatch({
-    type: USER_EMAIL_SIGNUP,
-    payload: null
-  });
-  auth.createUserWithEmailAndPassword(email, password).catch(function (error) {
-    dispatch({
-      type: USER_EMAIL_SIGNUP_FAILED,
-      payload: error
-    });
-  });
+  let createDate = new Date();
+  regData.createdAt = createDate.toISOString();
+  if (regData.usertype == 'driver') {
+    let timestamp = createDate.getTime();
+    await driverDocsRef(timestamp).put(regData.licenseImage);
+    regData.licenseImage = await driverDocsRef(timestamp).getDownloadURL();
+  }
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ regData: regData })
+  })
+  return await response.json();
 };
 
 export const requestPhoneOtpDevice = (phoneNumber, appVerifier) => (dispatch) => async (firebase) => {
-  const   {
+  const {
     phoneProvider
   } = firebase;
   dispatch({
@@ -309,7 +208,7 @@ export const mobileSignIn = (verficationId, code) => (dispatch) => (firebase) =>
 
 export const signIn = (email, password) => (dispatch) => (firebase) => {
 
-  const   {
+  const {
     auth
   } = firebase;
 
@@ -317,25 +216,26 @@ export const signIn = (email, password) => (dispatch) => (firebase) => {
     type: USER_SIGN_IN,
     payload: null
   });
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then(res => {
-        //OnAuthStateChange takes care of Navigation
-      })
-      .catch(error => {
-        dispatch({
-          type: USER_SIGN_IN_FAILED,
-          payload: error
-        });
+  auth
+    .signInWithEmailAndPassword(email, password)
+    .then(res => {
+      //OnAuthStateChange takes care of Navigation
+    })
+    .catch(error => {
+      dispatch({
+        type: USER_SIGN_IN_FAILED,
+        payload: error
       });
+    });
 };
 
 export const facebookSignIn = (token) => (dispatch) => (firebase) => {
 
-  const   {
+  const {
     auth,
     facebookProvider,
     facebookCredential,
+    singleUserRef
   } = firebase;
 
   dispatch({
@@ -346,8 +246,25 @@ export const facebookSignIn = (token) => (dispatch) => (firebase) => {
     const credential = facebookCredential(token);
     auth.signInWithCredential(credential)
       .then((user) => {
-        //OnAuthStateChange takes care of Navigation
-      }).catch(error => {
+        if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+          let userData = {
+            createdAt: new Date().toISOString(),
+            firstName: user.additionalUserInfo.profile.first_name ? user.additionalUserInfo.profile.first_name : user.additionalUserInfo.profile.name ? user.additionalUserInfo.profile.name : ' ',
+            lastName: user.additionalUserInfo.profile.last_name ? user.additionalUserInfo.profile.last_name : ' ',
+            mobile: user.additionalUserInfo.profile.phoneNumber ? user.additionalUserInfo.profile.phoneNumber : ' ',
+            email: user.additionalUserInfo.profile.email ? user.additionalUserInfo.profile.email : ' ',
+            usertype: 'rider',
+            referralId: (user.additionalUserInfo.profile.first_name ? user.additionalUserInfo.profile.first_name.toLowerCase() : 'temp') + Math.floor(1000 + Math.random() * 9000).toString(),
+            approved: true,
+            walletBalance: 0,
+            loginType:'facebook'
+          }
+          singleUserRef(user.user.uid).set(userData);
+          updateProfile({...user.user, profile:{}},userData);
+        }
+      })
+      .catch(error => {
+        console.log(error);
         dispatch({
           type: USER_SIGN_IN_FAILED,
           payload: error
@@ -360,8 +277,24 @@ export const facebookSignIn = (token) => (dispatch) => (firebase) => {
       const credential = facebookCredential(token);
       auth.signInWithCredential(credential)
         .then((user) => {
-          //OnAuthStateChange takes care of Navigation
-        }).catch(error => {
+          if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+            let userData = {
+              createdAt: new Date().toISOString(),
+              firstName: user.additionalUserInfo.profile.first_name ? user.additionalUserInfo.profile.first_name : user.additionalUserInfo.profile.name ? user.additionalUserInfo.profile.name : ' ',
+              lastName: user.additionalUserInfo.profile.last_name ? user.additionalUserInfo.profile.last_name : ' ',
+              mobile: user.additionalUserInfo.profile.phoneNumber ? user.additionalUserInfo.profile.phoneNumber : ' ',
+              email: user.additionalUserInfo.profile.email ? user.additionalUserInfo.profile.email : ' ',
+              usertype: 'rider',
+              referralId: (user.additionalUserInfo.profile.first_name ? user.additionalUserInfo.profile.first_name.toLowerCase() : 'temp') + Math.floor(1000 + Math.random() * 9000).toString(),
+              approved: true,
+              walletBalance: 0,
+              loginType:'facebook'
+            }
+            singleUserRef(user.user.uid).set(userData);
+            updateProfile({...user.user, profile:{}},userData);
+          }
+        })
+        .catch(error => {
           dispatch({
             type: USER_SIGN_IN_FAILED,
             payload: error
@@ -379,9 +312,10 @@ export const facebookSignIn = (token) => (dispatch) => (firebase) => {
 
 export const appleSignIn = (credentialData) => (dispatch) => (firebase) => {
 
-  const   {
+  const {
     auth,
     appleProvider,
+    singleUserRef
   } = firebase;
 
   dispatch({
@@ -392,7 +326,22 @@ export const appleSignIn = (credentialData) => (dispatch) => (firebase) => {
     const credential = appleProvider.credential(credentialData);
     auth.signInWithCredential(credential)
       .then((user) => {
-        //OnAuthStateChange takes care of Navigation
+        if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+          let userData = {
+            createdAt: new Date().toISOString(),
+            firstName: ' ',
+            lastName: ' ',
+            mobile: ' ',
+            email: user.additionalUserInfo.profile.email ? user.additionalUserInfo.profile.email : ' ',
+            usertype: 'rider',
+            referralId: 'rider' + Math.floor(1000 + Math.random() * 9000).toString(),
+            approved: true,
+            walletBalance: 0,
+            loginType:'apple'
+          }
+          singleUserRef(user.user.uid).set(userData);
+          updateProfile({...user.user, profile:{}},userData);
+        }
       })
       .catch((error) => {
         dispatch({
@@ -404,8 +353,24 @@ export const appleSignIn = (credentialData) => (dispatch) => (firebase) => {
     auth.signInWithPopup(appleProvider).then(function (result) {
       auth.signInWithCredential(result.credential)
         .then((user) => {
-          //OnAuthStateChange takes care of Navigation
-        }).catch(error => {
+          if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+            let userData = {
+              createdAt: new Date().toISOString(),
+              firstName: ' ',
+              lastName: ' ',
+              mobile: ' ',
+              email: user.additionalUserInfo.profile.email ? user.additionalUserInfo.profile.email : ' ',
+              usertype: 'rider',
+              referralId: 'rider' + Math.floor(1000 + Math.random() * 9000).toString(),
+              approved: true,
+              walletBalance: 0,
+              loginType:'apple'
+            }
+            singleUserRef(user.user.uid).set(userData);
+            updateProfile({...user.user, profile:{}},userData);
+          }
+        })
+        .catch(error => {
           dispatch({
             type: USER_SIGN_IN_FAILED,
             payload: error
@@ -423,7 +388,7 @@ export const appleSignIn = (credentialData) => (dispatch) => (firebase) => {
 
 export const signOut = () => (dispatch) => (firebase) => {
 
-  const   {
+  const {
     auth,
   } = firebase;
 
@@ -441,13 +406,13 @@ export const signOut = () => (dispatch) => (firebase) => {
 };
 
 export const deleteUser = (uid) => (dispatch) => (firebase) => {
-  const   {
+  const {
     singleUserRef,
     auth
   } = firebase;
-  
+
   singleUserRef(uid).remove().then(() => {
-    if(auth.currentUser.uid == uid){
+    if (auth.currentUser.uid == uid) {
       auth.signOut();
       dispatch({
         type: USER_DELETED,
@@ -459,7 +424,7 @@ export const deleteUser = (uid) => (dispatch) => (firebase) => {
 
 export const updateProfile = (userAuthData, updateData) => (dispatch) => (firebase) => {
 
-  const   {
+  const {
     singleUserRef,
   } = firebase;
 
@@ -475,7 +440,7 @@ export const updateProfile = (userAuthData, updateData) => (dispatch) => (fireba
 
 export const updateProfileImage = (userAuthData, imageBlob) => (dispatch) => (firebase) => {
 
-  const   {
+  const {
     singleUserRef,
     profileImageRef,
   } = firebase;
@@ -498,7 +463,7 @@ export const updateProfileImage = (userAuthData, imageBlob) => (dispatch) => (fi
 
 export const updatePushToken = (userAuthData, token, platform) => (dispatch) => (firebase) => {
 
-  const   {
+  const {
     singleUserRef,
   } = firebase;
 
@@ -524,7 +489,7 @@ export const clearLoginError = () => (dispatch) => (firebase) => {
 
 export const sendResetMail = (email) => (dispatch) => (firebase) => {
 
-  const   {
+  const {
     auth,
   } = firebase;
 

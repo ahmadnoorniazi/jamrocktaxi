@@ -43,6 +43,8 @@ export const addBooking = (bookingData) => (dispatch) => (firebase) => {
         drop: drop,
         pickup: pickUp,
         estimate: bookingData.estimate.estimateFare,
+        estimateDistance: bookingData.estimate.estimateDistance,
+        estimateTime:bookingData.estimate.estimateTime,
         status: "NEW",
         bookLater:bookingData.bookLater,
         tripdate: bookingData.bookLater?bookingData.tripdate:today,

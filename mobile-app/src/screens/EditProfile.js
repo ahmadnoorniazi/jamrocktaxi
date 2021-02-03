@@ -25,16 +25,18 @@ export default function EditProfilePage(props) {
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
     const [profileData, setProfileData] = useState(null);
-    const [loginType, setLoginType] = useState(null);
 
     useEffect(() => {
         if (auth.info && auth.info.profile) {
-            setProfileData(auth.info.profile);
-        }
-        if(auth.email){
-            setLoginType('email');
-        }else{
-            setLoginType('mobile');
+            setProfileData({
+                firstName: !auth.info.profile.firstName || auth.info.profile.firstName === ' '? '' : auth.info.profile.firstName,
+                lastName: !auth.info.profile.lastName || auth.info.profile.lastName === ' '? '' : auth.info.profile.lastName,
+                email: !auth.info.profile.email || auth.info.profile.email === ' '? '' : auth.info.profile.email,
+                mobile: !auth.info.profile.mobile || auth.info.profile.mobile === ' '? '' : auth.info.profile.mobile,
+                loginType:auth.info.profile.loginType?'social':'email',
+                usertype:auth.info.profile.usertype,
+                uid:auth.info.uid
+            });
         }
     }, [auth.info,auth.email]);
 
@@ -131,30 +133,6 @@ export default function EditProfilePage(props) {
                         </View>
                         <View style={styles.textInputContainerStyle}>
                             <Icon
-                                name='mobile-phone'
-                                type='font-awesome'
-                                color={colors.GREY.secondary}
-                                size={40}
-                                containerStyle={styles.iconContainer}
-                            />
-                            <Input
-                                editable={loginType == 'email' ? true : false}
-                                underlineColorAndroid={colors.TRANSPARENT}
-                                placeholder={language.mobile_no_placeholder}
-                                placeholderTextColor={colors.GREY.secondary}
-                                value={profileData && profileData.mobile? profileData.mobile: ''}
-                                keyboardType={'number-pad'}
-                                inputStyle={styles.inputTextStyle}
-                                onChangeText={(text) => { setProfileData({...profileData, mobile: text}) }}
-                                secureTextEntry={false}
-                                errorStyle={styles.errorMessageStyle}
-                                inputContainerStyle={styles.inputContainerStyle}
-                                containerStyle={styles.textInputStyle}
-                            />
-                        </View>
-
-                        <View style={styles.textInputContainerStyle}>
-                            <Icon
                                 name='envelope'
                                 type='font-awesome'
                                 color={colors.GREY.secondary}
@@ -162,7 +140,7 @@ export default function EditProfilePage(props) {
                                 containerStyle={styles.iconContainer}
                             />
                             <Input
-                                editable={loginType != 'email' ? true : false}
+                                editable={profileData && profileData.loginType == 'social' ? true : false}
                                 underlineColorAndroid={colors.TRANSPARENT}
                                 placeholder={language.email_placeholder}
                                 placeholderTextColor={colors.GREY.secondary}
@@ -172,6 +150,29 @@ export default function EditProfilePage(props) {
                                 onChangeText={(text) => { setProfileData({...profileData, email: text}) }}
                                 secureTextEntry={false}
                                 blurOnSubmit={true}
+                                errorStyle={styles.errorMessageStyle}
+                                inputContainerStyle={styles.inputContainerStyle}
+                                containerStyle={styles.textInputStyle}
+                            />
+                        </View>
+                        <View style={styles.textInputContainerStyle}>
+                            <Icon
+                                name='mobile-phone'
+                                type='font-awesome'
+                                color={colors.GREY.secondary}
+                                size={40}
+                                containerStyle={styles.iconContainer}
+                            />
+                            <Input
+                                editable={profileData && profileData.loginType == 'social' ? true : false}
+                                underlineColorAndroid={colors.TRANSPARENT}
+                                placeholder={language.mobile_no_placeholder}
+                                placeholderTextColor={colors.GREY.secondary}
+                                value={profileData && profileData.mobile? profileData.mobile: ''}
+                                keyboardType={'number-pad'}
+                                inputStyle={styles.inputTextStyle}
+                                onChangeText={(text) => { setProfileData({...profileData, mobile: text}) }}
+                                secureTextEntry={false}
                                 errorStyle={styles.errorMessageStyle}
                                 inputContainerStyle={styles.inputContainerStyle}
                                 containerStyle={styles.textInputStyle}

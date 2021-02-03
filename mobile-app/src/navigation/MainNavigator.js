@@ -8,7 +8,6 @@ import {
     MapScreen,
     BookedCabScreen,
     RegistrationPage,
-    MobileLoginScreen,
     FareScreen,
     RideDetails,
     SearchScreen,
@@ -18,10 +17,11 @@ import {
     WalletDetails,
     AddMoneyScreen,
     SelectGatewayPage,
-    EmailLoginScreen,
+    LoginScreen,
     IntroScreen,
     DriverTrips,
-    WithdrawMoneyScreen
+    WithdrawMoneyScreen,
+    DriverIncomeScreen
 } from '../screens';
 import SideMenu from '../components/SideMenu';
 
@@ -81,7 +81,12 @@ export const AppStack = {
             headerShown: false
         }
     },
-
+    MyEarning:{
+        screen: DriverIncomeScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
     FareDetails: {
         screen: FareScreen,
         navigationOptions: {
@@ -150,14 +155,8 @@ export const AuthStack = createStackNavigator({
             headerShown: false,
         }
     },
-    MobileLogin: {
-        screen: MobileLoginScreen,
-        navigationOptions: {
-            headerShown: false,
-        }
-    },
-    EmailLogin: {
-        screen: EmailLoginScreen,
+    Login: {
+        screen: LoginScreen,
         navigationOptions: {
             headerShown: false,
         }
@@ -197,6 +196,10 @@ const DrawerRoutes = {
     'wallet': {
         name: 'wallet',
         screen: createStackNavigator(AppStack, { initialRouteName: 'wallet', headerMode: 'none' })
+    },
+    'MyEarning': {
+        name: 'MyEarning',
+        screen: createStackNavigator(AppStack, { initialRouteName: 'MyEarning', headerMode: 'none' })
     },
 };
 

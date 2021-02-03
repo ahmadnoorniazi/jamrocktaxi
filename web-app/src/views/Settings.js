@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import { useSelector, useDispatch } from "react-redux";
 import AlertDialog from '../components/AlertDialog';
 import CircularLoading from "../components/CircularLoading";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import Grid from '@material-ui/core/Grid';
 import { 
   features,
   language
@@ -22,11 +21,17 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.common.white,
     },
   },
-  paper: {
-    marginTop: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+  container: {
+    zIndex: "12",
+    color: "#FFFFFF",
+    alignContent: 'center'
+  },
+  gridcontainer: {
+    alignContent: 'center'
+  },
+  items: {
+    margin: 0,
+    width: '100%'
   },
   avatar: {
     margin: theme.spacing(1),
@@ -55,12 +60,20 @@ const Settings = (props) => {
   const [data, setData] = useState({
     code: 'USD',
     symbol: '$',
-    cash: false,
-    wallet: false,
+    bonus: 0,
     panic: '',
     otp_secure:false,
     driver_approval:false,
-    email_verify:false
+    email_verify:false,
+    CarHornRepeat:false,
+    CompanyName:'',
+    CompanyWebsite:'',
+    CompanyTerms: '',
+    TwitterHandle: '',
+    FacebookHandle: '',
+    InstagramHandle: '',
+    AppleStoreLink: '',
+    PlayStoreLink: ''
   });
   const [clicked, setClicked] = useState(false);
 
@@ -70,31 +83,31 @@ const Settings = (props) => {
     }
   }, [settingsdata.settings]);
 
-  const handleSymbolChange = (e) => {
-    setData({ ...data, symbol: e.target.value });
-  }
-
-  const handleCodeChange = (e) => {
-    setData({ ...data, code: e.target.value });
-  }
-
-  const handleChange = (e) => {
+  const handleSwitchChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.checked });
   };
 
-  const handlePanicChange = (e) => {
-    setData({ ...data, panic: e.target.value });
+  const handleTextChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const handleBonusChange = (e) => {
+    setData({ ...data, bonus: parseFloat(e.target.value)>=0?parseFloat(e.target.value):'' });
   };
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if(features.AllowCriticalEditsAdmin){
-      setClicked(true);
-      dispatch(editSettings(data));
-      alert("Updated");
+      if(data.bonus === ''){
+        alert(language.proper_bonus)
+      }else{
+        setClicked(true);
+        dispatch(editSettings(data));
+        alert(language.updated);
+      }
     }else{
-      alert('Restricted in Demo App.');
+      alert(language.demo_mode);
     }
   }
 
@@ -105,110 +118,212 @@ const Settings = (props) => {
 
   return (
     settingsdata.loading ? <CircularLoading /> :
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <form className={classes.form} onSubmit={handleSubmit}>
-            <Typography component="h1" variant="h5">
-              {language.settings_title}
-            </Typography>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="symbol"
-              label={language.currency_symbol}
-              name="symbol"
-              autoComplete="symbol"
-              onChange={handleSymbolChange}
-              value={data.symbol}
-              autoFocus
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="code"
-              label={language.currency_code}
-              name="code"
-              autoComplete="code"
-              onChange={handleCodeChange}
-              value={data.code}
-            />
-            <Typography component="h1" variant="h5" style={{ marginTop: '30px' }}>
-              {language.payment_modes_title}
-            </Typography>
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={data.cash}
-                  onChange={handleChange}
-                  name="cash"
-                  color="primary"
-                />
-              }
-              label={language.settings_label1}
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={data.wallet}
-                  onChange={handleChange}
-                  name="wallet"
-                  color="primary"
-                />
-              }
-              label={language.settings_label2}
-            />
-            <Typography component="h1" variant="h5" style={{ marginTop: '30px' }}>
-              {language.security_title}
-            </Typography>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="panic"
-              label={language.panic_num}
-              name="panic"
-              autoComplete="panic"
-              onChange={handlePanicChange}
-              value={data.panic}
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={data.otp_secure}
-                  onChange={handleChange}
-                  name="otp_secure"
-                  color="primary"
-                />
-              }
-              label={language.settings_label3}
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={data.driver_approval}
-                  onChange={handleChange}
-                  name="driver_approval"
-                  color="primary"
-                />
-              }
-              label={language.settings_label4}
-            />
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={data.email_verify}
-                  onChange={handleChange}
-                  name="email_verify"
-                  color="primary"
-                />
-              }
-              label={language.settings_label5}
-            />
+      <form className={classes.form} onSubmit={handleSubmit}>
+        <Grid container spacing={2} >
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+              <Typography component="h1" variant="h5">
+                {language.settings_title}
+              </Typography>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="symbol"
+                label={language.currency_symbol}
+                name="symbol"
+                autoComplete="symbol"
+                onChange={handleTextChange}
+                value={data.symbol}
+                autoFocus
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="code"
+                label={language.currency_code}
+                name="code"
+                autoComplete="code"
+                onChange={handleTextChange}
+                value={data.code}
+              />
+              <Typography component="h1" variant="h5" style={{ marginTop: '30px' }}>
+                {language.referral_bonus}
+              </Typography>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="bonus"
+                label={language.referral_bonus}
+                name="bonus"
+                autoComplete="bonus"
+                onChange={handleBonusChange}
+                value={data.bonus}
+              />
+              <Typography component="h1" variant="h5" style={{ marginTop: '30px' }}>
+                {language.security_title}
+              </Typography>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="panic"
+                label={language.panic_num}
+                name="panic"
+                autoComplete="panic"
+                onChange={handleTextChange}
+                value={data.panic}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={data.otp_secure}
+                    onChange={handleSwitchChange}
+                    name="otp_secure"
+                    color="primary"
+                  />
+                }
+                label={language.settings_label3}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={data.driver_approval}
+                    onChange={handleSwitchChange}
+                    name="driver_approval"
+                    color="primary"
+                  />
+                }
+                label={language.settings_label4}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={data.email_verify}
+                    onChange={handleSwitchChange}
+                    name="email_verify"
+                    color="primary"
+                  />
+                }
+                label={language.settings_label5}
+              />
+              <Typography component="h1" variant="h5" style={{ marginTop: '30px' }}>
+                {language.advance_settings}
+              </Typography>
+              <FormControlLabel style={{ marginTop: '15px' }}
+                control={
+                  <Switch
+                    checked={data.CarHornRepeat}
+                    onChange={handleSwitchChange}
+                    name="CarHornRepeat"
+                    color="primary"
+                  />
+                }
+                label={language.car_horn_repeat}
+              />
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
+              <Typography component="h1" variant="h5">
+                {language.app_info}
+              </Typography>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="CompanyName"
+                label={language.CompanyName}
+                name="CompanyName"
+                autoComplete="CompanyName"
+                onChange={handleTextChange}
+                value={data.CompanyName}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="CompanyWebsite"
+                label={language.CompanyWebsite}
+                name="CompanyWebsite"
+                autoComplete="CompanyWebsite"
+                onChange={handleTextChange}
+                value={data.CompanyWebsite}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="CompanyTerms"
+                label={language.terms}
+                name="CompanyTerms"
+                autoComplete="CompanyTerms"
+                onChange={handleTextChange}
+                value={data.CompanyTerms}
+              />
+               <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="FacebookHandle"
+                label={language.FacebookHandle}
+                name="FacebookHandle"
+                autoComplete="FacebookHandle"
+                onChange={handleTextChange}
+                value={data.FacebookHandle}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="TwitterHandle"
+                label={language.TwitterHandle}
+                name="TwitterHandle"
+                autoComplete="TwitterHandle"
+                onChange={handleTextChange}
+                value={data.TwitterHandle}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="InstagramHandle"
+                label={language.InstagramHandle}
+                name="InstagramHandle"
+                autoComplete="InstagramHandle"
+                onChange={handleTextChange}
+                value={data.InstagramHandle}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="AppleStoreLink"
+                label={language.AppleStoreLink}
+                name="AppleStoreLink"
+                autoComplete="AppleStoreLink"
+                onChange={handleTextChange}
+                value={data.AppleStoreLink}
+              />        
+              <TextField
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                id="PlayStoreLink"
+                label={language.PlayStoreLink}
+                name="PlayStoreLink"
+                autoComplete="PlayStoreLink"
+                onChange={handleTextChange}
+                value={data.PlayStoreLink}
+              /> 
+          </Grid>
+        </Grid>
+        <Grid container>
+          <Grid item xs={12} sm={12} md={6} lg={6}>
             <Button
               type="submit"
               fullWidth
@@ -217,11 +332,11 @@ const Settings = (props) => {
               className={classes.submit}
             >
               {language.submit}
-            </Button>
-          </form>
-        </div>
+            </Button> 
+          </Grid>
+        </Grid>
         <AlertDialog open={settingsdata.error.flag && clicked} onClose={handleClose}>{language.update_failed}</AlertDialog>
-      </Container>
+      </form> 
   );
 
 }

@@ -1,53 +1,20 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Registration } from '../components';
 import { StyleSheet, View, Alert } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { language } from 'config';
 import { FirebaseContext } from 'common/src';
-import { signIn } from 'common/src/actions/authactions';
 
 export default function RegistrationPage(props) {
   const { api } = useContext(FirebaseContext);
   const {
-    addProfile, 
+    emailSignUp, 
     validateReferer,
-    signOut
+    checkUserExists
   } = api;
-  const pageActive = useRef(false);
-  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const auth = useSelector(state => state.auth);
-  const reqData = props.navigation.getParam("requireData");
   const cars = useSelector(state => state.cartypes.cars);
   const [carTypes, setCarTypes] = useState(null);
-
-  useEffect(() => {
-    if (auth.info && auth.info.profile) {
-      setLoading(false);
-      pageActive.current = false;
-      props.navigation.navigate('AuthLoading');
-    }
-  }, [auth.info]);
-
-  useEffect(() => {
-    if (auth.error && auth.error.msg && pageActive.current) {
-      pageActive.current = false;
-      setLoading(false);
-      Alert.alert(language.alert, auth.error.msg);
-    }
-  }, [auth.error, auth.error.msg]);
-
-  useEffect(() => {
-    if (auth.refererInfo) {
-      let regData = auth.refererInfo.regData;
-      regData.refererInfo = {
-        amount: auth.refererInfo.amount,
-        refererUid: auth.refererInfo.refererUid,
-        walletBalance: auth.refererInfo.walletBalance
-      };
-      uploadProfile(regData);
-    }
-  }, [auth.refererInfo]);
 
   useEffect(() => {
     if (cars) {
@@ -59,33 +26,62 @@ export default function RegistrationPage(props) {
     }
   }, [cars]);
 
-  const uploadProfile = (regData) => {
-    if(regData.usertype == 'driver'){
-        dispatch(addProfile(regData));
-    }else{
-      dispatch(addProfile(regData));
-    }
-  };
-
   const clickRegister = async (regData) => {
-    pageActive.current = true;
     setLoading(true);
-    if (regData.refererId && regData.refererId.length > 0) {
-      dispatch(validateReferer(regData));
-    } else {
-      uploadProfile(regData)
-    }
+    checkUserExists(regData).then((res)=>{
+      if(res.users && res.users.length>0){
+        setLoading(false);
+        Alert.alert(language.alert,language.user_exists);
+      }
+      else if(res.error){
+        setLoading(false);
+        Alert.alert(language.alert,language.email_or_mobile_issue);
+      }
+      else{
+        if (regData.referralId && regData.referralId.length > 0) {
+          validateReferer(regData.referralId).then((referralInfo)=>{
+            if (referralInfo.uid) {
+              emailSignUp({...regData, signupViaReferral: referralInfo.uid},'app').then((res)=>{
+                setLoading(false);
+                if(res.uid){
+                  Alert.alert(language.alert,language.account_create_successfully);
+                  props.navigation.navigate('Login');
+                }else{
+                  setCommonAlert({ open: true, msg: language.reg_error });
+                  Alert.alert(language.alert,language.reg_error);
+                }
+              })
+            }else{
+              setLoading(false);
+              Alert.alert(language.alert,language.referer_not_found)
+            }
+          }).catch((error)=>{
+            setLoading(false);
+            Alert.alert(language.alert,language.referer_not_found)
+          });
+        } else {
+          emailSignUp(regData,'app').then((res)=>{
+            setLoading(false);
+            if(res.uid){
+              Alert.alert(language.alert,language.account_create_successfully);
+              props.navigation.navigate('Login');
+            }else{
+              setCommonAlert({ open: true, msg: language.reg_error });
+              Alert.alert(language.alert,language.reg_error);
+            }
+          })
+        }
+      }
+    });
   }
 
   return (
     <View style={styles.containerView}>
       {carTypes?
       <Registration
-        reqData={reqData ? reqData : {}}
         cars={carTypes}
         onPressRegister={(regData) => clickRegister(regData)}
-        onPress={() => { clickRegister() }}
-        onPressBack={() => { props.navigation.goBack(); dispatch(signOut()) }}
+        onPressBack={() => { props.navigation.goBack() }}
         loading={loading}>
       </Registration>
       :null}

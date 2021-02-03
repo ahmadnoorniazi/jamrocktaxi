@@ -15,13 +15,13 @@ export default async function GetPushToken() {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
+      Alert.alert(language.alert,language.push_error_1);
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
     console.log(token);
   } else {
-    alert('Must use physical device for Push Notifications');
+    Alert.alert(language.alert,language.push_error_2);
   }
 
   if (Platform.OS === 'android') {

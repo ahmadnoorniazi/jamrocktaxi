@@ -13,6 +13,7 @@ import {
     cloud_function_server_url,
     language
 } from 'config';
+import { RequestPushMsg } from '../other/NotificationFunctions';
 
 export const fetchPaymentMethods = () => (dispatch) => (firebase) => {
 
@@ -56,6 +57,53 @@ export const clearMessage = () => (dispatch) => (firebase) => {
 };
 
 
+export const addToWallet = (uid, amount) => (dispatch) => (firebase) => {
+    const {
+        walletBalRef,
+        walletHistoryRef,
+        singleUserRef,
+    } = firebase;
+
+    dispatch({
+        type: UPDATE_WALLET_BALANCE,
+        payload: null
+    });
+
+    singleUserRef(uid).once("value", snapshot => {
+        if (snapshot.val()) {
+            let walletBalance = snapshot.val().walletBalance;
+            walletBalance = walletBalance + amount;
+            let details = {
+                type: 'Credit',
+                amount: amount,
+                date: new Date().toString(),
+                txRef: 'AdminCredit'
+            }
+            walletBalRef(uid).set(walletBalance).then(() => {
+                walletHistoryRef(uid).push(details).then(()=>{
+                    dispatch({
+                        type: UPDATE_WALLET_BALANCE_SUCCESS,
+                        payload: language.wallet_updated
+                    });
+                }).catch(error=>{
+                    dispatch({
+                        type: UPDATE_WALLET_BALANCE_FAILED,
+                        payload: error.code + ": " + error.message,
+                    });            
+                })
+                RequestPushMsg(snapshot.val().pushToken, language.notification_title, language.wallet_updated);
+            }).catch(error=>{
+                dispatch({
+                    type: UPDATE_WALLET_BALANCE_FAILED,
+                    payload: error.code + ": " + error.message,
+                });
+            });
+            
+        }
+    });
+};
+
+
 export const updateWalletBalance = (balance, details) => (dispatch) => (firebase) => {
 
     const {
@@ -84,6 +132,7 @@ export const updateWalletBalance = (balance, details) => (dispatch) => (firebase
                         type: UPDATE_WALLET_BALANCE_SUCCESS,
                         payload: language.wallet_updated
                     });
+                    RequestPushMsg(snapshot.val().pushToken, language.notification_title, language.wallet_updated);
                     if(details.type == 'Withdraw'){
                         withdrawRef.push({
                             uid : uid,

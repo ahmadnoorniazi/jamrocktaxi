@@ -37,7 +37,7 @@ export const getEstimate = (bookingData) => (dispatch) => (firebase) => {
           bookLater: bookingData.bookLater,
           bookingDate: bookingData.bookingDate,
           carDetails:bookingData.carDetails,
-          distance: res.distance,
+          estimateDistance: res.distance,
           fareCost: fareCalculation ? parseFloat(fareCalculation.totalCost).toFixed(2) : 0,
           estimateFare: fareCalculation ? parseFloat(fareCalculation.grandTotal).toFixed(2) : 0,
           estimateTime:res.duration,

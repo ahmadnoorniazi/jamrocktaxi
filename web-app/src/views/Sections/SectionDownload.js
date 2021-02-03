@@ -7,11 +7,13 @@ import GridContainer from "components/Grid/GridContainer.js";
 import GridItem from "components/Grid/GridItem.js";
 // core components
 import styles from "assets/jss/material-kit-react/views/componentsSections/downloadStyle.js";
-import { language, features } from "config";
+import { language } from "config";
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(styles);
 
 export default function SectionDownload() {
+  const settings = useSelector(state => state.settingsdata.settings);
   const classes = useStyles();
   return (
     <div className={classes.section}>
@@ -22,9 +24,13 @@ export default function SectionDownload() {
             <img className={classes.triobanner} src={require("../../assets/img/triobanner.png")} alt="App Banner" />
           </GridItem>
           <GridItem xs={12} sm={8} md={6} style={{paddingTop:30}}>
-            <a href={features.AppleStoreLink}><img src="https://dev.exicube.com/images/appstore.png" alt="Apple Store Link"/></a>
+            {settings && settings.AppleStoreLink?
+            <a href={settings.AppleStoreLink}><img src="https://dev.exicube.com/images/appstore.png" alt="Apple Store Link"/></a>
+            :null}
             <span style={{marginRight: '5px'}}></span>
-            <a href={features.PlayStoreLink}><img src="https://dev.exicube.com/images/playstore.png" alt="Playstore Link"/></a>
+            {settings && settings.PlayStoreLink?
+            <a href={settings.PlayStoreLink}><img src="https://dev.exicube.com/images/playstore.png" alt="Playstore Link"/></a>
+            :null}
           </GridItem>
         </GridContainer>
 

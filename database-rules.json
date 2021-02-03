@@ -2,7 +2,7 @@
     "rules": {
         "cancel_reason": {
             ".read": "auth != null",
-            ".write": false
+            ".write": "root.child('users').child(auth.uid).child('usertype').val() === 'admin'"
         },
         "notifications": {
             ".read": "root.child('users').child(auth.uid).child('usertype').val() === 'admin'",
@@ -10,10 +10,6 @@
         },
         "settings": {
             ".read": "true",
-            ".write": "root.child('users').child(auth.uid).child('usertype').val() === 'admin'"
-        },
-        "referral": {
-            ".read": "auth != null",
             ".write": "root.child('users').child(auth.uid).child('usertype').val() === 'admin'"
         },
         "offers": {
@@ -40,7 +36,7 @@
         },
         "users": {
             ".read": "auth != null",
-            ".write": "root.child('users').child(auth.uid).child('usertype').val() === 'admin'",
+            ".write": "root.child('users').child(auth.uid).child('usertype').val() === 'admin' || root.child('users').child(auth.uid).child('usertype').val() === 'fleetadmin'",
             "$uid": {
                 ".write": "auth != null && auth.uid===$uid",
                 "$usernode": {
@@ -48,9 +44,9 @@
                 }
             },
             ".indexOn": [
-                "driverActiveStatus",
                 "queue",
-                "referralId"
+                "referralId",
+                "fleetadmin"
             ]
         },
         "withdraws": {

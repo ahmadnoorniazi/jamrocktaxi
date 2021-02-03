@@ -367,7 +367,7 @@ export default function PaymentDetails(props) {
               <Text style={{ color: colors.DULL_RED, textAlign: 'left', lineHeight: 45, fontSize: 16 }}>- {settings.symbol} {payDetails ? payDetails.usedWalletMoney ? parseFloat(payDetails.usedWalletMoney).toFixed(2) : '0.00' : '0.00'}</Text>
             </View> : null}
 
-          {userdata && userdata.usertype == 'rider' && settings.wallet ?
+          {userdata && userdata.usertype == 'rider' ?
             <View style={{ flex: 1 }}>
               <CheckBox
                 center
@@ -407,16 +407,14 @@ export default function PaymentDetails(props) {
           </View>
           :
           <View style={styles.buttonContainer}>
-            {settings.cash && booking.cashPaymentEnabled?
-              <TouchableOpacity
-                style={styles.buttonWrapper}
-                onPress={() => {
-                  doPayment('cash');
-                }}>
-                <Text style={styles.buttonTitle}>{language.pay_cash}</Text>
-              </TouchableOpacity>
-              : null}
-            {providers && !booking.booking_type_web?
+            <TouchableOpacity
+              style={styles.buttonWrapper}
+              onPress={() => {
+                doPayment('cash');
+              }}>
+              <Text style={styles.buttonTitle}>{language.pay_cash}</Text>
+            </TouchableOpacity>
+            {providers?
               <TouchableOpacity
                 style={styles.cardPayBtn}
                 onPress={() => {
@@ -424,7 +422,7 @@ export default function PaymentDetails(props) {
                 }}>
                 <Text style={styles.buttonTitle}>{userdata && userdata.usertype == 'rider' ? language.payWithCard : language.request_payment}</Text>
               </TouchableOpacity>
-              : null}
+            : null}
           </View>
         }
 

@@ -15,38 +15,54 @@ import Background from './Background';
 import { Icon, Button, Header, Input } from 'react-native-elements'
 import { colors } from '../common/theme';
 var { height } = Dimensions.get('window');
-import { language } from 'config';
+import { 
+    language,
+    countries, 
+    default_country_code,
+    features
+} from 'config';
 import RadioForm from 'react-native-simple-radio-button';
 import RNPickerSelect from 'react-native-picker-select';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function Registration(props) {
-
-    const INITIAL_STATE = {
+    const [state, setState] = useState({
         usertype: 'rider',
         firstName: '',
         lastName: '',
-        email: props.reqData ? props.reqData.profile.email : '',
-        mobile: props.reqData ? props.reqData.profile.mobile : '',
-        refererId: '',
+        email: '',
+        mobile: '',
+        referralId: '',
         vehicleNumber: '',
+        vehicleMake:'',
         vehicleModel: '',
         carType: props.cars && props.cars.length > 0? props.cars[0].value: '',
         bankAccount: '',
         bankCode: '',
         bankName: '',
-        licenseImage:null
-    }
-
-    const [state, setState] = useState(INITIAL_STATE);
+        licenseImage:null,
+        other_info:'',
+        password:''  
+    });
     const [role, setRole] = useState(0);
     const [capturedImage, setCapturedImage] = useState(null);
+    const [confirmpassword,setConfirmPassword] = useState('');
+    const [countryCode,setCountryCode] = useState("+" + default_country_code.phone);
+    const [mobileWithoutCountry, setMobileWithoutCountry] = useState('');
 
     const radio_props = [
-        { label: language.rider, value: 0 },
-        { label: language.driver, value: 1 }
+        { label: language.no, value: 0 },
+        { label: language.yes, value: 1 }
     ];
+
+    const formatCountries = () => {
+        let arr = [];
+        for (let i = 0; i < countries.length; i++) {
+            arr.push({ label: countries[i].label + " (+" + countries[i].phone + ")", value: "+" + countries[i].phone, key: countries[i].code });
+        }
+        return arr;
+    }
 
     CapturePhoto = async () => {
         const { status: cameraStatus } = await Permissions.askAsync(Permissions.CAMERA)
@@ -98,19 +114,73 @@ export default function Registration(props) {
         }
     }
 
+    validateMobile = () => {
+        let mobileValid = true;
+        if(mobileWithoutCountry.length<6){
+            mobileValid = false;
+            Alert.alert(language.alert,language.mobile_no_blank_error);
+        }
+        return mobileValid;
+    }
+
+    validatePassword = (complexity) => {
+        let passwordValid = true;
+        const regx1 = /^([a-zA-Z0-9@*#]{8,15})$/
+        const regx2 = /(?=^.{6,10}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&amp;*()_+}{&quot;:;'?/&gt;.&lt;,])(?!.*\s).*$/
+        if (complexity == 'any') {
+            passwordValid = state.password.length >= 1;
+            if (!passwordValid) {
+                Alert.alert(language.alert,language.password_blank_messege);
+            }
+        }
+        else if (complexity == 'alphanumeric') {
+            passwordValid = regx1.test(state.password);
+            if (!passwordValid) {
+                Alert.alert(language.alert,language.password_alphaNumeric_check);
+            }
+        }
+        else if (complexity == 'complex') {
+            passwordValid = regx2.test(password);
+            if (!passwordValid) {
+                Alert.alert(language.alert,language.password_complexity_check);
+            }
+        }
+        else if (state.password != confirmpassword){
+            passwordValid = false;
+            if (!passwordValid) {
+                Alert.alert(language.alert,language.confrim_password_not_match_err);
+            }
+        }
+        return passwordValid
+    }
+
 
     //register button press for validation
     onPressRegister = () => {
         const { onPressRegister } = props;
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        const emailValid = re.test(state.email);
-        if(emailValid && 
-            state.firstName.length>0 && state.lastName.length >0 && state.mobile.length> 6 &&
-                ((state.usertype == 'driver' && state.licenseImage !=null && state.vehicleModel.length>1 && state.vehicleNumber.length > 1) || state.usertype == 'rider')
-        ){
-            onPressRegister(state);
+        if(re.test(state.email)){
+            if(state.usertype == 'driver' && state.licenseImage == null){
+                Alert.alert(language.alert,language.proper_input_licenseimage);
+            }else{
+                if((state.usertype == 'driver' && state.vehicleNumber.length > 1) || state.usertype == 'rider'){
+                    if(state.firstName.length>0 && state.lastName.length >0){
+                        if(validatePassword('alphanumeric')){
+                            if(validateMobile()){
+                                onPressRegister(state);
+                            }else{
+                                Alert.alert(language.alert,language.mobile_no_blank_error);
+                            }
+                        }
+                    }else{
+                        Alert.alert(language.alert,language.proper_input_name);
+                    }
+                }else{
+                    Alert.alert(language.alert,language.proper_input_vehicleno);
+                }
+            }
         }else{
-            Alert.alert(language.alert,language.proper_input);
+            Alert.alert(language.alert,language.proper_email);
         }
     }
 
@@ -123,45 +193,19 @@ export default function Registration(props) {
                 containerStyle={styles.headerContainerStyle}
                 innerContainerStyles={styles.headerInnerContainer}
             />
-            <ScrollView style={styles.scrollViewStyle}>
+            <ScrollView style={styles.scrollViewStyle} showsVerticalScrollIndicator={false}>
                 <View style={styles.logo}>
                     <Image source={require('../../assets/images/logo165x90white.png')} />
                 </View>
                 <KeyboardAvoidingView behavior={Platform.OS == 'ios' ? "padding" : "padding"} style={styles.form}>
                     <View style={styles.containerStyle}>
                         <Text style={styles.headerStyle}>{language.registration_title}</Text>
-
                         <View style={styles.textInputContainerStyle}>
                             <Icon
                                 name='user'
                                 type='font-awesome'
                                 color={colors.WHITE}
-                                size={30}
-                                containerStyle={styles.iconContainer}
-                            />
-                            <RadioForm
-                                radio_props={radio_props}
-                                initial={role}
-                                formHorizontal={true}
-                                labelHorizontal={true}
-                                buttonColor={colors.WHITE}
-                                labelColor={colors.WHITE}
-                                style={{marginTop:20,marginLeft:20}}
-                                labelStyle ={{marginRight: 40}}
-                                selectedButtonColor={colors.WHITE}
-                                selectedLabelColor={colors.WHITE}
-                                onPress={(value) => {
-                                    setRole(value);
-                                    setUserType(value);
-                                }}
-                            />
-                        </View>
-                        <View style={styles.textInputContainerStyle}>
-                            <Icon
-                                name='user'
-                                type='font-awesome'
-                                color={colors.WHITE}
-                                size={30}
+                                size={24}
                                 containerStyle={styles.iconContainer}
                             />
                             <Input
@@ -183,7 +227,7 @@ export default function Registration(props) {
                                 name='user'
                                 type='font-awesome'
                                 color={colors.WHITE}
-                                size={30}
+                                size={24}
                                 containerStyle={styles.iconContainer}
                             />
                             <Input
@@ -199,39 +243,15 @@ export default function Registration(props) {
                                 containerStyle={styles.textInputStyle}
                             />
                         </View>
-
-
-                        <View style={styles.textInputContainerStyle}>
-                            <Icon
-                                name='mobile-phone'
-                                type='font-awesome'
-                                color={colors.WHITE}
-                                size={40}
-                                containerStyle={styles.iconContainer}
-                            />
-                            <Input
-                                editable={props.reqData.profile.mobile ? false : true}
-                                underlineColorAndroid={colors.TRANSPARENT}
-                                placeholder={language.mobile_no_placeholder}
-                                placeholderTextColor={colors.WHITE}
-                                value={state.mobile}
-                                keyboardType={'number-pad'}
-                                inputStyle={styles.inputTextStyle}
-                                onChangeText={(text) => { setState({ ...state, mobile: text }) }}
-                                inputContainerStyle={styles.inputContainerStyle}
-                                containerStyle={styles.textInputStyle}
-                            />
-                        </View>
                         <View style={styles.textInputContainerStyle}>
                             <Icon
                                 name='envelope-o'
                                 type='font-awesome'
                                 color={colors.WHITE}
-                                size={23}
+                                size={18}
                                 containerStyle={styles.iconContainer}
                             />
                             <Input
-                                editable={props.reqData.profile.email ? false : true}
                                 underlineColorAndroid={colors.TRANSPARENT}
                                 placeholder={language.email_placeholder}
                                 placeholderTextColor={colors.WHITE}
@@ -248,30 +268,151 @@ export default function Registration(props) {
                                 name='lock'
                                 type='font-awesome'
                                 color={colors.WHITE}
-                                size={30}
+                                size={24}
+                                containerStyle={styles.iconContainer}
+                            />
+                            <Input
+                                underlineColorAndroid={colors.TRANSPARENT}
+                                placeholder={language.password_placeholder}
+                                placeholderTextColor={colors.WHITE}
+                                value={state.password}
+                                inputStyle={styles.inputTextStyle}
+                                onChangeText={(text) => setState({ ...state, password: text })}
+                                inputContainerStyle={styles.inputContainerStyle}
+                                containerStyle={styles.textInputStyle}
+                                secureTextEntry={true}
+                            />
+                        </View>
+                        <View style={styles.textInputContainerStyle}>
+                            <Icon
+                                name='lock'
+                                type='font-awesome'
+                                color={colors.WHITE}
+                                size={24}
+                                containerStyle={styles.iconContainer}
+                            />
+                            <Input
+                                underlineColorAndroid={colors.TRANSPARENT}
+                                placeholder={language.confrim_password_placeholder}
+                                placeholderTextColor={colors.WHITE}
+                                value={confirmpassword}
+                                inputStyle={styles.inputTextStyle}
+                                onChangeText={(text) => setConfirmPassword(text)}
+                                inputContainerStyle={styles.inputContainerStyle}
+                                containerStyle={styles.textInputStyle}
+                                secureTextEntry={true}
+                            />
+                        </View>
+                        <View style={[styles.textInputContainerStyle,{marginBottom:10}]}>
+                            <Icon
+                                name='mobile-phone'
+                                type='font-awesome'
+                                color={colors.WHITE}
+                                size={36}
+                                containerStyle={[styles.iconContainer,{marginTop:10}]}
+                            />
+                            <RNPickerSelect
+                                placeholder={{ label: language.select_country, value: language.select_country }}
+                                value={countryCode}
+                                useNativeAndroidPickerStyle={true}
+                                style={{
+                                    inputIOS: styles.pickerStyle,
+                                    inputAndroid: styles.pickerStyle,
+                                }}
+                                onValueChange={
+                                    (text) => {
+                                        setCountryCode(text);                                     
+                                        let formattedNum = mobileWithoutCountry.replace(/ /g, '');
+                                        formattedNum = text + formattedNum.replace(/-/g, '');
+                                        setState({ ...state, mobile: formattedNum })
+                                    }
+                                }
+                                items={formatCountries()}
+                                disabled={features.AllowCountrySelection ? false : true}
+                            />
+                        </View>
+                        <View style={styles.textInputContainerStyle}>
+                            <Icon
+                                name='mobile-phone'
+                                type='font-awesome'
+                                color={colors.WHITE}
+                                size={36}
+                                containerStyle={styles.iconContainer}
+                            />
+                            <Input
+                                underlineColorAndroid={colors.TRANSPARENT}
+                                placeholder={language.mobile_no_placeholder}
+                                placeholderTextColor={colors.WHITE}
+                                value={mobileWithoutCountry}
+                                keyboardType={'number-pad'}
+                                inputStyle={styles.inputTextStyle}
+                                onChangeText={
+                                    (text) => {
+                                        setMobileWithoutCountry(text)
+                                        let formattedNum = text.replace(/ /g, '');
+                                        formattedNum = countryCode + formattedNum.replace(/-/g, '');
+                                        setState({ ...state, mobile: formattedNum })
+                                    }
+                                }     
+                                inputContainerStyle={styles.inputContainerStyle}
+                                containerStyle={styles.textInputStyle}
+                            />
+                        </View>
+                        <View style={styles.textInputContainerStyle}>
+                            <Icon
+                                name='lock'
+                                type='font-awesome'
+                                color={colors.WHITE}
+                                size={24}
                                 containerStyle={styles.iconContainer}
                             />
 
                             <Input
                                 editable={true}
                                 underlineColorAndroid={colors.TRANSPARENT}
-                                placeholder={language.referrer_id_placeholder}
+                                placeholder={language.referral_id_placeholder}
                                 placeholderTextColor={colors.WHITE}
-                                value={state.re}
+                                value={state.referralId}
                                 inputStyle={styles.inputTextStyle}
-                                onChangeText={(text) => { setState({ ...state, refererId: text }) }}
+                                onChangeText={(text) => { setState({ ...state, referralId: text }) }}
                                 inputContainerStyle={styles.inputContainerStyle}
                                 containerStyle={styles.textInputStyle}
                             />
                         </View>
-                        {state.usertype == 'driver' ? 
                         <View style={styles.textInputContainerStyle}>
                             <Icon
-                                name='ios-car'
-                                type={'ionicon'}
+                                name='user'
+                                type='font-awesome'
                                 color={colors.WHITE}
-                                size={25}
-                                containerStyle={styles.iconContainer}
+                                size={24}
+                                containerStyle={[styles.iconContainer,{paddingTop:15}]}
+                            />
+                            <Text style={{marginLeft:20,marginTop:0,color:colors.WHITE}}>{language.register_as_driver}</Text>
+                            <RadioForm
+                                radio_props={radio_props}
+                                initial={role}
+                                formHorizontal={true}
+                                labelHorizontal={true}
+                                buttonColor={colors.WHITE}
+                                labelColor={colors.WHITE}
+                                style={{marginLeft:10}}
+                                labelStyle ={{marginRight: 20}}
+                                selectedButtonColor={colors.WHITE}
+                                selectedLabelColor={colors.WHITE}
+                                onPress={(value) => {
+                                    setRole(value);
+                                    setUserType(value);
+                                }}
+                            />
+                        </View>
+                        {state.usertype == 'driver' ? 
+                        <View style={[styles.textInputContainerStyle,{marginTop:10,marginBottom:10}]}>
+                            <Icon
+                                name='car'
+                                type='font-awesome'
+                                color={colors.WHITE}
+                                size={18}
+                                containerStyle={[styles.iconContainer,{paddingTop:20}]}
                             />
                             {props.cars?
                                 <RNPickerSelect
@@ -281,9 +422,9 @@ export default function Registration(props) {
                                     style={{
                                         inputIOS: styles.pickerStyle,
                                         placeholder: {
-                                            color: 'white',
+                                            color: 'white'
                                         },
-                                        inputAndroid: styles.pickerStyle,
+                                        inputAndroid: styles.pickerStyle
                                     }}
                                     onValueChange={(value) => setState({ ...state, carType: value })}
                                     items={props.cars}
@@ -294,10 +435,10 @@ export default function Registration(props) {
                         {state.usertype == 'driver' ? 
                         <View style={styles.textInputContainerStyle}>
                             <Icon
-                                name='ios-car'
-                                type={'ionicon'}
+                                name='car'
+                                type='font-awesome'
                                 color={colors.WHITE}
-                                size={25}
+                                size={18}
                                 containerStyle={styles.iconContainer}
                             />
                             <Input
@@ -305,6 +446,28 @@ export default function Registration(props) {
                                 returnKeyType={'next'}
                                 underlineColorAndroid={colors.TRANSPARENT}
                                 placeholder={language.vehicle_model_name}
+                                placeholderTextColor={colors.WHITE}
+                                value={state.vehicleMake}
+                                inputStyle={styles.inputTextStyle}
+                                onChangeText={(text) => { setState({ ...state, vehicleMake: text }) }}
+                                inputContainerStyle={styles.inputContainerStyle}
+                                containerStyle={styles.textInputStyle}
+                            />
+                        </View>
+                        :null}
+                        {state.usertype == 'driver' ? 
+                        <View style={styles.textInputContainerStyle}>
+                            <Icon
+                                name='car'
+                                type='font-awesome'
+                                color={colors.WHITE}
+                                size={18}
+                                containerStyle={styles.iconContainer}
+                            />
+                            <Input
+                                editable={true}
+                                underlineColorAndroid={colors.TRANSPARENT}
+                                placeholder={language.vehicle_model_no}
                                 placeholderTextColor={colors.WHITE}
                                 value={state.vehicleModel}
                                 inputStyle={styles.inputTextStyle}
@@ -317,10 +480,10 @@ export default function Registration(props) {
                         {state.usertype == 'driver' ? 
                         <View style={styles.textInputContainerStyle}>
                             <Icon
-                                name='numeric'
-                                type={'material-community'}
+                                name='car'
+                                type='font-awesome'
                                 color={colors.WHITE}
-                                size={20}
+                                size={18}
                                 containerStyle={styles.iconContainer}
                             />
                             <Input
@@ -331,6 +494,28 @@ export default function Registration(props) {
                                 value={state.vehicleNumber}
                                 inputStyle={styles.inputTextStyle}
                                 onChangeText={(text) => { setState({ ...state, vehicleNumber: text }) }}
+                                inputContainerStyle={styles.inputContainerStyle}
+                                containerStyle={styles.textInputStyle}
+                            />
+                        </View>
+                        :null}
+                        {state.usertype == 'driver' ? 
+                        <View style={styles.textInputContainerStyle}>
+                            <Icon
+                                name='car'
+                                type='font-awesome'
+                                color={colors.WHITE}
+                                size={18}
+                                containerStyle={styles.iconContainer}
+                            />
+                            <Input
+                                editable={true}
+                                underlineColorAndroid={colors.TRANSPARENT}
+                                placeholder={language.other_info}
+                                placeholderTextColor={colors.WHITE}
+                                value={state.other_info}
+                                inputStyle={styles.inputTextStyle}
+                                onChangeText={(text) => { setState({ ...state, other_info: text }) }}
                                 inputContainerStyle={styles.inputContainerStyle}
                                 containerStyle={styles.textInputStyle}
                             />
@@ -415,9 +600,9 @@ export default function Registration(props) {
                                     <View>
                                         {
                                             state.imageValid ?
-                                                <Text style={styles.capturePhotoTitle}>{language.upload_driving_lisence}</Text>
+                                                <Text style={styles.capturePhotoTitle}>{language.upload_driving_license}</Text>
                                                 :
-                                                <Text style={styles.errorPhotoTitle}>{language.upload_driving_lisence}</Text>
+                                                <Text style={styles.errorPhotoTitle}>{language.upload_driving_license}</Text>
                                         }
 
                                     </View>
@@ -475,7 +660,7 @@ const styles = {
         marginLeft: 10,
     },
     iconContainer: {
-        paddingTop: 8
+        paddingBottom: 20
     },
     gapView: {
         height: 40,
@@ -503,7 +688,8 @@ const styles = {
         width: 200,
         fontSize: 15,
         height: 40,
-        marginLeft: 20,
+        marginLeft: Platform.OS=='ios'? 20:10,
+        marginTop:Platform.OS=='ios'? 0:10, 
         borderBottomWidth: 1,
         borderBottomColor: colors.WHITE,
     },
@@ -539,7 +725,9 @@ const styles = {
         alignItems: "center",
         marginLeft: 20,
         marginRight: 20,
-        padding: 15,
+        paddingLeft: 15,
+        paddingRight:15,
+        paddingTop:10,
     },
     headerStyle: {
         fontSize: 18,

@@ -65,6 +65,7 @@ export const acceptTask = (userAuthData,task) => (dispatch) => (firebase) => {
         task.driver_token = profile.pushToken;
         task.vehicle_number = profile.vehicleNumber;
         task.driverRating = profile.ratings ? profile.ratings.userrating : "0";
+        task.fleetadmin = profile.fleetadmin?profile.fleetadmin:'';
         task.status = "ACCEPTED";
 
         userAuthData.profile = profile;

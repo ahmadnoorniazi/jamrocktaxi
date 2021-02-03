@@ -60,11 +60,11 @@ const MyProfile = () => {
   useEffect(() => {
     if (auth.info && auth.info.profile) {
       setData({
-        firstName:auth.info.profile.firstName,
-        lastName:auth.info.profile.lastName,
-        email:auth.info.profile.email,
-        mobile:auth.info.profile.mobile,
-        loginType:auth.info.email?'email':null,
+        firstName: !auth.info.profile.firstName || auth.info.profile.firstName === ' '? '' : auth.info.profile.firstName,
+        lastName: !auth.info.profile.lastName || auth.info.profile.lastName === ' '? '' : auth.info.profile.lastName,
+        email: !auth.info.profile.email || auth.info.profile.email === ' '? '' : auth.info.profile.email,
+        mobile: !auth.info.profile.mobile || auth.info.profile.mobile === ' '? '' : auth.info.profile.mobile,
+        loginType:auth.info.profile.loginType?'social':'email',
         usertype:auth.info.profile.usertype,
         uid:auth.info.uid
       });
@@ -153,7 +153,7 @@ const MyProfile = () => {
               autoComplete="mobile"
               onChange={updateData}
               value={data.mobile}
-              disabled={data.loginType==='email'?false:true}
+              disabled={data.loginType==='email'?true:false}
             />
             <TextField
               variant="outlined"

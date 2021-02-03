@@ -4,17 +4,17 @@ import {
   FETCH_DRIVERS__EARNING_FAILED,
 } from "../store/types";
 
-export const fetchDriverEarnings = () => (dispatch) => (firebase) => {
+export const fetchDriverEarnings = (uid,role) => (dispatch) => (firebase) => {
 
   const {
-    bookingRef
+    bookingListRef
   } = firebase;
 
   dispatch({
     type: FETCH_DRIVERS_EARNING,
     payload: null
   });
-  bookingRef.on("value", snapshot => {
+  bookingListRef(uid,role).on("value", snapshot => {
     if (snapshot.val()) {
       const mainArr = snapshot.val();
       var monthsName = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

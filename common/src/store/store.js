@@ -10,7 +10,6 @@ import { bookingreducer as bookingdata } from "../reducers/bookingreducer";
 import { cancelreasonreducer as cancelreasondata } from "../reducers/cancelreasonreducer";
 import { promoreducer as promodata } from "../reducers/promoreducer";
 import { usersreducer as usersdata } from "../reducers/usersreducer";
-import { referralreducer as referraldata } from "../reducers/referralreducer";
 import { notificationreducer as notificationdata } from "../reducers/notificationreducer";
 import { driverearningreducer as driverearningdata } from '../reducers/driverearningreducer';
 import { earningreportsreducer as earningreportsdata } from '../reducers/earningreportsreducer';
@@ -32,7 +31,6 @@ const reducers = combineReducers({
   cancelreasondata,
   promodata,
   usersdata,
-  referraldata,
   notificationdata,
   driverearningdata,
   earningreportsdata,
@@ -46,14 +44,6 @@ const reducers = combineReducers({
   gpsdata
 });
 
-/*
-let middleware = [];
-if (process.env.NODE_ENV === 'development') {
-  middleware = [...middleware, thunk, logger];
-} else {
-  middleware = [...middleware, thunk];
-}*/
-
-let middleware = [thunk];
+let middleware = [thunk,logger];
 
 export const store = createStore(reducers, {}, applyMiddleware(...middleware));

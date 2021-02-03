@@ -19,7 +19,8 @@ export default function CarTypes() {
     { title: language.rate_per_km, field: 'rate_per_kilometer', type: 'numeric' },
     { title: language.rate_per_hour, field: 'rate_per_hour', type: 'numeric' },
     { title: language.min_fare, field: 'min_fare', type: 'numeric' },
-    { title: language.convenience_fee_percent, field: 'convenience_fees', type: 'numeric' }
+    { title: language.convenience_fee_percent, field: 'convenience_fees', type: 'numeric' },
+    { title: language.extra_info, field: 'extra_info' }
   ];
   const [data, setData] = useState([]);
   const cartypes = useSelector(state => state.cartypes);

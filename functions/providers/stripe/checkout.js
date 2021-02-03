@@ -37,10 +37,10 @@ module.exports.render_checkout = function(request, response){
         (err, session) => {
             if (err) {
                 response.send({ "error": err });
-            } else if (session) {
+            } else if (session) {    
                 response.send(
                     templateLib.getTemplate(stripe_public_key,session.id)
-                );
+                );               
             } else {
                 response.send({ "error": "Some other problem" })
             }

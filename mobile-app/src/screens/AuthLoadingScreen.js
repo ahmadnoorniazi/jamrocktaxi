@@ -14,18 +14,6 @@ import { FirebaseContext } from 'common/src';
 
 export default function AuthLoadingScreen(props) {
   const { api } = useContext(FirebaseContext);
-  const {
-    fetchBookings,
-    fetchCancelReasonsApp,
-    signOut,
-    fetchPaymentMethods,
-    fetchDrivers,
-    fetchTasks,
-    fetchPromos,
-    clearLoginError,
-    monitorQueue
-  } = api;
-
   const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
 
@@ -35,46 +23,43 @@ export default function AuthLoadingScreen(props) {
         let role = auth.info.profile.usertype;
         if (auth.info.profile.approved) {
           if (role === 'rider') {
-            dispatch(fetchDrivers());
-            dispatch(fetchBookings(auth.info.uid, role));
-            dispatch(fetchCancelReasonsApp());
-            dispatch(fetchPaymentMethods());
-            dispatch(fetchPromos());
+            dispatch(api.fetchDrivers());
+            dispatch(api.fetchBookings(auth.info.uid, role));
+            dispatch(api.fetchCancelReasons());
+            dispatch(api.fetchPaymentMethods());
+            dispatch(api.fetchPromos());
             props.navigation.navigate('RiderRoot');
           } else if (role === 'driver') {
-            dispatch(monitorQueue());
-            dispatch(fetchBookings(auth.info.uid, role));
-            dispatch(fetchPaymentMethods());
-            dispatch(fetchTasks());
+            dispatch(api.monitorProfileChanges());
+            dispatch(api.fetchBookings(auth.info.uid, role));
+            dispatch(api.fetchPaymentMethods());
+            dispatch(api.fetchTasks());
             props.navigation.navigate('DriverRoot');
-          } else if (role === 'admin') {
+          } else if (role === 'admin' || role == 'fleetadmin') {
             props.navigation.navigate('AdminRoot');
           }
           else {
             Alert.alert(language.alert, language.not_valid_user_type);
-            dispatch(signOut());
+            dispatch(api.signOut());
             props.navigation.navigate('Intro');
           }
         }
         else {
           Alert.alert(language.alert, language.require_approval);
-          dispatch(signOut());
+          dispatch(api.signOut());
           props.navigation.navigate('Intro');
         }
-      } else {
-        var data = {};
-        data.profile = {
-          email: auth.info.email ? auth.info.email : '',
-          mobile: auth.info.phoneNumber ? auth.info.phoneNumber.replace('"', '') : '',
-        };
-        props.navigation.navigate("Reg", { requireData: data });
+      }else{
+        Alert.alert(language.alert, language.user_issue_contact_admin);
+        dispatch(api.signOut());
+        props.navigation.navigate('Intro');
       }
-    } 
-  }, [auth.info, auth.loading]);
+    }
+  }, [auth.info]);
 
   useEffect(() => {
-    if (auth.error && auth.error.msg && !auth.info) {
-      dispatch(clearLoginError());
+    if (api && auth.error && auth.error.msg && !auth.info) {
+      dispatch(api.clearLoginError());
       props.navigation.navigate('Intro');
     }
   }, [auth.error,auth.error.msg]);

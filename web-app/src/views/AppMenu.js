@@ -38,7 +38,7 @@ function AppMenu() {
   };
 
   let isAdmin = auth.info && auth.info.profile && auth.info.profile.usertype === 'admin';
-
+  let isFleetAdmin = auth.info && auth.info.profile && auth.info.profile.usertype === 'fleetadmin';
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'center', backgroundColor: '#444444' }}>
@@ -77,11 +77,27 @@ function AppMenu() {
         </MenuItem>
         :null}
         {isAdmin?
-        <MenuItem component={Link} to="/users">
+        <MenuItem component={Link} to="/riders">
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
-          <Typography variant="inherit">{language.user}</Typography>
+          <Typography variant="inherit">{language.riders}</Typography>
+        </MenuItem>
+        :null}
+        {isAdmin || isFleetAdmin?
+        <MenuItem component={Link} to="/drivers">
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <Typography variant="inherit">{language.drivers}</Typography>
+        </MenuItem>
+        :null}
+        {isAdmin?
+        <MenuItem component={Link} to="/fleetadmins">
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <Typography variant="inherit">{language.fleetadmins}</Typography>
         </MenuItem>
         :null}
         {isAdmin?
@@ -93,6 +109,14 @@ function AppMenu() {
         </MenuItem>
         :null}
         {isAdmin?
+        <MenuItem component={Link} to="/cancelreasons">
+          <ListItemIcon>
+            <CarIcon />
+          </ListItemIcon>
+          <Typography variant="inherit">{language.cancellation_reasons}</Typography>
+        </MenuItem>
+        :null}
+        {isAdmin?
         <MenuItem component={Link} to="/earningreports">
           <ListItemIcon>
             <MoneyIcon />
@@ -100,12 +124,20 @@ function AppMenu() {
           <Typography variant="inherit">{language.earning_reports}</Typography>
         </MenuItem>
         :null}
-        {isAdmin?
+        {isAdmin || isFleetAdmin?
         <MenuItem component={Link} to="/driverearning">
           <ListItemIcon>
             <MoneyIcon />
           </ListItemIcon>
           <Typography variant="inherit">{language.driver_earning}</Typography>
+        </MenuItem>
+        :null}
+        {isAdmin?
+        <MenuItem component={Link} to="/addtowallet">
+          <ListItemIcon>
+            <MoneyIcon />
+          </ListItemIcon>
+          <Typography variant="inherit">{language.add_to_wallet}</Typography>
         </MenuItem>
         :null}
         {isAdmin?
@@ -122,14 +154,6 @@ function AppMenu() {
             <OfferIcon />
           </ListItemIcon>
           <Typography variant="inherit">{language.promo}</Typography>
-        </MenuItem>
-        :null}
-        {isAdmin?
-        <MenuItem component={Link} to="/referral">
-          <ListItemIcon>
-            <MoneyIcon />
-          </ListItemIcon>
-          <Typography variant="inherit">{language.refferal_bonus}</Typography>
         </MenuItem>
         :null}
         {isAdmin?

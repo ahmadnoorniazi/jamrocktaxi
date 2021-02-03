@@ -1,4 +1,5 @@
 var fs = require('fs');
+const language = require('./config/language.json');
 
 try {
     const data = fs.readFileSync('config/mainconfig.js', 'utf8').replace("export const MainConfig = ", "");
@@ -53,7 +54,7 @@ let appJson = `{
     "expo": {
       "name": "${MainConfig.AppDetails.app_name}",
       "description": "${MainConfig.AppDetails.app_description}",
-      "slug": "${MainConfig.AppDetails.app_name.replace(" ","-").toLowerCase()}",
+      "slug": "${MainConfig.AppDetails.app_name.replace(/ /g,"-").toLowerCase()}",
       "privacy": "public",
       "platforms": [
         "ios",
@@ -84,13 +85,14 @@ let appJson = `{
         "usesAppleSignIn": true,
         "bundleIdentifier": "${MainConfig.AppDetails.app_identifier}",
         "infoPlist": {
-          "NSLocationAlwaysUsageDescription": "This app uses the always location access in the background for improved pickups and dropoffs, customer support and safety purpose.",
-          "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses the always location access in the background for improved pickups and dropoffs, customer support and safety purpose.",
-          "NSLocationWhenInUseUsageDescription": "This app uses the location to find the Cabs near you.",
-          "NSCameraUsageDescription": "This app uses the camera to take your profile picture.",
-          "NSPhotoLibraryUsageDescription": "This app uses Photo Library for uploading your profile picture.",
+          "NSLocationAlwaysUsageDescription": "${language.NSLocationAlwaysUsageDescription}",
+          "NSLocationAlwaysAndWhenInUseUsageDescription": "${language.NSLocationAlwaysAndWhenInUseUsageDescription}",
+          "NSLocationWhenInUseUsageDescription": "${language.NSLocationWhenInUseUsageDescription}",
+          "NSCameraUsageDescription": "${language.NSCameraUsageDescription}",
+          "NSPhotoLibraryUsageDescription": "${language.NSPhotoLibraryUsageDescription}",
           "ITSAppUsesNonExemptEncryption":false,
           "UIBackgroundModes": [
+            "audio",
             "location",
             "fetch"
           ]
@@ -172,3 +174,5 @@ fs.copyFile("assets/bg.jpg", "mobile-app/assets/images/bg.jpg", (err) => {err?co
 fs.copyFile("config/google-services.json", "mobile-app/google-services.json", (err) => {err?console.log("File Copy Error:", err):console.log("google-services.json copied successfully.")});
 
 fs.copyFile("config/GoogleService-Info.plist", "mobile-app/GoogleService-Info.plist", (err) => {err?console.log("File Copy Error:", err):console.log("GoogleService-Info.plist copied successfully.")});
+
+fs.copyFile("config/language.json", "functions/language.json", (err) => {err?console.log("File Copy Error:", err):console.log("Language file copied successfully.")});

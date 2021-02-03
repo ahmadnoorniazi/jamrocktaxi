@@ -34,6 +34,7 @@ export default function IntroScreen(props) {
     } = api;
     const dispatch = useDispatch();
     const auth = useSelector(state => state.auth);
+    const settings = useSelector(state => state.settingsdata.settings);
     const pageActive = useRef(false);
     const fromLogout = props.navigation.getParam('fromLogout');
 
@@ -44,7 +45,7 @@ export default function IntroScreen(props) {
         }
         if (auth.error && auth.error.msg && pageActive.current && auth.error.msg.message !== language.not_logged_in) {
             pageActive.current = false;
-            Alert.alert(language.alert, auth.error.msg.code + ": " + auth.error.msg.message);
+            Alert.alert(language.alert, auth.error.msg.message);
             dispatch(clearLoginError());
         }
     }, [auth.info, auth.error]);
@@ -68,7 +69,7 @@ export default function IntroScreen(props) {
 
     const FbLogin = async () => {
         try {
-            await Facebook.initializeAsync(facebookAppId);
+            await Facebook.initializeAsync({ appId: facebookAppId });
             const {
                 type,
                 token
@@ -100,6 +101,7 @@ export default function IntroScreen(props) {
                 state: csrf,
                 nonce: hashedNonce
             });
+
             pageActive.current = true;
             dispatch(appleSignIn({
                 idToken: applelogincredentials.identityToken,
@@ -117,17 +119,17 @@ export default function IntroScreen(props) {
 
     const onPressLoginEmail = async () => {
         pageActive.current = false;
-        props.navigation.navigate("EmailLogin");
+        props.navigation.navigate("Login");
     }
 
-    const onPressLoginMobile = async () => {
+    const onPressRegister = async () => {
         pageActive.current = false;
-        props.navigation.navigate("MobileLogin");
+        props.navigation.navigate("Reg");
     }
 
 
     const openTerms = async () => {
-        Linking.openURL(features.CompanyTerms).catch(err => console.error("Couldn't load page", err));
+        Linking.openURL(settings.CompanyTerms).catch(err => console.error("Couldn't load page", err));
     }
 
 
@@ -141,12 +143,12 @@ export default function IntroScreen(props) {
             <MaterialButtonDark
                 onPress={onPressLoginEmail}
                 style={styles.materialButtonDark}
-            >{language.email_login}</MaterialButtonDark>
+            >{language.login}</MaterialButtonDark>
             {features.MobileLoginEnabled?
             <MaterialButtonDark
-                onPress={onPressLoginMobile}
+                onPress={onPressRegister}
                 style={styles.materialButtonDark2}
-            >{language.login_title}</MaterialButtonDark>
+            >{language.register}</MaterialButtonDark>
             :null}
             {(Platform.OS == 'ios' && features.AppleLoginEnabled) || features.FacebookLoginEnabled?
             <View style={styles.seperator}>

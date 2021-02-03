@@ -36,8 +36,9 @@ export default function SideMenu(props){
         {name: language.book_your_ride_menu, navigationName: 'Map', icon: 'home', type: 'font-awesome'},
         {name: language.booking_request, navigationName: 'DriverTrips', icon: 'home', type: 'font-awesome'},
         {name: language.my_rides_menu, navigationName: 'RideList', icon: 'car-sports', type: 'material-community'},
-        {name: language.profile_setting_menu, navigationName: 'Profile', icon: 'ios-person-add', type: 'ionicon'},
+        {name: language.incomeText, navigationName: 'MyEarning', icon: 'md-wallet', type: 'ionicon'},
         {name: language.my_wallet_menu, icon: 'account-balance-wallet', navigationName: 'wallet', type: 'MaterialIcons'},
+        {name: language.profile_setting_menu, navigationName: 'Profile', icon: 'ios-person-add', type: 'ionicon'},
         {name: language.about_us_menu, navigationName: 'About', icon: 'info', type: 'entypo'},
         {name: language.emergency, navigationName: 'Emergency', icon: 'ios-sad', type: 'ionicon'},
         {name: language.logout, icon: 'sign-out',navigationName: 'Logout', type: 'font-awesome'}
@@ -102,15 +103,15 @@ export default function SideMenu(props){
                         if (auth.info.profile.usertype == 'admin' && item.navigationName != 'About'  && item.navigationName != 'Logout' ) {
                             return null;
                         }   
-                        if (auth.info.profile.usertype == 'rider' && item.navigationName == 'DriverTrips'  ) {
+                        if (auth.info.profile.usertype == 'fleetadmin' && item.navigationName != 'About'  && item.navigationName != 'Logout' ) {
+                            return null;
+                        }   
+                        if (auth.info.profile.usertype == 'rider' && (item.navigationName == 'DriverTrips' || item.navigationName == 'MyEarning')) {
                             return null;
                         }       
                         else if (auth.info.profile.usertype == 'driver' && ( item.navigationName == 'Map' || item.navigationName == 'Emergency')) {
                             return null;
                         } 
-                        else if (settings.wallet == false && item.navigationName == 'wallet'  ) {
-                            return null;
-                        }
                         else if (auth.info.profile.usertype == 'rider' && item.navigationName == 'Emergency'  ) {
                             return(
                                 <TouchableOpacity

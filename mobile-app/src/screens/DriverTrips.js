@@ -3,7 +3,6 @@ import { Text, View, StyleSheet, Dimensions, FlatList, Modal, TouchableHighlight
 import { Button, Header } from 'react-native-elements';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { colors } from '../common/theme';
-import { Audio } from 'expo-av';
 import { language, dateStyle } from 'config';
 import { useDispatch, useSelector } from 'react-redux';
 import { FirebaseContext } from 'common/src';
@@ -20,17 +19,12 @@ export default function DriverTrips(props) {
     } = api;
     const dispatch = useDispatch();
     const tasks = useSelector(state => state.taskdata.tasks);
+    const settings = useSelector(state => state.settingsdata.settings);
     const auth = useSelector(state => state.auth);
     const bookinglistdata = useSelector(state => state.bookinglistdata);
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [activeBookings, setActiveBookings] = useState([]);
-
-    useEffect(() => {
-        if (tasks && tasks.length>0) {
-            playSound();
-        }
-    }, [tasks]);
 
     useEffect(() => {
         if (bookinglistdata.bookings) {
@@ -45,18 +39,15 @@ export default function DriverTrips(props) {
         }
     }, [bookinglistdata.bookings])
 
-    const playSound = async () => {
-        const soundObject = new Audio.Sound();
-        try {
-            await soundObject.loadAsync(require('../../assets/sounds/car_horn.wav'));
-            await soundObject.playAsync();
-        } catch (error) {
-            console.log("Unable to play sound");
-        }
-    }
-
     const onPressAccept = (item) => {
-        if (parseFloat(auth && auth.info && auth.info.profile && auth.info.profile.walletBalance ? auth.info.profile.walletBalance : 0) > 0) {
+        let wallet_balance = parseFloat(auth.info.profile.walletBalance);
+        if (wallet_balance >= 0) {
+            if (wallet_balance == 0){
+                Alert.alert(
+                    language.alert,
+                    language.wallet_balance_zero
+                );
+            }
             dispatch(acceptTask(auth.info, item));
             setSelectedItem(null);
             setModalVisible(null);
@@ -66,22 +57,8 @@ export default function DriverTrips(props) {
         } else {
             Alert.alert(
                 language.alert,
-                language.wallet_balance_zero,
-                [
-                    { text: language.cancel, onPress: () => console.log('NO Pressed'), style: 'cancel' },
-                    {
-                        text: language.ok, onPress: () => {
-                            dispatch(acceptTask(auth.info, item));
-                            setSelectedItem(null);
-                            setModalVisible(null);
-                            setTimeout(() => {
-                                props.navigation.navigate('BookedCab', { bookingId: item.id });
-                            }, 3000)
-                        }
-                    },
-                ]
+                language.wallet_balance_negetive
             );
-
         }
     };
 
@@ -139,7 +116,7 @@ export default function DriverTrips(props) {
                 renderItem={({ item, index }) => {
                     return (
                         <View style={styles.listItemView}>
-                            <View style={[styles.mapcontainer, activeBookings && activeBookings.length >= 1 ? { height: height - 250 } : null]}>
+                            <View style={[styles.mapcontainer, activeBookings && activeBookings.length >= 1 ? { height: height - 400 } : null]}>
                                 <MapView style={styles.map}
                                     provider={PROVIDER_GOOGLE}
                                     initialRegion={{
@@ -174,6 +151,13 @@ export default function DriverTrips(props) {
                             <View style={styles.mapDetails}>
                                 <View style={styles.dateView}>
                                     <Text style={styles.listDate}>{new Date(item.tripdate).toLocaleString(dateStyle)}</Text>
+                                </View>
+                                <View style={styles.rateViewStyle}>
+                                    <Text style={styles.rateViewTextStyle}>{settings.symbol}{item ? item.estimate > 0 ? parseFloat(item.estimate).toFixed(2) : 0 : null}</Text>
+                                </View>
+                                <View style={styles.estimateView}>
+                                    <Text style={styles.listEstimate}>{item.estimateDistance? (item.estimateDistance/1000).toFixed(1): 0} {language.km}</Text>
+                                    <Text style={styles.listEstimate}>{item.estimateTime? (item.estimateTime/60).toFixed(0): 0} {language.mins}</Text>
                                 </View>
                                 <View style={styles.addressViewStyle}>
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -375,7 +359,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingLeft: 10,
         color: colors.GREY.default,
-        flex: 1
+        flex: 1,
+        alignSelf:'center'
+    },
+    estimateView:{
+        flex: 1.1,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-around',
+        marginBottom:10
+    },
+    listEstimate:{
+        fontSize: 20,
+        color: colors.GREY.secondary,
     },
     addressViewStyle: {
         flex: 2,
@@ -504,5 +500,18 @@ const styles = StyleSheet.create({
     titleStyles: {
         width: "100%",
         alignSelf: 'center'
+    },
+    rateViewStyle: {
+        alignItems: 'center',
+        flex: 2,
+        marginTop:10,
+        marginBottom:10
+    },
+    rateViewTextStyle: {
+        fontSize: 50,
+        color: colors.BLACK,
+        fontFamily: 'Roboto-Bold',
+        fontWeight: 'bold',
+        textAlign: "center"
     }
 });

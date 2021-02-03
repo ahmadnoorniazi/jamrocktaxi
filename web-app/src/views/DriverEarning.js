@@ -10,7 +10,7 @@ export default function DriverEarning() {
         { title: language.year,field: 'year'},
         { title: language.months, field: 'monthsName' },
         { title: language.driver_name, field: 'driverName'},
-        { title: language.vehicle_type, field: 'driverVehicleNo' },
+        { title: language.vehicle_reg_no, field: 'driverVehicleNo' },
         { title: language.earning_amount, field: 'driverShare' },
         
     ];

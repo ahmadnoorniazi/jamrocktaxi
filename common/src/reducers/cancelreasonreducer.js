@@ -2,10 +2,12 @@ import {
   FETCH_CANCEL_REASONS,
   FETCH_CANCEL_REASONS_SUCCESS,
   FETCH_CANCEL_REASONS_FAILED,
+  EDIT_CANCELLATION_REASON
 } from "../store/types";
 
 const INITIAL_STATE = {
-  reasons: [],
+  simple: [],
+  complex: [],
   loading: false,
   error: {
     flag: false,
@@ -23,19 +25,23 @@ export const cancelreasonreducer = (state = INITIAL_STATE, action) => {
     case FETCH_CANCEL_REASONS_SUCCESS:
       return {
         ...state,
-        reasons: action.payload,
+        simple: action.payload.simple,
+        complex: action.payload.complex,
         loading: false
       };
     case FETCH_CANCEL_REASONS_FAILED:
       return {
         ...state,
-        reasons: [],
+        simple:[],
+        complex:[],
         loading: false,
         error: {
           flag: true,
           msg: action.payload
         }
       };
+    case EDIT_CANCELLATION_REASON:
+      return state;
     default:
       return state;
   }

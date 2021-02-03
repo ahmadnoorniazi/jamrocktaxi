@@ -15,7 +15,6 @@ function AuthLoading(props) {
         fetchPromos,
         fetchDriverEarnings,
         fetchUsers,
-        fetchBonus,
         fetchNotifications,
         fetchEarningsReport,
         signOut,
@@ -31,32 +30,41 @@ function AuthLoading(props) {
     },[dispatch,fetchUser,fetchCarTypes,fetchSettings]);
 
     useEffect(()=>{
-        if(auth.info && auth.info.profile){
-            let role = auth.info.profile.usertype;
-            if(role === 'rider'){
-                dispatch(fetchBookings(auth.info.uid,role));
-                dispatch(fetchCancelReasons());
-            }
-            else if(role === 'driver'){
-                dispatch(fetchBookings(auth.info.uid,role));
-            }
-            else if(role === 'admin'){
-                dispatch(fetchUsers());
-                dispatch(fetchBookings(auth.info.uid,role));
-                dispatch(fetchPromos());
-                dispatch(fetchDriverEarnings());
-                dispatch(fetchBonus());
-                dispatch(fetchNotifications());
-                dispatch(fetchEarningsReport());
-                dispatch(fetchCancelReasons());
-                dispatch(fetchWithdraws());
-            }
-            else{
-                alert(language.alert,language.not_valid_user_type);
+        if(auth.info){
+            if(auth.info.profile){
+                let role = auth.info.profile.usertype;
+                if(role === 'rider'){
+                    dispatch(fetchBookings(auth.info.uid,role));
+                    dispatch(fetchCancelReasons());
+                }
+                else if(role === 'driver'){
+                    dispatch(fetchBookings(auth.info.uid,role));
+                }
+                else if(role === 'admin'){
+                    dispatch(fetchUsers());
+                    dispatch(fetchBookings(auth.info.uid,role));
+                    dispatch(fetchPromos());
+                    dispatch(fetchDriverEarnings(auth.info.uid,role));
+                    dispatch(fetchNotifications());
+                    dispatch(fetchEarningsReport());
+                    dispatch(fetchCancelReasons());
+                    dispatch(fetchWithdraws());
+                }
+                else if(role === 'fleetadmin'){
+                    dispatch(fetchUsers());
+                    dispatch(fetchBookings(auth.info.uid,role));
+                    dispatch(fetchDriverEarnings(auth.info.uid,role));
+                }
+                else{
+                    alert(language.not_valid_user_type);
+                    dispatch(signOut());
+                }
+            }else{
+                alert(language.user_issue_contact_admin);
                 dispatch(signOut());
             }
-    }
-    },[auth.info,dispatch,fetchBonus,fetchBookings,fetchCancelReasons,fetchDriverEarnings,fetchEarningsReport,fetchNotifications,fetchPromos,fetchUsers,fetchWithdraws,signOut]);
+        }
+    },[auth.info,dispatch,fetchBookings,fetchCancelReasons,fetchDriverEarnings,fetchEarningsReport,fetchNotifications,fetchPromos,fetchUsers,fetchWithdraws,signOut]);
 
     return (
         auth.loading? <CircularLoading/>:props.children

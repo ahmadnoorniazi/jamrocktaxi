@@ -16,13 +16,17 @@ import Dashboard from './views/Dashboard';
 import CarTypes from './views/CarTypes';
 import AddBookings from './views/AddBookings';
 import Promos from './views/Promos';
-import Users from './views/Users';
-import Referral from './views/Referral';
+import Riders from './views/Riders';
+import Drivers from './views/Drivers';
+import FleetAdmins from './views/FleetAdmins';
 import Notifications from './views/Notifications';
 import DriverEarning from './views/DriverEarning';
 import Earningreports from './views/Earningreports';
 import Settings from './views/Settings';
 import Withdraws from './views/Withdraws';
+import CancellationReasons from './views/CancellationReasons';
+import RegisterPage from './views/RegisterPage';
+import AddMoney from "./views/AddMoney";
 
 import {
   store,
@@ -30,6 +34,7 @@ import {
 } from "common";
 
 import { features } from 'config';
+
 
 var hist = createBrowserHistory();
 
@@ -40,21 +45,27 @@ function App() {
         <AuthLoading>
           <Router history={hist}>
             <Switch>
-              <ProtectedRoute exact component={BookingHistory} path="/bookings" permit={"rider,admin,driver"} />
-              <ProtectedRoute exact component={MyProfile} path="/profile" permit={"rider,admin,driver"} />
+              <ProtectedRoute exact component={BookingHistory} path="/bookings" permit={"rider,admin,driver,fleetadmin"} />
+              <ProtectedRoute exact component={MyProfile} path="/profile" permit={"rider,admin,driver,fleetadmin"} />
               <ProtectedRoute exact component={Dashboard} path="/dashboard" permit={"admin"} />
               <ProtectedRoute exact component={CarTypes} path="/cartypes" permit={"admin"} />
+              <ProtectedRoute exact component={CancellationReasons} path="/cancelreasons" permit={"admin"} />
               <ProtectedRoute exact component={AddBookings} path="/addbookings" permit={"admin"} />
               <ProtectedRoute exact component={Promos} path="/promos" permit={"admin"} />
-              <ProtectedRoute exact component={Users} path="/users" permit={"admin"} />
-              <ProtectedRoute exact component={DriverEarning} path="/driverearning" permit={"admin"} />
-              <ProtectedRoute exact component={Referral} path="/referral" permit={"admin"} />
+              <ProtectedRoute exact component={Riders} path="/riders" permit={"admin"} />
+              <ProtectedRoute exact component={Drivers} path="/drivers" permit={"admin,fleetadmin"} />
+              <ProtectedRoute exact component={FleetAdmins} path="/fleetadmins" permit={"admin"} />
+              <ProtectedRoute exact component={DriverEarning} path="/driverearning" permit={"admin,fleetadmin"} />
               <ProtectedRoute exact component={Notifications} path="/notifications" permit={"admin"} />
               <ProtectedRoute exact component={Earningreports} path="/earningreports" permit={"admin"} />
+              <ProtectedRoute exact component={AddMoney} path="/addtowallet" permit={"admin"} />
               <ProtectedRoute exact component={Withdraws} path="/withdraws" permit={"admin"} />
               <ProtectedRoute exact component={Settings} path="/settings" permit={"admin"} />
               <Route path="/about-us" component={AboutUs} />
               <Route path="/privacy-policy" component={PrivacyPolicy} />
+              {features.WebsitePagesEnabled ?
+                <Route path="/register" component={RegisterPage} />
+                : null}
               {features.WebsitePagesEnabled ?
                 <Route path="/login" component={LoginPage} />
                 : null}

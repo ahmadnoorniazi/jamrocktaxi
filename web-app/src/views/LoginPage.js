@@ -47,10 +47,9 @@ export default function LoginPage(props) {
     facebookSignIn,
     clearLoginError,
     mobileSignIn,
-    addProfile,
-    emailSignUp,
     signOut,
-    sendResetMail
+    sendResetMail,
+    checkUserExists
   } = api;
 
   const auth = useSelector(state => state.auth);
@@ -72,8 +71,7 @@ export default function LoginPage(props) {
     lastName: '',
     selectedcountry:default_country_code,
     usertype:'rider',
-    referrerId:'',
-    pushToken:'web'
+    referralId:''
   });
   
   const [tabDisabled, setTabDisabled] = React.useState(false);
@@ -121,7 +119,7 @@ export default function LoginPage(props) {
       } 
     }
     if (auth.error && auth.error.flag && auth.error.msg.message !== language.not_logged_in) {
-      setCommonAlert({ open: true, msg: auth.error.msg.code + ": " + auth.error.msg.message })
+      setCommonAlert({ open: true, msg: auth.error.msg.message })
     }
     if(auth.verificationId){
       setData({ ...data, verificationId: auth.verificationId });
@@ -164,14 +162,21 @@ export default function LoginPage(props) {
   const handleGetOTP = (e) => {
     e.preventDefault();
     const phoneNumber = "+" + data.country + data.mobile;
-    const appVerifier = window.recaptchaVerifier;
-    authRef
-    .signInWithPhoneNumber(phoneNumber, appVerifier)
-    .then(res => {
-        setData({...data, verificationId: res.verificationId})
-    })
-    .catch(error => {
-        setCommonAlert({ open: true, msg: error.code + ": " + error.message})
+    checkUserExists({mobile:phoneNumber}).then((res)=>{
+      if(res.users && res.users.length>0){
+          const appVerifier = window.recaptchaVerifier;
+          authRef
+          .signInWithPhoneNumber(phoneNumber, appVerifier)
+          .then(res => {
+              setData({...data, verificationId: res.verificationId})
+          })
+          .catch(error => {
+              setCommonAlert({ open: true, msg: error.code + ": " + error.message})
+          });
+      }
+      else{
+          setCommonAlert({ open: true, msg: language.user_does_not_exists})
+      }
     });
   }
 
@@ -198,13 +203,7 @@ export default function LoginPage(props) {
   };
 
   const handleRegister = (e) => {
-    e.preventDefault(); 
-    //eslint-disable-next-line
-    if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(data.email) && data.pass.length > 0) {
-      dispatch(emailSignUp(data.email, data.pass));
-    } else {
-      setCommonAlert({ open: true, msg: language.login_validate_error })
-    }
+    props.history.push('/register');
   };
 
   const handleForgotPass = (e) => {
@@ -229,11 +228,6 @@ export default function LoginPage(props) {
     setFpEmail('');
     setOpenFPModal(false);
   }
-
-  const completeRegistration = (e) => {
-    e.preventDefault();
-    dispatch(addProfile(data));
-  };
 
   return (
     <div>
@@ -293,7 +287,7 @@ export default function LoginPage(props) {
                   </Paper>
 
                   <CardBody>
-                    {(loginType === 0 && !activeReg) || (activeReg && loginType ===1)?    //EMAIL
+                    {loginType === 0 ?    //EMAIL
                       <CustomInput
                         labelText={language.email}
                         id="email"
@@ -313,7 +307,7 @@ export default function LoginPage(props) {
                         value={data.email}
                       />
                       : null}
-                    {loginType === 0 && !auth.info?   //PASSWORD
+                    {loginType === 0?
                       <CustomInput
                         labelText={language.password}
                         id="pass"
@@ -336,7 +330,7 @@ export default function LoginPage(props) {
                         value={data.pass}
                       />
                       : null}
-                    {((loginType === 1 && !activeReg) || (loginType === 0 && activeReg)) && features.AllowCountrySelection ?   // COUNTRY
+                    { loginType === 1 && features.AllowCountrySelection ?   // COUNTRY
                       <CountrySelect
                         value={data.selectedcountry}
                         onChange={onCountryChange}
@@ -344,7 +338,7 @@ export default function LoginPage(props) {
                         disabled={data.verificationId ? true : false}
                       />
                       : null}
-                    {(loginType === 1  && !activeReg) || (loginType === 0 && activeReg) ?   //MOBILE
+                    {loginType === 1 ?   //MOBILE
                       <CustomInput
                         labelText={language.phone}
                         id="mobile"
@@ -387,109 +381,44 @@ export default function LoginPage(props) {
                         value={data.otp}
                       />
                       : null}
-                  {loginType === 0 && activeReg === false ?  
-                    <RegularButton 
-                      color="inherit" 
-                      onClick={handleForgotPass}
-                      disableElevation={true}
-                      disableFocusRipple={true}
-                      disableRipple={true}
-                      className={classes.forgotButton}
-                      variant="text"
-                    >
-                        {language.forgot_password}
-                    </RegularButton>
-                  : null}
-                    {activeReg ?
-                      <CustomInput 
-                        labelText={language.firstname}
-                        id="firstName"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                        inputProps={{
-                          type: "text",
-                          required: true,
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <Email className={classes.inputIconsColor} />
-                            </InputAdornment>
-                          )
-                        }}
-                        onChange={onInputChange}
-                        value={data.firstName}
-                      />
-                      : null}
-                    {activeReg ?
-                      <CustomInput    // LAST NAME
-                        labelText={language.lastname}
-                        id="lastName"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                        inputProps={{
-                          type: "text",
-                          required: true,
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <Email className={classes.inputIconsColor} />
-                            </InputAdornment>
-                          )
-                        }}
-                        onChange={onInputChange}
-                        value={data.lastName}
-                      />
-                      : null}
-                      {activeReg ?
-                      <CustomInput    // LAST NAME
-                        labelText={language.referrerId}
-                        id="referrerId"
-                        formControlProps={{
-                          fullWidth: true
-                        }}
-                        inputProps={{
-                          type: "text",
-                          required: true,
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <Email className={classes.inputIconsColor} />
-                            </InputAdornment>
-                          )
-                        }}
-                        onChange={onInputChange}
-                        value={data.referrerId}
-                      />
-                      : null}
+                    {loginType === 0 ?  
+                      <RegularButton 
+                        color="inherit" 
+                        onClick={handleForgotPass}
+                        disableElevation={true}
+                        disableFocusRipple={true}
+                        disableRipple={true}
+                        className={classes.forgotButton}
+                        variant="text"
+                      >
+                          {language.forgot_password}
+                      </RegularButton>
+                    : null}
                   </CardBody>
                   <CardFooter className={classes.cardFooter}>
-                    {loginType === 0 && activeReg === false ?
+                    {loginType === 0 ?
                       <Button className={classes.normalButton} simple color="primary" size="lg" onClick={handleSubmit}>
                         {language.login}
                     </Button>
                       : null}
-                    {loginType === 0 && activeReg === false ?
+                    {loginType === 0 ?
                       <Button className={classes.normalButton} simple color="primary" size="lg" onClick={handleRegister}>
                         {language.register}
                     </Button>
                       : null}
 
-                    {loginType === 1 && !data.verificationId && activeReg === false ?
+                    {loginType === 1 && !data.verificationId ?
                       <Button className={classes.normalButton} simple color="primary" size="lg" onClick={handleGetOTP}>
                         {language.get_otp}
                     </Button>
                       : null}
-                    {data.verificationId && activeReg === false ?
+                    { loginType === 1 &&  data.verificationId ?
                       <Button className={classes.normalButton} simple color="primary" size="lg" onClick={handleVerifyOTP}>
                         {language.verify_otp}
                     </Button>
                       : null}
 
-                    {activeReg ?
-                      <Button className={classes.normalButton} simple color="primary" size="lg" onClick={completeRegistration}>
-                        {language.complete_registration}
-                    </Button>
-                      : null}
-                    {data.verificationId || activeReg ?
+                    { loginType === 1 && data.verificationId ?
                       <Button className={classes.normalButton} simple color="primary" size="lg" onClick={handleCancel}>
                         {language.cancel}
                     </Button>

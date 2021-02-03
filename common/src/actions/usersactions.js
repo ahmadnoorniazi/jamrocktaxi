@@ -53,11 +53,11 @@ export const fetchDrivers = () => (dispatch) => (firebase) => {
     payload: null
   });
   
-  usersRef.orderByChild("driverActiveStatus").equalTo(true).once("value", snapshot => {
+  usersRef.orderByChild("queue").equalTo(false).once("value", snapshot => {
     if (snapshot.val()) {
       const data = snapshot.val();
       const arr = Object.keys(data)
-      .filter(i => data[i].approved == true && data[i].queue == false && data[i].location)
+      .filter(i => data[i].approved == true && data[i].driverActiveStatus == true && data[i].location)
       .map(i => {
         data[i].id = i;
         return data[i];
@@ -75,6 +75,29 @@ export const fetchDrivers = () => (dispatch) => (firebase) => {
   });
 };
 
+export const addUser = (userdata) => (dispatch) => (firebase) => {
+  const {
+    usersRef
+  } = firebase;
+
+  dispatch({
+    type: EDIT_USER,
+    payload: userdata
+  });
+
+  usersRef.push(userdata).then(() => {
+    dispatch({
+      type: EDIT_USER_SUCCESS,
+      payload: null
+    });
+  }).catch((error) => {
+    dispatch({
+      type: EDIT_USER_FAILED,
+      payload: error
+    });
+  });
+}
+
 export const editUser = (id, user) => (dispatch) => (firebase) => {
 
   const {
@@ -86,7 +109,6 @@ export const editUser = (id, user) => (dispatch) => (firebase) => {
     payload: user
   });
   let editedUser = user;
-  if (user.refferalBonus) editedUser.refferalBonus = parseFloat(editedUser.refferalBonus);
   delete editedUser.id;
   singleUserRef(id).set(editedUser).then(() => {
     dispatch({

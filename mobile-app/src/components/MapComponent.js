@@ -15,10 +15,11 @@ export default function MapComponent(props) {
             provider={PROVIDER_GOOGLE}
             showsUserLocation={true}
             loadingEnabled
-            showsMyLocationButton={true}
+            showsMyLocationButton={false}
             style={[mapStyle, { marginBottom: state.marginBottom }]}
             region={mapRegion}
             onRegionChangeComplete={onRegionChangeComplete}
+            onPanDrag={onPanDrag}
             onMapReady={() => setState({ ...state, marginBottom: 1 })}
         >
             {nearby ? nearby.map((item, index) => {

@@ -8,7 +8,7 @@ import { Info, AccountBox, House } from "@material-ui/icons";
 import Button from "components/CustomButtons/Button.js";
 import styles from "assets/jss/material-kit-react/components/headerLinksStyle.js";
 import { useSelector } from "react-redux";
-import { language, features } from "config";
+import { language } from "config";
 import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(styles);
@@ -16,6 +16,7 @@ const useStyles = makeStyles(styles);
 export default function HeaderLinks(props) {
   const classes = useStyles();
   const auth = useSelector(state => state.auth);
+  const settings = useSelector(state => state.settingsdata.settings);
   const [loggedIn, setLoggedIn] = useState(false);
   let history = useHistory();
 
@@ -66,23 +67,7 @@ export default function HeaderLinks(props) {
           <Info className={classes.icons} />{language.about_us}
         </Button>
       </ListItem>
-      <ListItem className={classes.listItem}>
-        <Tooltip
-          id="instagram-twitter"
-          title={language.follow_twitter}
-          placement={window.innerWidth > 959 ? "top" : "left"}
-          classes={{ tooltip: classes.tooltip }}
-        >
-          <Button
-            href={features.TwitterHandle}
-            target="_blank"
-            color="transparent"
-            className={classes.navLink}
-          >
-            <i className={classes.socialIcons + " fab fa-twitter"} />
-          </Button>
-        </Tooltip>
-      </ListItem>
+      {settings && settings.FacebookHandle?
       <ListItem className={classes.listItem}>
         <Tooltip
           id="instagram-facebook"
@@ -92,7 +77,7 @@ export default function HeaderLinks(props) {
         >
           <Button
             color="transparent"
-            href={features.FacebookHandle}
+            href={settings.FacebookHandle}
             target="_blank"
             className={classes.navLink}
           >
@@ -100,6 +85,45 @@ export default function HeaderLinks(props) {
           </Button>
         </Tooltip>
       </ListItem>
+      :null}
+      {settings && settings.TwitterHandle?
+      <ListItem className={classes.listItem}>
+        <Tooltip
+          id="instagram-twitter"
+          title={language.follow_twitter}
+          placement={window.innerWidth > 959 ? "top" : "left"}
+          classes={{ tooltip: classes.tooltip }}
+        >
+          <Button
+            href={settings.TwitterHandle}
+            target="_blank"
+            color="transparent"
+            className={classes.navLink}
+          >
+            <i className={classes.socialIcons + " fab fa-twitter"} />
+          </Button>
+        </Tooltip>
+      </ListItem>
+      :null}
+      {settings && settings.InstagramHandle?
+      <ListItem className={classes.listItem}>
+        <Tooltip
+          id="instagram-twitter"
+          title={language.follow_instagram}
+          placement={window.innerWidth > 959 ? "top" : "left"}
+          classes={{ tooltip: classes.tooltip }}
+        >
+          <Button
+            href={settings.InstagramHandle}
+            target="_blank"
+            color="transparent"
+            className={classes.navLink}
+          >
+            <i className={classes.socialIcons + " fab fa-instagram"} />
+          </Button>
+        </Tooltip>
+      </ListItem>
+      :null}
     </List>
   );
 }

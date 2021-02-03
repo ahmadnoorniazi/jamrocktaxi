@@ -27,7 +27,7 @@ const BookingHistory = () => {
       { title: language.pickup_address, field: 'pickupAddress' },
       { title: language.drop_address, field: 'dropAddress' },
       { title: language.assign_driver, field: 'driver_name' },
-      { title: language.booking_status, field: 'status' },
+      { title: language.booking_status, field: 'status', render: rowData => <span>{language[rowData.status]}</span> },
       { title: language.otp, field: 'otp', render: rowData => rowData.status ==='NEW' || rowData.status === 'ACCEPTED' ?<span>{rowData.otp}</span>:null },
       { title: language.trip_cost, field: 'trip_cost' },
       { title: language.trip_start_time, field: 'trip_start_time' },
@@ -92,7 +92,7 @@ const BookingHistory = () => {
               setSelectedBooking(rowData);
               setOpenConfirm(true);
             }else{
-              alert('Cancellation is Restricted.');
+              alert(language.demo_mode);
             }
           }         
         }),

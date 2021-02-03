@@ -255,7 +255,7 @@ export default function RideDetails(props) {
                             <View style={styles.billOptions}>
                                 <View style={styles.billItem}>
                                     <Text style={styles.billName}>{language.payment_status}</Text>
-                                    <Text style={styles.billAmount}>{paramData.status}</Text>
+                                    <Text style={styles.billAmount}>{language[paramData.status]}</Text>
 
                                 </View>
                                 {['PAID','COMPLETE'].indexOf(paramData.status) != -1 ?

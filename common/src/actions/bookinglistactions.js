@@ -164,32 +164,8 @@ export const updateBooking = (booking) => (dispatch) => (firebase) => {
         booking.endTime = end_time.getTime();
         booking.total_trip_time = totalTimeTaken;
         booking.coords = res.coords;
-
+        singleBookingRef(booking.id).update(booking);
         RequestPushMsg(booking.customer_token, language.notification_title, language.driver_completed_ride);
-        singleUserRef(booking.driver).once('value', snapshot => {
-          const walletBalance = snapshot.val().walletBalance;
-          if(parseFloat(booking.convenience_fees) > walletBalance){
-              booking.cashPaymentEnabled = false;
-          }else{
-              booking.cashPaymentEnabled = true;
-          }
-          singleBookingRef(booking.id).update(booking);
-          let details = {
-            type: 'Credit',
-            amount: booking.driver_share,
-            date: end_time.toString(),
-            txRef: booking.id
-          }
-          walletBalRef(booking.driver).set(walletBalance + parseFloat(booking.driver_share)).then(() => {
-            walletHistoryRef(booking.driver).push(details);
-            singleUserRef(booking.driver).once('value', res => {
-              dispatch({
-                type: UPDATE_USER_PROFILE,
-                payload: res.val()
-              });
-            });
-          });
-        });
       });
     });
   }
@@ -202,28 +178,34 @@ export const updateBooking = (booking) => (dispatch) => (firebase) => {
     if(booking.driver == auth.currentUser.uid && (booking.payment_mode == 'cash' || booking.payment_mode == 'wallet')){
       singleUserRef(booking.driver).update({ queue: false });
     }
-    if(parseFloat(booking.cashPaymentAmount)>0){
-      singleUserRef(booking.driver).once('value', snapshot => {
-        const walletBalance = snapshot.val().walletBalance;
+
+    singleUserRef(booking.driver).once('value', snapshot => {
+      let walletBalance = snapshot.val().walletBalance;
+      walletBalance = walletBalance + parseFloat(booking.driver_share);
+      if(parseFloat(booking.cashPaymentAmount)>0){
+        walletBalance = walletBalance - parseFloat(booking.cashPaymentAmount);
+      }
+      walletBalRef(booking.driver).set(walletBalance);
+
+      let details = {
+        type: 'Credit',
+        amount: booking.driver_share,
+        date: new Date().toString(),
+        txRef: booking.id
+      }
+      walletHistoryRef(booking.driver).push(details);
+      
+      if(parseFloat(booking.cashPaymentAmount)>0){
         let details = {
           type: 'Debit',
           amount: booking.cashPaymentAmount,
           date: new Date().toString(),
           txRef: booking.id
         }
-        walletBalRef(booking.driver).set(walletBalance - parseFloat(booking.cashPaymentAmount)).then(() => {
-          walletHistoryRef(booking.driver).push(details);
-          if(booking.driver == auth.currentUser.uid){
-            singleUserRef(booking.driver).once('value', res => {
-              dispatch({
-                type: UPDATE_USER_PROFILE,
-                payload: res.val()
-              });
-            });
-          }
-        });
-      });
-    }
+        walletHistoryRef(booking.driver).push(details);
+      }  
+    });
+
     RequestPushMsg(booking.customer_token, language.notification_title, language.success_payment);
     RequestPushMsg(booking.driver_token, language.notification_title, language.success_payment);
   }
@@ -262,9 +244,7 @@ export const updateBooking = (booking) => (dispatch) => (firebase) => {
 };
 
 export const cancelBooking = (data) => (dispatch) => (firebase) => {
-  
   const {
-    auth,
     singleBookingRef,
     singleUserRef,
     requestedDriversRef,

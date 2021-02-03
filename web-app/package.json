@@ -1,6 +1,6 @@
 {
   "name": "web-app",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Web Project",
   "private": true,
   "dependencies": {
@@ -15,7 +15,7 @@
     "common": "1.0.0",
     "config": "1.0.0",
     "history": "4.10.1",
-    "material-table": "1.65.0",
+    "material-table": "^1.69.2",
     "node-sass": "4.14.1",
     "nouislider": "14.5.0",
     "prop-types": "15.7.2",

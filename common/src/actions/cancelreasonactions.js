@@ -2,6 +2,7 @@ import {
   FETCH_CANCEL_REASONS,
   FETCH_CANCEL_REASONS_SUCCESS,
   FETCH_CANCEL_REASONS_FAILED,
+  EDIT_CANCELLATION_REASON
 } from "../store/types";
 
 import { language } from 'config';
@@ -25,7 +26,10 @@ export const fetchCancelReasons = () => (dispatch) => (firebase) => {
       }
       dispatch({
         type: FETCH_CANCEL_REASONS_SUCCESS,
-        payload: arr,
+        payload: {
+          simple:arr,
+          complex:snapshot.val()
+        }
       });
     } else {
       dispatch({
@@ -36,27 +40,15 @@ export const fetchCancelReasons = () => (dispatch) => (firebase) => {
   });
 };
 
-export const fetchCancelReasonsApp = () => (dispatch) => (firebase) => {
-
+export const editCancellationReason = (reasons, method) => (dispatch) => (firebase) => {
   const {
     cancelreasonRef
   } = firebase;
-  
+
   dispatch({
-    type: FETCH_CANCEL_REASONS,
-    payload: null,
+    type: EDIT_CANCELLATION_REASON,
+    payload: method
   });
-  cancelreasonRef.on("value", (snapshot) => {
-    if (snapshot.val()) {
-      dispatch({
-        type: FETCH_CANCEL_REASONS_SUCCESS,
-        payload: snapshot.val()
-      });
-    } else {
-      dispatch({
-        type: FETCH_CANCEL_REASONS_FAILED,
-        payload: language.no_cancel_reason,
-      });
-    }
-  });
-};
+  cancelreasonRef.set(reasons);
+}
+
