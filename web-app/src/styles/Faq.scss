@@ -1,0 +1,61 @@
+.faq-title {
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.faq-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 1rem;
+  opacity: 0.7;
+}
+
+.faq-accordian {
+  margin-top: 1rem;
+
+  & > div {
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+
+    .faq-accordian-header {
+      display: flex;
+      padding: 10px 20px;
+      align-items: center;
+      p {
+        flex: 1;
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      svg {
+        font-size: 18px;
+        margin-left: 20px;
+      }
+    }
+
+    .faq-accordian-body {
+      padding: 0 20px 10px;
+
+      p {
+        display: flex;
+        flex-direction: column;
+        font-size: 12px;
+        font-weight: 500;
+        opacity: 0.8;
+        margin: 0;
+
+        img {
+          margin: 0 auto;
+        }
+      }
+    }
+
+    .faq-accordian-hide {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,180 @@
+@import "colors";
+
+.favorite-apps-text {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.feedback {
+  margin: 20px 0;
+  text-align: center;
+
+  h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .feedback-info {
+    width: 80%;
+    display: grid;
+    grid-template-columns: 12rem 2rem 1rem;
+    justify-content: start;
+    margin-bottom: 0.3rem;
+
+    span {
+      display: inline-flex;
+      justify-content: flex-end;
+      font-size: 13px;
+      color: rgba(0, 0, 0, 0.5);
+      margin-right: 10px;
+    }
+
+    .feedback-icon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    @media only screen and (min-width: 768px) {
+      justify-content: center;
+      margin-right: 2rem;
+
+      span {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .feedback-form-box {
+    margin-top: 20px;
+
+    .feedback-form {
+      width: 90%;
+
+      .form-input {
+        width: 95%;
+        outline: none;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        border-radius: 6px;
+        padding: 0.7rem 0.4rem;
+        margin-bottom: 10px;
+        font-size: 12px;
+
+        &:focus,
+        &:hover {
+          border-color: $textColor;
+        }
+      }
+
+      textarea {
+        resize: none;
+        margin-bottom: 10px !important;
+      }
+
+      .form-btn {
+        width: 48%;
+        outline: none;
+        border: none;
+        padding: 0.7rem 0.4rem;
+        border-radius: 6px;
+        background-color: $textColor;
+        color: #fff;
+        margin-left: 5px;
+      }
+      .form-cancel-btn {
+        width: 45%;
+        margin-right: 5px;
+        outline: none;
+        border: none;
+        padding: 0.7rem 0.4rem;
+        border-radius: 6px;
+        border: 1px solid $textColor;
+        background-color: white;
+        color: $textColor;
+      }
+
+      @media only screen and (min-width: 768px) {
+        width: 60%;
+
+        .form-input {
+          padding: 0.8rem 0.6rem;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .feedback-store {
+    margin-top: 10px;
+    h4 {
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.5);
+    }
+
+    .feedback-store-icons {
+      display: flex;
+      margin-top: 10px;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border: 1px solid $textColor;
+        border-radius: 6px;
+        padding: 0.6rem 0.4rem;
+        margin: 0 20px;
+
+        span {
+          font-size: 12px;
+          font-weight: 700;
+          padding-top: 0.2rem;
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    h4 {
+      font-size: 18px;
+    }
+  }
+}
+@media only screen and (min-width: 768px) {
+  .favorite-apps-text {
+    font-size: 18px;
+  }
+}
+
+.feedback-item {
+  display: flex;
+  align-items: center;
+  margin: 10px 0 !important;
+
+  svg {
+    font-size: 30px !important;
+    margin-right: 7px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 11px;
+    color: #888;
+    // padding-left: 15px;
+  }
+}

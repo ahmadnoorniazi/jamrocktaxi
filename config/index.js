@@ -1,6 +1,5 @@
 import { MainConfig }  from './mainconfig';
 import { features } from './features';
-
 import { 
     language,
     dateStyle
@@ -10,6 +9,7 @@ import {
     countries,
     default_country_code
 } from './countries';
+import contentfullConfig from './contentfullConfig';
 
 const AppDetails = MainConfig.AppDetails;
 const FirebaseConfig = MainConfig.FirebaseConfig;
@@ -28,5 +28,6 @@ export {
     cloud_function_server_url,
     features,
     countries,
-    default_country_code
+    default_country_code,
+    contentfullConfig
 }

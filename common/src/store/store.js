@@ -1,16 +1,16 @@
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import logger from "redux-logger";
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import logger from 'redux-logger';
 
-import { authreducer as auth } from "../reducers/authreducer";
-import { cartypesreducer as cartypes } from "../reducers/cartypesreducer";
-import { bookingslistreducer as bookinglistdata } from "../reducers/bookingslistreducer";
-import { estimatereducer as estimatedata } from "../reducers/estimatereducer";
-import { bookingreducer as bookingdata } from "../reducers/bookingreducer";
-import { cancelreasonreducer as cancelreasondata } from "../reducers/cancelreasonreducer";
-import { promoreducer as promodata } from "../reducers/promoreducer";
-import { usersreducer as usersdata } from "../reducers/usersreducer";
-import { notificationreducer as notificationdata } from "../reducers/notificationreducer";
+import { authreducer as auth } from '../reducers/authreducer';
+import { cartypesreducer as cartypes } from '../reducers/cartypesreducer';
+import { bookingslistreducer as bookinglistdata } from '../reducers/bookingslistreducer';
+import { estimatereducer as estimatedata } from '../reducers/estimatereducer';
+import { bookingreducer as bookingdata } from '../reducers/bookingreducer';
+import { cancelreasonreducer as cancelreasondata } from '../reducers/cancelreasonreducer';
+import { promoreducer as promodata } from '../reducers/promoreducer';
+import { usersreducer as usersdata } from '../reducers/usersreducer';
+import { notificationreducer as notificationdata } from '../reducers/notificationreducer';
 import { driverearningreducer as driverearningdata } from '../reducers/driverearningreducer';
 import { earningreportsreducer as earningreportsdata } from '../reducers/earningreportsreducer';
 import { settingsreducer as settingsdata } from '../reducers/settingsreducer';
@@ -21,29 +21,37 @@ import { locationreducer as locationdata } from '../reducers/locationreducer';
 import { chatreducer as chatdata } from '../reducers/chatreducer';
 import { withdrawreducer as withdrawdata } from '../reducers/withdrawreducer';
 import { gpsreducer as gpsdata } from '../reducers/gpsreducer';
+import { pageReducer as pagesData } from '../reducers/pageReducer';
+import { fleetsReducer as fleetsData } from '../reducers/fleetsReducer';
+import { selectedItemsReducer as selectedItems } from '../reducers/selectedItemsReducer';
+import { cartReducer as cart } from '../reducers/cartReducer';
 
 const reducers = combineReducers({
-  auth,
-  cartypes,
-  bookinglistdata,
-  estimatedata,
-  bookingdata,
-  cancelreasondata,
-  promodata,
-  usersdata,
-  notificationdata,
-  driverearningdata,
-  earningreportsdata,
-  settingsdata,
-  paymentmethods,
-  tripdata,
-  taskdata,
-  locationdata,
-  chatdata,
-  withdrawdata,
-  gpsdata
+	auth,
+	cartypes,
+	bookinglistdata,
+	estimatedata,
+	bookingdata,
+	cancelreasondata,
+	promodata,
+	usersdata,
+	notificationdata,
+	driverearningdata,
+	earningreportsdata,
+	settingsdata,
+	paymentmethods,
+	tripdata,
+	taskdata,
+	locationdata,
+	chatdata,
+	withdrawdata,
+	gpsdata,
+	pagesData,
+	fleetsData,
+	selectedItems,
+	cart
 });
 
-let middleware = [thunk,logger];
+let middleware = [ thunk, logger ];
 
 export const store = createStore(reducers, {}, applyMiddleware(...middleware));
