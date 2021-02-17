@@ -42,6 +42,8 @@ import OrderMail from './styles/OrderMail';
 
 import './index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 
 import { store, FirebaseProvider } from 'common';
 
