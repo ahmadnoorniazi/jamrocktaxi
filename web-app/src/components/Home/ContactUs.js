@@ -4,8 +4,10 @@ import message from "../../assets/sms.png";
 import phone from "../../assets/phone.png";
 import mail from "../../assets/mail.png";
 import wa from "../../assets/wa.webp";
+import withPage from '../../utils/withPage';
 
-const ContactUs = ({ children }) => {
+const ContactUs = ({ children, page }) => {
+  console.log('pageeeeeeeeeeeeeeeee', page)
   return (
     <div className='home-contact-section px-1'>
       <h4>Contact Us</h4>
@@ -30,4 +32,5 @@ const ContactUs = ({ children }) => {
   );
 };
 
-export default ContactUs;
+const pageSlug = "contactUs"
+export default  withPage(ContactUs, pageSlug);

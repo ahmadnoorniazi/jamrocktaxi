@@ -17,6 +17,7 @@
     "common": "1.0.0",
     "config": "1.0.0",
     "contentful": "^8.1.7",
+    "dateformat": "^4.5.1",
     "history": "4.10.1",
     "install": "^0.13.0",
     "material-table": "^1.69.2",

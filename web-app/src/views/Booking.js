@@ -66,7 +66,8 @@ const Booking = () => {
 							min_fare: item.miniFare,
 							rate_per_hour: item.ratePerHour,
 							name: item.name,
-							rate_per_kilometer: item.retePerKm
+							rate_per_kilometer: item.retePerKm,
+							
 						}
 					})
 				);

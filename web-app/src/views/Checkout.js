@@ -39,7 +39,8 @@ const Checkout = () => {
 	const { addBooking } = api;
 	const dispatch = useDispatch();
 	const cart = useSelector((state) => state.cart);
-	const { total, car } = cart || {};
+	const { total, car, extras } = cart || {};
+	console.log('extrassssssssssssssss', extras);
 	const { pickup, dropOf, maxPassengers, maxBags, estimates } = car.rideData || {};
 
 	useEffect(
@@ -71,6 +72,9 @@ const Checkout = () => {
 			estimates.priceDetails.fields &&
 			estimates.priceDetails.fields.returnPrice) ||
 		0;
+	const startPrice =
+		(estimates && estimates.priceDetails && estimates.priceDetails.fields && estimates.priceDetails.fields.price) ||
+		0;
 	const fullTotal = checkedReturn ? total + returnPrice : total;
 
 	const confirmBooking = () => {
@@ -100,7 +104,20 @@ const Checkout = () => {
 				</div>
 			)}
 
-			{info && <CheckoutInfo checkedReturn={checkedReturn} />}
+			{info && (
+				<CheckoutInfo
+					checkedReturn={checkedReturn}
+					date={tripStartData}
+					secondDate={tripReturnData}
+					pickupLocation={pickup && pickup.structured_formatting && pickup.structured_formatting.main_text}
+					dropOfLocation={dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text}
+					extras={extras}
+					total={fullTotal}
+					pax={pax}
+					startPrice={startPrice}
+					returnPrice={returnPrice}
+				/>
+			)}
 			<CheckoutLocation
 				locationFirst={pickup && pickup.structured_formatting && pickup.structured_formatting.main_text}
 				locationLast={dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text}
@@ -108,11 +125,13 @@ const Checkout = () => {
 				secondLogo={building}
 				setSelectedData={setTripStartData}
 			/>
+			{console.log('paaaaaaaaaaaaaaaaaaaaa', Array.from(Array(maxPassengers ? maxPassengers + 1 : 0 + 1).keys()))}
+			{console.log('bagssssssssssssssssssssssssssssss', Array.from(Array(maxBags ? maxBags + 1 : 0 + 1).keys()))}
 			<div className="row m-0">
 				<div className="col-6">
 					<ExtrasVipInput
 						title="No. of Pax"
-						options={Array.from(Array(maxPassengers ? maxPassengers : 0 + 1).keys())}
+						options={Array.from(Array(maxPassengers ? maxPassengers + 1 : 0 + 1).keys())}
 						setSelected={setPax}
 						selected={pax}
 					/>
@@ -120,7 +139,7 @@ const Checkout = () => {
 				<div className="col-6">
 					<ExtrasVipInput
 						title="No. of Bags"
-						options={Array.from(Array(maxBags ? maxBags : 0 + 1).keys())}
+						options={Array.from(Array(maxBags ? maxBags + 1 : 0 + 1).keys())}
 						setSelected={setBags}
 						selected={bags}
 					/>
