@@ -32,6 +32,9 @@ const EnterLocation = (props) => {
 	const [ pickupAddress, setPickupAddress ] = useState(null);
 	const [ dropAddress, setDropAddress ] = useState(null);
 	const [ showPrices, setShowPrices ] = useState(false);
+	const [ pickupFocus, setPickupFocus ] = useState(false);
+	const [ dropFocus, setDropFocus ] = useState(false);
+
 	const [ focusValue, setFocus ] = useState('');
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -116,13 +119,13 @@ const EnterLocation = (props) => {
 						<div
 							className="enter-location-lower-item"
 							key={index}
+							style={{ padding: 0 }}
 							onClick={() => handleItemClick(location)}
 						>
 							<div className="enter-location-lower-item-content">
 								<h6>{location.structured_formatting.main_text}</h6>
 								<p>{location.description}</p>
 							</div>
-							<FaRoute size={22} />
 						</div>
 					);
 				})}
@@ -138,11 +141,14 @@ const EnterLocation = (props) => {
 	const onShowPrices = () => {
 		if (Array.isArray(fleets) && fleets.length) {
 			const [ item ] = fleets;
+			console.log('pickupppp', pickupAddress);
+			console.log('droppppppppp', dropAddress);
+
 			dispatch(
 				getEstimate({
 					platform: 'web',
-					pickup: pickupAddress,
-					drop: dropAddress,
+					pickup: dropAddress,
+					drop: pickupAddress,
 					carDetails: {
 						convenience_fees: item.convenienceFees,
 						min_fare: item.miniFare,
@@ -155,8 +161,8 @@ const EnterLocation = (props) => {
 			dispatch({
 				type: 'SET_SELECTED_ITEMS',
 				payload: {
-					pickup: pickupAddress,
-					dropOn: dropAddress
+					pickup: dropAddress,
+					dropOn: pickupAddress
 				}
 			});
 			setShowPrices(true);

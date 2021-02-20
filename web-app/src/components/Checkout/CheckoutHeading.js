@@ -1,11 +1,13 @@
 import React from 'react';
 
-const CheckoutHeading = ({ info, setInfo }) => {
+const CheckoutHeading = ({ info, setInfo, taxiName, maxBags, maxPassengers }) => {
 	return (
 		<div className="checkout-heading">
 			<div>
-				<h6>Standard Taxi</h6>
-				<p>Up To 4 Pax - Up To 4 Suitcases</p>
+				<h6>{taxiName}</h6>c
+				<p>
+					Up To {maxPassengers} Pax - Up To {maxBags} Suitcases
+				</p>
 			</div>
 			<button style={{ backgroundColor: `${info ? '#39b54a' : '#0070c0'}` }} onClick={() => setInfo(!info)}>
 				{info ? 'Less Info' : 'More Info'}

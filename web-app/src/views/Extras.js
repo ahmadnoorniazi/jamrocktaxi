@@ -76,6 +76,7 @@ const Extras = ({ page }) => {
 				setInfo={setInfo}
 				maximumPas={rideData && rideData.maxPassengers ? rideData.maxPassengers : ''}
 				maximumBags={rideData && rideData.maxBags ? rideData.maxBags : ''}
+				heading={rideData && rideData.name ? rideData.name : ''}
 			/>
 			{info && (
 				<ExtrasInfo

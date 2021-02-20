@@ -49,8 +49,8 @@ const Booking = () => {
 	}, []);
 
 	useEffect(() => {
-		dispatch(pageLoad("fleetsPrices"))
-	},[])
+		dispatch(pageLoad('fleetsPrices'));
+	}, []);
 
 	useEffect(() => {
 		Array.isArray(fleets) &&
@@ -66,8 +66,7 @@ const Booking = () => {
 							min_fare: item.miniFare,
 							rate_per_hour: item.ratePerHour,
 							name: item.name,
-							rate_per_kilometer: item.retePerKm,
-							
+							rate_per_kilometer: item.retePerKm
 						}
 					})
 				);
@@ -117,7 +116,13 @@ const Booking = () => {
 					/>
 				)}
 				{/* Booking Items List */}
-				<BookingItemsList data={rides} rides={fleets} estimationsData={selectedLocations} pickup={pickup} dropOf={dropOn} />
+				<BookingItemsList
+					data={rides}
+					rides={fleets}
+					estimationsData={selectedLocations}
+					pickup={pickup}
+					dropOf={dropOn}
+				/>
 			</div>
 		</div>
 	);

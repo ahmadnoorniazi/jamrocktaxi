@@ -1,10 +1,11 @@
 // libs
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { FaRegMoneyBillAlt } from 'react-icons/fa';
 import { BiTimeFive, BiTask } from 'react-icons/bi';
 import { AiOutlineStar } from 'react-icons/ai';
 import Slider from 'react-slick';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { FirebaseContext } from 'common';
 
 // styles
 import '../styles/Home.scss';
@@ -30,7 +31,16 @@ const Home = ({ page }) => {
 		swipeToSlie: true
 	};
 	const [ pageData, setPageData ] = useState({});
+	const { api } = useContext(FirebaseContext);
+	const contactPage = useSelector((state) => state.pagesData.contactUs || {});
+
+	const { pageLoad } = api;
+
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(pageLoad('contactUs'));
+	}, []);
 
 	useEffect(
 		() => {
@@ -93,6 +103,9 @@ const Home = ({ page }) => {
 		whyChooseUsDetail
 	} = pageData;
 
+	const { heading, subHeading, appList } =
+		(contactPage.items && contactPage.items[0] && contactPage.items[0].fields) || {};
+
 	return (
 		<div>
 			<Navbar />
@@ -147,7 +160,7 @@ const Home = ({ page }) => {
 				</Slider>
 			</div>
 
-			<ContactUs />
+			<ContactUs heading={heading} appList={appList} />
 		</div>
 	);
 };

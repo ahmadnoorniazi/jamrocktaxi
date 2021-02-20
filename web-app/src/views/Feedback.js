@@ -13,31 +13,50 @@ import ChatIcon from '../assets/icons/chat.svg';
 import PlayStore from '../assets/icons/playstore.svg';
 import AppStore from '../assets/icons/app-store.svg';
 import { FiPhone, FiMail } from 'react-icons/fi';
+import withPage from '../utils/withPage';
 
-const Feedback = () => {
+const Feedback = ({ page }) => {
 	const [ isOpen, setIsOpen ] = useState(false);
 
 	const toggle = () => {
 		setIsOpen(!isOpen);
 	};
 
-	// const history = useHistory();
+	const {
+		getAppHeader,
+		getAppSubHeader,
+		heading,
+		onlineMessageText,
+		subHeading,
+		otherContacts,
+		appList,
+		appImagesList
+	} =
+		(page.items && page.items[0] && page.items[0].fields) || {};
 
+	// const history = useHistory();
+	console.log('pageeeeeeeeeee', page);
 	return (
 		<div>
 			<Navbar />
-			<ContactUs>
-				<p className="favorite-apps-text">Via Your Favourite Apps</p>
+			<ContactUs heading={heading} appList={appList}>
+				<p className="favorite-apps-text">{subHeading}</p>
 			</ContactUs>
 			<div className="feedback">
 				<div>
 					<h4>Other Contacts</h4>
 					<div className="feedback-inner m-0 row">
-						<div className="col-6 m-0 feedback-item">
-							<FiPhone color="#0070c0" size={18} />
-							<p>US +1 217 636 4160</p>
-						</div>
-						<div className="col-6 m-0 feedback-item">
+						{Array.isArray(otherContacts) &&
+							otherContacts.map((item) => (
+								<div className="col-6 m-0 feedback-item">
+									<a href={item.fields.link} style={{ display: 'flex' }}>
+										{item.fields.name === 'Phone' && <FiPhone color="#0070c0" size={18} />}
+										{item.fields.name.trim() === 'Email' && <FiMail color="#0070c0" size={20} />}
+										<p>{item.fields.value}</p>
+									</a>
+								</div>
+							))}
+						{/* <div className="col-6 m-0 feedback-item">
 							<FiPhone color="#0070c0" size={18} />
 							<p>UK +44 7985 190947</p>
 						</div>
@@ -48,7 +67,7 @@ const Feedback = () => {
 						<div className="col-6 m-0 feedback-item">
 							<FiMail color="#0070c0" size={20} />
 							<p>hello@jamrocktaxi.com</p>
-						</div>
+						</div> */}
 					</div>
 					{/* <div className='feedback-info'>
             <span>US +1 217 636 4160</span>
@@ -77,8 +96,10 @@ const Feedback = () => {
 				</div>
 				<div className="feedback-form-box">
 					<div className={'feedback-chat ' + (isOpen ? 'd-none' : 'd-block')}>
-						<h4>Send Online Message</h4>
-						<img src={ChatIcon} alt="chat" onClick={toggle} />
+						<h4>{onlineMessageText}</h4>
+						<a href="mailto:hello@jamrocktaxi.com">
+							<img src={ChatIcon} alt="chat" onClick={toggle} />
+						</a>
 					</div>
 					<div className={'feedback-form ' + (isOpen ? 'd-block' : 'd-none')}>
 						<h4>Write To Us</h4>
@@ -102,17 +123,16 @@ const Feedback = () => {
 					</div>
 				</div>
 				<div className="feedback-store">
-					<h4>Get the JamRockTaxi App</h4>
-					<p>Book or Manage your Booking Via our App</p>
+					<h4>{getAppHeader}</h4>
+					<p>{getAppSubHeader}</p>
 					<div className="feedback-store-icons">
-						<div>
-							<img src={PlayStore} alt="google play store" />
-							<span>Google play</span>
-						</div>
-						<div>
-							<img src={AppStore} alt="applay play store" />
-							<span>Apple store</span>
-						</div>
+						{Array.isArray(appImagesList) &&
+							appImagesList.map((item) => (
+								<div>
+									<img src={'https:' + item.fields.image.fields.file.url} alt={item.fields.label} />
+									<span>{item.fields.label}</span>
+								</div>
+							))}
 					</div>
 				</div>
 			</div>
@@ -120,4 +140,5 @@ const Feedback = () => {
 	);
 };
 
-export default Feedback;
+const pageSlug = 'contactUs';
+export default withPage(Feedback, pageSlug);

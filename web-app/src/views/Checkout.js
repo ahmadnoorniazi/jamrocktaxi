@@ -41,7 +41,7 @@ const Checkout = () => {
 	const cart = useSelector((state) => state.cart);
 	const { total, car, extras } = cart || {};
 	console.log('extrassssssssssssssss', extras);
-	const { pickup, dropOf, maxPassengers, maxBags, estimates } = car.rideData || {};
+	const { pickup, dropOf, maxPassengers, maxBags, estimates, name } = car.rideData || {};
 
 	useEffect(
 		() => {
@@ -96,7 +96,13 @@ const Checkout = () => {
 	return (
 		<div className="checkout">
 			<CheckoutNav />
-			<CheckoutHeading info={info} setInfo={setInfo} />
+			<CheckoutHeading
+				info={info}
+				setInfo={setInfo}
+				taxiName={name || ''}
+				maxBags={maxBags || 0}
+				maxPassengers={maxPassengers || 0}
+			/>
 			{!info && (
 				<div className="checkout-summary-price-main">
 					<h6>Total</h6>
@@ -157,8 +163,8 @@ const Checkout = () => {
 			{checkedReturn && (
 				<Fragment>
 					<CheckoutReturnLocation
-						locationFirst={pickup && pickup.structured_formatting && pickup.structured_formatting.main_text}
-						locationLast={dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text}
+						locationLast={pickup && pickup.structured_formatting && pickup.structured_formatting.main_text}
+						locationFirst={dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text}
 						secondLogo={airplane}
 						firstLogo={building}
 						setSelectedData={setTripReturnData}

@@ -6,6 +6,24 @@ const INITIAL_STATE = {
 	total: 0
 };
 
+const setExtras = (state, extra) => {
+	const exist = state.extras.find((item) => item.title === extra.title);
+	if (exist) {
+		return state.extras.map((item) => {
+			console.log('otherrrrrr hreeee');
+
+			if (item.title === extra.title) {
+				item.quantity = item.quantity + extra.quantity;
+				return item;
+			}
+			return item;
+		});
+	} else {
+		console.log('comeeeeeeee hreeee');
+		return [ ...state.extras, extra ];
+	}
+};
+
 export const cartReducer = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
 		case SET_CAR_DATA:
@@ -18,7 +36,7 @@ export const cartReducer = (state = INITIAL_STATE, action) => {
 		case SET_EXTRAS_DATA:
 			return {
 				...state,
-				extras: [ ...state.extras, action.payload ]
+				extras: [ ...setExtras(state, action.payload) ]
 			};
 		case SET_CART_TOTAL:
 			return {

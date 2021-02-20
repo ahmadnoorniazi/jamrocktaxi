@@ -10,8 +10,14 @@ import Polyline from '@mapbox/polyline';
 import { FareCalculator } from '../other/FareCalculator';
 import { getRouteDetails } from '../other/GoogleAPIFunctions';
 import { store } from '../store/store';
+import { contentfullConfig } from 'config';
+const contentfull = require('contentful');
 
-export const getEstimate = (bookingData) => (dispatch) => (firebase) => {
+console.log('COOOOOOOOOOOOOOO', contentfull);
+var client = contentfull.createClient({
+	...contentfullConfig
+});
+export const getEstimate = (bookingData) => (dispatch) => async (firebase) => {
 	dispatch({
 		type: FETCH_ESTIMATE,
 		payload: bookingData
@@ -19,6 +25,10 @@ export const getEstimate = (bookingData) => (dispatch) => (firebase) => {
 
 	let startLoc = '"' + bookingData.pickup.coords.lat + ',' + bookingData.pickup.coords.lng + '"';
 	let destLoc = '"' + bookingData.drop.coords.lat + ',' + bookingData.drop.coords.lng + '"';
+
+	const fleetsPrices = await client.getEntries({
+		content_type: 'fleetsPrices'
+	});
 
 	getRouteDetails(bookingData.platform, startLoc, destLoc).then((res) => {
 		if (res) {
@@ -29,7 +39,6 @@ export const getEstimate = (bookingData) => (dispatch) => (firebase) => {
 					longitude: point[1]
 				};
 			});
-			const fleetsPrices = store.getState().pagesData && store.getState().pagesData.fleetsPrices;
 			var fareCalculation = FareCalculator(res.distance, res.duration, bookingData.carDetails, fleetsPrices);
 			dispatch({
 				type: FETCH_ESTIMATE_SUCCESS,

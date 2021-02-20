@@ -1,16 +1,16 @@
 export function FareCalculator(distance, time, rateDetails, fleetsPrices) {
 	let price = null;
-console.log('flettttttttttttttttttttts pricesssssssssssssssss',fleetsPrices)
+	console.log('flettttttttttttttttttttts pricesssssssssssssssss', fleetsPrices);
 	if (fleetsPrices && fleetsPrices.items.length && fleetsPrices.items[0].fields) {
 		const dis = parseFloat(distance) / 1000;
-		console.log('dissssssssssssssssssssssssss', dis)
+		console.log('dissssssssssssssssssssssssss', dis);
 		const data = fleetsPrices.items.find((item) => item.fields.fleetName === rateDetails.name);
 		const filterPrice =
 			data &&
 			data.fields &&
 			data.fields.fleetPrices.find((fleet) => dis >= fleet.fields.start && dis <= fleet.fields.end);
 
-		if (!filterPrice) {fareCalculation
+		if (!filterPrice) {
 			price = { fields: { price: 0, returnPrice: 0 } };
 			console.log('priceeeeeeeeeee innnnnnnnnnnnnnn', price);
 		} else {

@@ -1,5 +1,5 @@
 // libs
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 // import Map from '../../components/Map';
 
@@ -8,6 +8,8 @@ import loader from '../../assets/loader.gif';
 import Map from './Map';
 
 const BookingMap = (props) => {
+	const [ mylocation, setMylocation ] = useState(null);
+
 	const containerStyle = {
 		width: '100%',
 		height: '100%'
@@ -25,6 +27,22 @@ const BookingMap = (props) => {
 		id: 'google-map-script',
 		googleMapsApiKey: 'AIzaSyCl46gvn2YsfKumxlh3UEOl_u3QeakcOVo'
 	});
+
+	useEffect(
+		() => {
+			if (mylocation == null) {
+				navigator.geolocation.getCurrentPosition(
+					(position) =>
+						setMylocation({
+							lat: position.coords.latitude,
+							lng: position.coords.longitude
+						}),
+					(err) => console.log(err)
+				);
+			}
+		},
+		[ mylocation ]
+	);
 
 	// import React, { Component } from 'react';
 	// import { render } from 'react-dom';
@@ -69,10 +87,10 @@ const BookingMap = (props) => {
 						'&libraries=geometry,drawing,places'
 					}
 					markers={props.locations}
-					loadingElement={loadingElement || <div style={{ height: `100%` }} />}
-					containerElement={containerElement || <div style={{ height: '80vh' }} />}
-					mapElement={mapElement || <div style={{ height: `100%` }} />}
-					defaultCenter={defaultCenter || { lat: 25.798939, lng: -80.291409 }}
+					loadingElement={<div style={{ height: `100%` }} />}
+					containerElement={<div style={{ height: `100%` }} />}
+					mapElement={<div style={{ height: `100%` }} />}
+					defaultCenter={mylocation || { lat: 25.798939, lng: -80.291409 }}
 					defaultZoom={defaultZoom || 20}
 				/>
 			) : (
