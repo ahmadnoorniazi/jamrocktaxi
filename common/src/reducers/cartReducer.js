@@ -7,11 +7,11 @@ const INITIAL_STATE = {
 };
 
 const setExtras = (state, extra) => {
-	const exist = state.extras.find((item) => item.title === extra.title);
+	const exist = state.extras.find(
+		(item) => item.title === extra.title && JSON.stringify(item.options) === JSON.stringify(extra.options)
+	);
 	if (exist) {
 		return state.extras.map((item) => {
-			console.log('otherrrrrr hreeee');
-
 			if (item.title === extra.title) {
 				item.quantity = item.quantity + extra.quantity;
 				return item;
@@ -20,6 +20,7 @@ const setExtras = (state, extra) => {
 		});
 	} else {
 		console.log('comeeeeeeee hreeee');
+		JSON.stringify.stringify;
 		return [ ...state.extras, extra ];
 	}
 };

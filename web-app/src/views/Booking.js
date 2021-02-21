@@ -49,6 +49,8 @@ const Booking = () => {
 	}, []);
 
 	useEffect(() => {
+		dispatch({ type: 'SET_CAR_DATA', payload: {} });
+		dispatch({ type: 'SET_CART_TOTAL', payload: 0 });
 		dispatch(pageLoad('fleetsPrices'));
 	}, []);
 

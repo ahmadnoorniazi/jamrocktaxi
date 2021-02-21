@@ -1,5 +1,5 @@
 // libs
-import React, { useState, Fragment, useContext } from 'react';
+import React, { useState, Fragment, useContext, useEffect } from 'react';
 import { AiFillInfoCircle, AiFillTag } from 'react-icons/ai';
 import { FiCheck } from 'react-icons/fi';
 import ExtrasVipInput from './ExtrasVipInput';
@@ -9,11 +9,14 @@ const options = [ 'Option 1', 'Option 2', 'Option 3', 'Option 4' ];
 
 const ExtrasVipItem = ({ extra, showToast }) => {
 	// props
-	const { image, title, subTitle, price, features } = extra;
-
+	const { image, title, subTitle, price, features, dropdowns } = extra;
+	console.log('drop downsssssssssssssssssssss', dropdowns);
 	// states
 	const [ info, setInfo ] = useState(false);
 	const [ quantity, setQuantity ] = useState(1);
+	const [ isValid, setIsValid ] = useState(false);
+	const [ values, setValues ] = useState({});
+
 	const [ dropdown, setDropdown ] = useState(false);
 	const { api } = useContext(FirebaseContext);
 	const { setCartData } = api;
@@ -23,6 +26,15 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 	const [ airport, setAirport ] = useState(-1);
 	const [ paxOne, setPaxOne ] = useState(-1);
 	const [ paxTwo, setPaxTwo ] = useState(-1);
+
+	useEffect(
+		() => {
+			const checkValid = dropdowns.optionsList.every((item) => values[item.name]);
+			setIsValid(checkValid);
+			console.log('validddddddddddddd', checkValid);
+		},
+		[ values ]
+	);
 
 	const onAddExtras = (extras) => {
 		showToast();
@@ -72,10 +84,22 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 					)}
 				</div>
 			</div>
+			{console.log('valllllllllllllllllllll', values)}
 			{dropdown && (
 				<Fragment>
 					<div className="extras-vip-item-input-container">
-						<ExtrasVipInput
+						{dropdowns.optionsList.map((item) => (
+							<ExtrasVipInput
+								title="Select Airport"
+								options={item.options}
+								name={item.name}
+								defaultValue={`SELECT THE ${item.name}`}
+								setSelected={setValues}
+								selected={values[item.name]}
+								initialValues={values}
+							/>
+						))}
+						{/* <ExtrasVipInput
 							title="Select Airport"
 							options={options}
 							setSelected={setAirport}
@@ -92,14 +116,20 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 							options={options}
 							setSelected={setPaxTwo}
 							selected={paxTwo}
-						/>
+						/> */}
 					</div>
 					<div className="extas-vip-item-btn-container">
 						<button onClick={() => setDropdown(false)}>Cancel</button>
 						<button
-							onClick={() => onAddExtras(extra)}
+							onClick={() => {
+								const comb = Object.values(values).join(',');
+								const price = dropdowns.combinations[comb] || 0;
+								console.log(comb, 'finalllllllllllllllll', price);
+								onAddExtras({ ...extra, price, options: values });
+							}}
+							disabled={!isValid}
 							className="extra-nav-btn extra-nav-btn-2"
-							style={{ color: '#0070C0' }}
+							style={{ color: '#0070C0', backgroundColor: !isValid ? 'grey !important' : '' }}
 						>
 							Add Me
 						</button>

@@ -4,7 +4,7 @@ const CheckoutHeading = ({ info, setInfo, taxiName, maxBags, maxPassengers }) =>
 	return (
 		<div className="checkout-heading">
 			<div>
-				<h6>{taxiName}</h6>c
+				<h6>{taxiName}</h6>
 				<p>
 					Up To {maxPassengers} Pax - Up To {maxBags} Suitcases
 				</p>

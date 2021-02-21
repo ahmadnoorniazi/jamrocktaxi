@@ -131,8 +131,7 @@ const Checkout = () => {
 				secondLogo={building}
 				setSelectedData={setTripStartData}
 			/>
-			{console.log('paaaaaaaaaaaaaaaaaaaaa', Array.from(Array(maxPassengers ? maxPassengers + 1 : 0 + 1).keys()))}
-			{console.log('bagssssssssssssssssssssssssssssss', Array.from(Array(maxBags ? maxBags + 1 : 0 + 1).keys()))}
+
 			<div className="row m-0">
 				<div className="col-6">
 					<ExtrasVipInput

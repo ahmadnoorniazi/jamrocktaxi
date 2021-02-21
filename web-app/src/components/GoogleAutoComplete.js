@@ -85,7 +85,7 @@ const GoogleAutoComplete = ({
 				return undefined;
 			}
 
-			fetch({ input: inputValue }, (results) => {
+			fetch({ input: inputValue, componentRestrictions: { country: 'jm' } }, (results) => {
 				if (active) {
 					let newOptions = [];
 

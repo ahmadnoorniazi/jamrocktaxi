@@ -28,22 +28,6 @@ const BookingMap = (props) => {
 		googleMapsApiKey: 'AIzaSyCl46gvn2YsfKumxlh3UEOl_u3QeakcOVo'
 	});
 
-	useEffect(
-		() => {
-			if (mylocation == null) {
-				navigator.geolocation.getCurrentPosition(
-					(position) =>
-						setMylocation({
-							lat: position.coords.latitude,
-							lng: position.coords.longitude
-						}),
-					(err) => console.log(err)
-				);
-			}
-		},
-		[ mylocation ]
-	);
-
 	// import React, { Component } from 'react';
 	// import { render } from 'react-dom';
 	// import './style.css';

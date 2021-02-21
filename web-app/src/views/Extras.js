@@ -37,7 +37,8 @@ const Extras = ({ page }) => {
 					title: item.fields.title,
 					subTitle: item.fields.subTitle,
 					price: item.fields.price,
-					image: 'https:' + item.fields.image.fields.file.url
+					image: 'https:' + item.fields.image.fields.file.url,
+					dropdowns: item.fields.dropDownsList
 				}));
 			}
 
@@ -88,6 +89,7 @@ const Extras = ({ page }) => {
 				/>
 			)}
 			<ExtrasList showToast={showToast} extras={extrasList} />
+			<ExtrasNav showCheckout={showCheckout} />
 		</div>
 	);
 };

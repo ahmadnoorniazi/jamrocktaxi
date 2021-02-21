@@ -22,10 +22,10 @@ const CheckoutInfo = ({
 		<div className="checkout-summary">
 			<div className="checkout-summary-info">
 				<div className="checkout-summary-info-date">
-					<IoIosCalendar /> <p>{dateFormat(date.startDate, 'longDate') || ''}</p>
+					<IoIosCalendar /> <p>{dateFormat(date.startDate, 'dd-mm-yy') || ''}</p>
 				</div>
 				<div className="checkout-summary-time-container">
-					<p>{dateFormat(date.startDate, 'shortTime') || ''}</p>
+					<p>{dateFormat(date.startDate, 'HH:MM') || ''}</p>
 				</div>
 
 				<div className="checkout-summary-info-flight">
@@ -49,10 +49,10 @@ const CheckoutInfo = ({
 				<Fragment>
 					<div className="checkout-summary-info">
 						<div className="checkout-summary-info-date">
-							<IoIosCalendar /> <p>{dateFormat(secondDate.returnDate, 'longDate') || ''}</p>
+							<IoIosCalendar /> <p>{dateFormat(secondDate.returnDate, 'dd-mm-yy') || ''}</p>
 						</div>
 						<div className="checkout-summary-time-container">
-							<p>{dateFormat(secondDate.returnDate, 'shortTime') || ''}</p>
+							<p>{dateFormat(secondDate.returnDate, 'HH:MM') || ''}</p>
 						</div>
 						<div className="checkout-summary-info-return-flight">
 							<IoIosAirplane /> <p>{secondDate.flightNumber || ''}</p>

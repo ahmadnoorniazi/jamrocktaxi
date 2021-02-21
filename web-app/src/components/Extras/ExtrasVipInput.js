@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaChevronDown } from 'react-icons/fa';
 import { BsFillPersonFill, BsBagFill } from 'react-icons/bs';
 
-const ExtrasVipDropdown = ({ options, title, selected, setSelected }) => {
+const ExtrasVipDropdown = ({ options, title, selected, setSelected, defaultValue, initialValues, name }) => {
 	const [ active, setActive ] = useState(false);
 
 	const toggleDropdown = () => {
@@ -11,7 +11,7 @@ const ExtrasVipDropdown = ({ options, title, selected, setSelected }) => {
 
 	const handleClick = (i) => {
 		toggleDropdown();
-		setSelected(i);
+		setSelected({ ...initialValues, [name]: i });
 	};
 
 	const renderOptions = () => {
@@ -23,12 +23,14 @@ const ExtrasVipDropdown = ({ options, title, selected, setSelected }) => {
 			return (
 				<li
 					onClick={() => {
-						handleClick(option);
+						handleClick(option.value);
 					}}
 					key={i}
-					className={'dropdown__list-item ' + (i === selected ? 'dropdown__list-item--active' : '')}
+					className={
+						'dropdown__list-item ' + (option.value === selected ? 'dropdown__list-item--active' : '')
+					}
 				>
-					{option}
+					{option.label}
 				</li>
 			);
 		});
@@ -47,7 +49,7 @@ const ExtrasVipDropdown = ({ options, title, selected, setSelected }) => {
 					<BsBagFill />
 				) : null}
 
-				{selected === -1 ? title : selected}
+				{!selected ? title : selected}
 				<FaChevronDown />
 			</div>
 			<ul className={'dropdown__list ' + (active ? 'dropdown__list--active' : '')}>{renderOptions()}</ul>
