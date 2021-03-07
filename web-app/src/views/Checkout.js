@@ -17,6 +17,8 @@ import CheckoutSwitch from '../components/Checkout/CheckoutSwitch';
 import CheckoutForm from '../components/Checkout/CheckoutForm';
 import CheckoutPayment from '../components/Checkout/CheckoutPayment';
 import ExtrasVipInput from '../components/Extras/ExtrasVipInput';
+import ExtrasVipInputSecond from '../components/Extras/ExtrasVipInput2';
+
 import { useSelector, useDispatch } from 'react-redux';
 // assets
 import airplane from '../assets/aeroplane.svg';
@@ -134,7 +136,7 @@ const Checkout = () => {
 
 			<div className="row m-0">
 				<div className="col-6">
-					<ExtrasVipInput
+					<ExtrasVipInputSecond
 						title="No. of Pax"
 						options={Array.from(Array(maxPassengers ? maxPassengers + 1 : 0 + 1).keys())}
 						setSelected={setPax}
@@ -142,7 +144,7 @@ const Checkout = () => {
 					/>
 				</div>
 				<div className="col-6">
-					<ExtrasVipInput
+					<ExtrasVipInputSecond
 						title="No. of Bags"
 						options={Array.from(Array(maxBags ? maxBags + 1 : 0 + 1).keys())}
 						setSelected={setBags}
