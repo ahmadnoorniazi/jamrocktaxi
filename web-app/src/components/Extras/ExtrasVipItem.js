@@ -90,7 +90,7 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 					<div className="extras-vip-item-input-container">
 						{dropdowns.optionsList.map((item) => (
 							<ExtrasVipInput
-								title="Select Airport"
+								title={`SELECT THE ${item.name}`}
 								options={item.options}
 								name={item.name}
 								defaultValue={`SELECT THE ${item.name}`}
