@@ -57,10 +57,10 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 						onClick={() => setInfo(!info)}
 					/>
 				</div>
-				<div className="extras-item-info-container">
+				<div className="extras-item-info-container" style={{alignItems: "center"}}>
 					<p>
 						{airport === -1 && paxOne === -1 && paxTwo === -1 ? (
-							'From'
+							'Fr'
 						) : (
 							<AiFillTag
 								style={{
@@ -89,6 +89,7 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 				<Fragment>
 					<div className="extras-vip-item-input-container">
 						{dropdowns.optionsList.map((item) => (
+							
 							<ExtrasVipInput
 								title={`SELECT THE ${item.name}`}
 								options={item.options}

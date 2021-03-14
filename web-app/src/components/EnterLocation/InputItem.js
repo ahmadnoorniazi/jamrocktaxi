@@ -36,30 +36,27 @@ const InputItem = ({
 	return (
 		<div
 			className="enter-location-input"
-			style={{
-				backgroundColor: `${option ? '#0070c0' : 'white'}`
-			}}
+			
 			onClick={focus}
 		>
-			{option ? (
+			{/* {option ? (
 				<IoLocationOutline className="enter-location-input-icon" style={{ color: 'white' }} />
 			) : (
 				<IoLocationSharp style={{ color: '#0070c0' }} />
-			)}
+			)} */}
 			<input
 				type="text"
 				disabled={disabled}
 				value={textValue}
 				onChange={(e) => setTextValue(e.target.value)}
-				style={{ color: `${option ? 'white' : '#0070c0'}` }}
 				placeholder={placeholder}
 				ref={ref}
 			/>
-			<IoMdArrowRoundForward
+			{/* <IoMdArrowRoundForward
 				style={{
 					color: `${option ? 'white' : '#0070c0'}`
 				}}
-			/>
+			/> */}
 		</div>
 	);
 };

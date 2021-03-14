@@ -46,7 +46,7 @@ const BookingItem = ({ ride, estimates, pickup, dropOf }) => {
 						</div>
 					</div>
 					<p className="booking-item-price">
-						<AiFillTag /> ${estimates && estimates.estimateFare ? estimates.estimateFare : 0}
+						<AiFillTag /> ${estimates && estimates.estimateFare ? (Number(estimates.estimateFare) || 0).toFixed() : 0}
 					</p>
 				</div>
 				<div className="booking-item-book-btn-container">

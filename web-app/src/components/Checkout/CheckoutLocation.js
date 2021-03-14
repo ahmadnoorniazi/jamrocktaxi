@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 // libs
 import { IoLocationOutline, IoLocationSharp } from 'react-icons/io5';
 // import { GoPrimitiveDot } from "react-icons/go";
-import CheckoutDateTimePicker from './CheckoutDateTimePicker'
+import CheckoutDateTimePicker from './Calender'
 const CheckoutLocation = ({ locationFirst, locationLast, firstLogo, secondLogo, setSelectedData }) => {
 
 	const [value, setValue] = useState("")
@@ -31,16 +31,9 @@ const CheckoutLocation = ({ locationFirst, locationLast, firstLogo, secondLogo, 
 					{/* <div className="checkout-location-left-mid-first">
 						<CheckoutDateTimePicker />
 					</div> */}
-					<div className="checkout-return-location-left-mid-first">
-						<h6>Pickup Date & Time</h6>
-						<CheckoutDateTimePicker getDate={setDate} />
-						{/* <p> */}
 
-						{/* <span>20/01/21</span>
-              <GoPrimitiveDot />
-              <span>16:30</span> */}
-						{/* </p> */}
-					</div>
+					<CheckoutDateTimePicker label="Pickup Date & Time" getDate={setDate} />
+
 						<div className="checkout-return-location-left-mid-last">
 						<h6>
 							Flight Number <span>(If Known)</span>

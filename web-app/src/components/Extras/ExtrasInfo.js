@@ -17,14 +17,19 @@ const ExtrasInfo = ({ pickupAddress, dropAddress, extras, total, carFare }) => {
 					<p className="extras-summary-info-price">${carFare}</p>
 				</div>
 			</div>
-			<div className="extras-summary-location">
-				<div>
-					<IoLocationOutline size={24} />
+			<div className="extras-summary-location" style={{flexDirection: 'row'}}>
+				<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center'}}>
+					<IoLocationOutline  style={{marginRight: 0}} size={15} />
+					<div style={{minHeight: '30%', width: '1px', backgroundColor: '#0070c0', marginTop: 0, marginBottom:0, gap: 0}}/>
+					<IoLocationSharp style={{marginRight: 0}} size={15} />
+				</div>
+				<div style={{display: "flex", flexDirection: "column"}}>
+					<div>
 					<p className="ml-1">{pickupAddress}</p>
 				</div>
 				<div>
-					<IoLocationSharp size={20} />
 					<p className="ml-1">{dropAddress}</p>
+				</div>
 				</div>
 			</div>
 			<p className="extras-summary-extras-text">Trip Extras</p>

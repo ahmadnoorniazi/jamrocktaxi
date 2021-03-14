@@ -2,6 +2,7 @@
 
 // Navbar
 header {
+
   img {
     width: 100px;
     margin-left: 10px;
@@ -61,9 +62,10 @@ header {
   }
   p {
     text-align: center;
-    font-weight: 200;
+    font-weight: 300;
     font-size: 15px;
     margin-bottom: 50px;
+    color: black;
   }
 
   a {
@@ -78,7 +80,7 @@ header {
     height: 60px;
     width: 90%;
     margin: 0 auto;
-    border: 1px solid rgba(0, 0, 0, 0.5);
+    border: 1px solid #0070c0;
     padding: 0 20px;
     border-radius: 8px;
     cursor: pointer;
@@ -86,9 +88,8 @@ header {
     p {
       font-size: 16px;
       opacity: 1;
-      color: black;
+      color: #0070c0;
       font-weight: 200;
-      opacity: 0.7;
       margin: 0;
       margin-left: 10px;
     }
@@ -103,7 +104,7 @@ header {
       display: flex;
       align-items: center;
       color: $textSecondaryColor;
-      margin: 10px 0;
+      margin: 3px 0;
 
       p {
         color: black;
@@ -225,11 +226,15 @@ header {
     a {
       color: white;
       text-align: center;
-      border-bottom: 3px solid rgba(255, 255, 255, 0.8);
       letter-spacing: 3px;
       font-weight: bolder;
       font-size: 19px;
+      display: flex;
+      div {
+        padding-right: 5px;
+      }
     }
+    
   }
 }
 .home-text-section {
@@ -318,6 +323,21 @@ header {
   position: absolute;
   left: 0;
   right: 0;
+}
+
+@media screen and (max-width: 420px) {
+  header {
+   border-bottom: 2px solid gray;
+  }
+  .enter-location-main-cont{
+    margin-left: 10px !important; ;
+  }
+  .enter-location-upper{
+    background-color: rgba(0, 112, 192, 0.1);
+  }
+  .enter-location-main-cont{
+    background-color: transparent !important;
+  }
 }
 
 @media screen and (min-width: 776px) {

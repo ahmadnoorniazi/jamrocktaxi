@@ -5,7 +5,7 @@ import BookingItem from './BookingItem';
 const BookingItemsList = ({ rides, data, estimationsData, pickup, dropOf }) => {
 	return (
 		<div className="booking-list-item-container">
-			<h5 className="booking-list-item-container-title">Select Taxi</h5>
+			<h5 className="booking-list-item-container-title">Select Your Taxi</h5>
 			{Array.isArray(rides) &&
 				rides.map((ride, index) => {
 					return (

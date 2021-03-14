@@ -35,6 +35,8 @@ const Booking = () => {
 	const [ info, setInfo ] = useState(false);
 	const fleets = useSelector((state) => state.fleetsData.fleets);
 	const selectedLocations = useSelector((state) => state.selectedItems);
+	const estimatedata = useSelector((state) => state.estimatedata.estimate || {});
+	console.log('jjjjjjjjjj', estimatedata)
 	const { api } = useContext(FirebaseContext);
 	const history = useHistory();
 	const { getEstimate, pageLoad } = api;
@@ -102,6 +104,11 @@ const Booking = () => {
 					]}
 				/>
 			)}
+			<div>
+				<p>{estimatedata && (estimatedata.estimateDistance /1000).toFixed()}Km
+				 <span style={{marginLeft: "5px"}}>{estimatedata && (estimatedata.estimateTime /3600).toFixed()}h</span>
+				</p>
+			</div>
 
 			<div className="booking-list">
 				<div className="booking-list-bar" />
@@ -118,6 +125,7 @@ const Booking = () => {
 					/>
 				)}
 				{/* Booking Items List */}
+				<div style={{backgroundColor:"gray", height: "1px"}} />
 				<BookingItemsList
 					data={rides}
 					rides={fleets}

@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
-import { FaRoute } from 'react-icons/fa';
+import { FaRoute, FaDotCircle } from 'react-icons/fa';
+import { MdLocationOn } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux';
 import GoogleMapsAutoComplete from '../components/GoogleMapsAutoComplete';
 import GoogleAutoComplete from '../components/GoogleAutoComplete';
@@ -9,9 +10,10 @@ import { language } from 'config';
 import { FirebaseContext } from 'common';
 import { useHistory } from 'react-router-dom';
 import { geocodeByPlaceId } from 'react-places-autocomplete';
+
 import withPage from '../utils/withPage';
 import loader from '../assets/loader.gif';
-
+import Timeline from '../components/Timeline';
 // styles
 import '../styles/EnterLocation.scss';
 
@@ -189,11 +191,22 @@ const EnterLocation = (props) => {
 		<div className="enter-location">
 			<div className="enter-location-upper">
 				<Link to="/">
-					<div className="enter-location-back">
+					<div className="enter-location-back" style={{backgroundColor: "#fff"}}>
 						<IoArrowBack />
 					</div>
-				</Link>
-
+				</Link>	
+				<div className="enter-location-main-cont" style={{display: 'flex', flexDirection: 'row', marginLeft: "40px", marginRight: "40px", padding: "10px", backgroundColor: "rgba(0, 112, 192, 0.1)"}}>
+				<div style={{display: "flex", justifyContent: "space-around", flexDirection: "column", alignItems: "center", marginRight: "15px"}}>
+					<div>
+						<FaDotCircle style={{color: "#0070c0"}}/>
+					</div>
+					<div style={{minHeight: "70%", width: "2px", backgroundColor: "#0070c0"}}/>
+				
+					<div>
+						<MdLocationOn style={{width: "25px", height: "25px", color: '#0070c0'}} />
+					</div>
+				</div>	
+				<div style={{width: "100%", marginRight: "20px"}}>
 				<GoogleAutoComplete
 					type="From"
 					callFrom={true}
@@ -205,6 +218,7 @@ const EnterLocation = (props) => {
 					setSelectedValue={setValueFrom}
 					name="From"
 				/>
+				<div style={{backgroundColor: "#0070c0", height:"2px"}} />
 
 				<GoogleAutoComplete
 					type="To"
@@ -217,6 +231,9 @@ const EnterLocation = (props) => {
 					disabled={!valueFrom}
 					name="To"
 				/>
+			</div>
+			</div>	
+		
 			</div>
 			<div className="enter-location-lower">
 				{option ? (
@@ -236,17 +253,20 @@ const EnterLocation = (props) => {
 					<img className="loader" src={loader} alt="loader" />
 				</div>
 			)}
+			{!disabledState &&
 			<button
 				className="enter-location-show_prices"
+
 				disabled={disabledState}
 				onClick={onShowPrices}
-				style={{ border: 'none' }}
+				style={{ border: 'none', background: "none" }}
 			>
 				<div style={{ backgroundColor: disabledState ? 'grey' : '' }}>
 					<img src={priceTag} alt="price_tag" />
 					<p>Show Prices</p>
 				</div>
 			</button>
+}
 		</div>
 	);
 };

@@ -26,9 +26,6 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      border: 1px solid $textColor;
-      padding: 0 20px;
-      margin: 15px auto;
       height: 60px;
       border-radius: 8px;
       cursor: pointer;
@@ -49,7 +46,7 @@
           outline: none;
         }
         &::placeholder {
-          color: #aaa;
+          color: #000;
         }
       }
     }
