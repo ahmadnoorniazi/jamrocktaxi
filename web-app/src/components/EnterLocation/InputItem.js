@@ -32,7 +32,7 @@ const InputItem = ({
 			setOption(true);
 		}
 	};
-
+console.log("texttttt valuwee", textValue)
 	return (
 		<div
 			className="enter-location-input"

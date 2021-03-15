@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
+import { BiX } from 'react-icons/bi';
 import { FaRoute, FaDotCircle } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md'
 import { useDispatch, useSelector } from 'react-redux';
@@ -198,8 +199,11 @@ const EnterLocation = (props) => {
 				</Link>	
 				<div className="enter-location-main-cont" style={{display: 'flex', flexDirection: 'row', marginLeft: "40px", marginRight: "40px", padding: "10px", backgroundColor: "rgba(0, 112, 192, 0.1)"}}>
 				<div style={{width: "100%", marginRight: "20px"}}>
-			<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-						<FaDotCircle style={{color: "#0070c0"}}/>
+			<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: "5px"}}>
+				<div>
+						<FaDotCircle size={15} style={{color: "#0070c0"}}/>
+						</div>
+					<div style={{display: "flex", alignItems: 'center', width: "100%"}}>
 				<GoogleAutoComplete
 					type="From"
 					callFrom={true}
@@ -211,10 +215,21 @@ const EnterLocation = (props) => {
 					setSelectedValue={setValueFrom}
 					name="From"
 				/>
+				<button style={{background: 'transparent', border: "none"}} onClick={() => {
+					setValueFrom("")
+					setDropAddress("")
+				}}>
+				<BiX />
+				</button>
+
+				</div>
 				</div>
 				<div style={{backgroundColor: "#0070c0", height:"2px"}} />
-				<div  style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-					<FaDotCircle style={{ color: 'red'}} />
+				<div  style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: "5px"}}>
+					<div>
+					<FaDotCircle size={15} style={{ color: 'red'}} />
+					</div>
+					<div style={{display: "flex", alignItems: 'center', width: "100%"}}>
 				<GoogleAutoComplete
 					type="To"
 					callFrom={false}
@@ -226,6 +241,17 @@ const EnterLocation = (props) => {
 					disabled={!valueFrom}
 					name="To"
 				/>
+				{console.log("jjjjjjjj", valueTo)}
+				{console.log("vvvvvvvvv", valueFrom)}
+				<button style={{background: 'transparent', border: "none"}} onClick={() => {
+					setValueTo("")
+					setPickupAddress("")
+				}}>
+				<BiX />
+				</button>
+
+					</div>
+				
 			</div>
 
 			</div>

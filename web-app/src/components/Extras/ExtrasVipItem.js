@@ -16,7 +16,7 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 	const [ quantity, setQuantity ] = useState(1);
 	const [ isValid, setIsValid ] = useState(false);
 	const [ values, setValues ] = useState({});
-
+	console.log('values', values);
 	const [ dropdown, setDropdown ] = useState(false);
 	const { api } = useContext(FirebaseContext);
 	const { setCartData } = api;

@@ -148,6 +148,7 @@ const GoogleAutoComplete = ({
 		setValue(value);
 	};
 	const selectedAddress = selectedValue || value;
+	console.log("selectedAddress:", selectedAddress)
 	return (
 		<InputItem
 			option={option}

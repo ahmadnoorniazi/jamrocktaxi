@@ -1,7 +1,7 @@
 import React from 'react';
 // libs
 import { Link } from 'react-router-dom';
-import { IoArrowBack } from 'react-icons/io5';
+import { IoArrowBack, IoArrowForward } from 'react-icons/io5';
 
 const ExtrasNav = ({ showCheckout }) => {
 	return (
@@ -10,8 +10,8 @@ const ExtrasNav = ({ showCheckout }) => {
 				<IoArrowBack />
 			</Link>
 			<h5>Select Your Extras</h5>
-			<Link to="/checkout" className={!showCheckout ? 'extra-nav-link' : 'extra-nav-btn'}>
-				{'Checkout'}
+			<Link to="/checkout" className="extras-back">
+				<IoArrowForward />
 			</Link>
 		</div>
 	);

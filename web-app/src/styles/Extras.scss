@@ -162,7 +162,7 @@
             margin: 0;
             font-size: 12px;
             font-weight: 500;
-            color: rgba(0, 0, 0, 0.5);
+            color: #000;
 
             span {
               color: black;
@@ -172,13 +172,13 @@
           }
 
           button {
-            font-size: 16px;
+            font-size: 16px !important;
             font-weight: 600;
             cursor: pointer;
-            background-color: transparent;
+            background-color: $textColor;
             border: none;
             outline: none;
-            color: $textColor;
+            color: #fff !important;
             margin: 0;
           }
           div {
