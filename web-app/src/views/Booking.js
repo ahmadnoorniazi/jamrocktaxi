@@ -105,7 +105,7 @@ const Booking = () => {
 				/>
 			)}
 			<div>
-				<p>{estimatedata && (estimatedata.estimateDistance /1000).toFixed()}Km
+				<p style={{marginBottom: 0}}>{estimatedata && (estimatedata.estimateDistance /1000).toFixed()}Km
 				 <span style={{marginLeft: "5px"}}>{estimatedata && (estimatedata.estimateTime /60).toFixed()}m</span>
 				</p>
 			</div>
