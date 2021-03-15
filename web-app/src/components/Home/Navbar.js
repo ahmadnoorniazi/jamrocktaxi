@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { BsChatSquare } from "react-icons/bs";
-import { FaQuestionCircle } from "react-icons/fa";
+import { FaQuestionCircle, FaUser } from "react-icons/fa";
+import { BiCar } from "react-icons/bi";
 import React from 'react';
 import { AiOutlineUser, AiOutlineMenu, AiOutlineClose, AiOutlineHome, AiFillCar, AiOutlineBulb, AiOutlineUserAdd } from "react-icons/ai";
 
@@ -22,16 +23,14 @@ const Navbar = () => {
           <img src={logo} alt="logo" />
         </Link>
         <div className="home-nav">
-          <div
-            onClick={() => history.push("/enter-location")}
-            className="home-nav-book"
-          >
-            <p>Book</p>
-            {/* <IoTicketOutline /> */}
-          </div>
+      
           <Link to="/login">
             <AiOutlineUser className="home-nav-user" />
           </Link>
+             <Link to="/enter-location">
+               <BiCar className="home-nav-user" />
+          </Link>
+
           {nav ? (
             <AiOutlineClose
               className="home-nav-bars"

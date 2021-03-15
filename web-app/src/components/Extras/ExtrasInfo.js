@@ -2,7 +2,8 @@ import React from 'react';
 // libs
 import { IoLocationOutline, IoLocationSharp } from 'react-icons/io5';
 // import { IoIosCalendar } from "react-icons/io";
-import { FaGlassMartini } from 'react-icons/fa';
+import { FaGlassMartini, FaDotCircle} from 'react-icons/fa';
+
 import { GiFireFlower } from 'react-icons/gi';
 
 const ExtrasInfo = ({ pickupAddress, dropAddress, extras, total, carFare }) => {
@@ -18,16 +19,13 @@ const ExtrasInfo = ({ pickupAddress, dropAddress, extras, total, carFare }) => {
 				</div>
 			</div>
 			<div className="extras-summary-location" style={{flexDirection: 'row'}}>
-				<div style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center'}}>
-					<IoLocationOutline  style={{marginRight: 0}} size={15} />
-					<div style={{minHeight: '30%', width: '1px', backgroundColor: '#0070c0', marginTop: 0, marginBottom:0, gap: 0}}/>
-					<IoLocationSharp style={{marginRight: 0}} size={15} />
-				</div>
 				<div style={{display: "flex", flexDirection: "column"}}>
 					<div>
+					<FaDotCircle style={{color: "#0070c0"}}/>
 					<p className="ml-1">{pickupAddress}</p>
 				</div>
 				<div>
+					<FaDotCircle style={{color: "red"}}/>
 					<p className="ml-1">{dropAddress}</p>
 				</div>
 				</div>

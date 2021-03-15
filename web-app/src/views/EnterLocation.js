@@ -48,6 +48,8 @@ const EnterLocation = (props) => {
 	const estimatedata = useSelector((state) => state.estimatedata);
 
 	const locationsData = useSelector((state) => state.pagesData.prefdefinedLocations);
+	const disabledState = !pickupAddress || !dropAddress;
+	const extraLocations = disabledState ? predefinedLoc : []
 
 	useEffect(() => {
 		dispatch(pageLoad('homepage'));
@@ -116,7 +118,7 @@ const EnterLocation = (props) => {
 
 		return (
 			<div className="enter-location-lower-item-wrapper" style={{ cursor: 'pointer' }}>
-				{[ ...locations, ...predefinedLoc ].map((location, index) => {
+				{[ ...locations, ...extraLocations ].map((location, index) => {
 					return (
 						<div
 							className="enter-location-lower-item"
@@ -125,7 +127,7 @@ const EnterLocation = (props) => {
 							onClick={() => handleItemClick(location)}
 						>
 							<div className="enter-location-lower-item-content">
-								<h6>{location.structured_formatting.main_text}</h6>
+								<h6 className="enter-location-lower-item-content-main">{location.structured_formatting.main_text}</h6>
 								<p>{location.description}</p>
 							</div>
 						</div>
@@ -185,7 +187,6 @@ const EnterLocation = (props) => {
 				.catch((error) => alert(language.google_places_error));
 		}
 	};
-	const disabledState = !pickupAddress || !dropAddress;
 
 	return (
 		<div className="enter-location">
@@ -196,17 +197,9 @@ const EnterLocation = (props) => {
 					</div>
 				</Link>	
 				<div className="enter-location-main-cont" style={{display: 'flex', flexDirection: 'row', marginLeft: "40px", marginRight: "40px", padding: "10px", backgroundColor: "rgba(0, 112, 192, 0.1)"}}>
-				<div style={{display: "flex", justifyContent: "space-around", flexDirection: "column", alignItems: "center", marginRight: "15px"}}>
-					<div>
-						<FaDotCircle style={{color: "#0070c0"}}/>
-					</div>
-					<div style={{minHeight: "70%", width: "2px", backgroundColor: "#0070c0"}}/>
-				
-					<div>
-						<MdLocationOn style={{width: "25px", height: "25px", color: '#0070c0'}} />
-					</div>
-				</div>	
 				<div style={{width: "100%", marginRight: "20px"}}>
+			<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+						<FaDotCircle style={{color: "#0070c0"}}/>
 				<GoogleAutoComplete
 					type="From"
 					callFrom={true}
@@ -218,8 +211,10 @@ const EnterLocation = (props) => {
 					setSelectedValue={setValueFrom}
 					name="From"
 				/>
+				</div>
 				<div style={{backgroundColor: "#0070c0", height:"2px"}} />
-
+				<div  style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+					<FaDotCircle style={{ color: 'red'}} />
 				<GoogleAutoComplete
 					type="To"
 					callFrom={false}
@@ -231,6 +226,8 @@ const EnterLocation = (props) => {
 					disabled={!valueFrom}
 					name="To"
 				/>
+			</div>
+
 			</div>
 			</div>	
 		

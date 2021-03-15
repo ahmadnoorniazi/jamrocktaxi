@@ -15,8 +15,7 @@ export default function BasicTimeline() {
           <TimelineConnector />
         </TimelineSeparator>
         <TimelineContent>
-                        <input placeholder="lol" />
-
+        <input placeholder="lol" />
         </TimelineContent>
       </TimelineItem>
       <TimelineItem>

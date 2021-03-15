@@ -39,7 +39,9 @@ header {
     .home-nav-user {
       cursor: pointer;
       font-size: 1.7rem;
-      margin: 0 35px;
+      margin-left: 10px;
+      margin-right: 10px;
+      // margin: 0 35px;
     }
     .home-nav-bars {
       font-size: 1.7rem;
@@ -87,8 +89,7 @@ header {
 
     p {
       font-size: 16px;
-      opacity: 1;
-      color: #0070c0;
+      color: blue;
       font-weight: 200;
       margin: 0;
       margin-left: 10px;
@@ -118,7 +119,6 @@ header {
   p {
     color: $textSecondaryColor;
     text-align: center;
-    margin-top: 20px;
   }
 }
 
@@ -338,6 +338,15 @@ header {
   .enter-location-main-cont{
     background-color: transparent !important;
   }
+  .home-nav-user{
+    margin-left: 30px !important;
+    margin-right: 30px !important; 
+  }
+  .enter-location-show_prices {
+      div{
+      width: 100% !important;
+      }
+    }
 }
 
 @media screen and (min-width: 776px) {
