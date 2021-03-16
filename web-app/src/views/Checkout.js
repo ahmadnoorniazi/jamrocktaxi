@@ -1,6 +1,6 @@
 // libs
 import React, { useState, Fragment, useContext, useEffect } from 'react';
-
+import Select from './DetailSelect'
 // styles
 import '../styles/Checkout.scss';
 
@@ -122,6 +122,7 @@ const Checkout = () => {
 					extras={extras}
 					total={fullTotal}
 					pax={pax}
+					bags={bags}
 					startPrice={startPrice}
 					returnPrice={returnPrice}
 				/>
@@ -136,7 +137,7 @@ const Checkout = () => {
 
 			<div className="row m-0">
 				<div className="col-6">
-					<ExtrasVipInputSecond
+					<Select
 						title="No. of Pax"
 						options={Array.from(Array(maxPassengers ? maxPassengers + 1 : 0 + 1).keys())}
 						setSelected={setPax}
@@ -144,7 +145,7 @@ const Checkout = () => {
 					/>
 				</div>
 				<div className="col-6">
-					<ExtrasVipInputSecond
+					<Select
 						title="No. of Bags"
 						options={Array.from(Array(maxBags ? maxBags + 1 : 0 + 1).keys())}
 						setSelected={setBags}

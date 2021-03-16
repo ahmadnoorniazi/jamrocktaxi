@@ -18,12 +18,13 @@ export default function DateAndTimePickers({label}) {
   const classes = useStyles();
 
   return (
-    <form className={classes.container} noValidate>
+    <form className={`${classes.container} calendar-input`} noValidate>
       <TextField
         id="datetime-local"
         label={label}
         variant="outlined"
         type="datetime-local"
+        format="yyyy-mm-dd"
         defaultValue="2017-05-24T10:30"
         className={classes.textField}
         InputLabelProps={{

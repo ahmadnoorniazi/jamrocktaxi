@@ -347,6 +347,24 @@ header {
       width: 100% !important;
       }
     }
+  .calendar-input{
+    width: 50% !important;
+  }
+  .checkout-payment-form-card-num{
+    width: 100% !important;
+        margin-bottom: 10px !important;
+  }
+  .checkout-payment-form-card-expiry{
+        width: 100% !important;
+        margin-bottom: 10px !important;
+  }
+    .checkout-payment-form-card-cvc{
+        width: 100% !important;
+        margin-bottom: 10px !important;
+  }
+  .payment-card-main{
+    flex-direction: column !important;
+  }
 }
 
 @media screen and (min-width: 776px) {

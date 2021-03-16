@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react';
 import { IoLocationOutline, IoLocationSharp } from 'react-icons/io5';
 // import { GoPrimitiveDot } from "react-icons/go";
 import CheckoutDateTimePicker from './Calender'
+import TextField from '../../views/TextField'
 const CheckoutLocation = ({ locationFirst, locationLast, firstLogo, secondLogo, setSelectedData }) => {
 
 	const [value, setValue] = useState("")
@@ -33,13 +34,9 @@ const CheckoutLocation = ({ locationFirst, locationLast, firstLogo, secondLogo, 
 					</div> */}
 
 					<CheckoutDateTimePicker label="Pickup Date & Time" getDate={setDate} />
+						<TextField label="Flight Number" handleChange={handleReturnNumber} value={value} />
 
-						<div className="checkout-return-location-left-mid-last">
-						<h6>
-							Flight Number <span>(If Known)</span>
-						</h6>
-						<input type="text" onChange={handleReturnNumber} value={value} />
-					</div>
+						
 				</div>
 				<div className="checkout-location-left-last">
 					<IoLocationSharp />

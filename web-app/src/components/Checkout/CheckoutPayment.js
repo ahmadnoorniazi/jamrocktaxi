@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 import paypal from '../../assets/paypal.svg';
 import gpay from '../../assets/gpay.svg';
 import mastercard from '../../assets/mastercard.svg';
-
+import TextField from '@material-ui/core/TextField';
 // components
 import CheckoutSwitch from './CheckoutSwitch';
 
@@ -47,18 +47,16 @@ const CheckoutPayment = ({ terms, setTerms, confirmBooking, valid }) => {
 					<p>Card</p>
 				</div>
 			</div>
-			<div className="checkout-payment-form">
+			<div>
 				<h6>Pay by Card</h6>
-				<input className="checkout-payment-form-name" placeholder="Name on Card" />
-				<div>
-					<div>
-						<input className="checkout-payment-form-card-num" placeholder="Card Number" />
-					</div>
-					<input className="checkout-payment-form-card-expiry" placeholder="Expiry" />
-					<input className="checkout-payment-form-card-cvc" placeholder="CVV" />
+				<TextField className="checkout-payment-form-name" label="Name on Card" variant="outlined" />
+				<div className="payment-card-main" style={{display: 'flex', justifyContent: "space-between"}}>
+					<TextField className="checkout-payment-form-card-num" label="Card Number" variant="outlined"/>
+					<TextField className="checkout-payment-form-card-expiry" label="Expiry" variant="outlined" />
+					<TextField className="checkout-payment-form-card-cvc" label="CVV"  variant="outlined" />
 				</div>
 			</div>
-			<button disabled={!valid} onClick={onClick} className="checkout-payment-btn">
+			<button disabled={!valid} onClick={onClick} className="checkout-payment-btn"  variant="outlined">
 				Pay
 			</button>
 		</div>

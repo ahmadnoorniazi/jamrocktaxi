@@ -1,6 +1,7 @@
 // libraries
 import React, { useState, useEffect } from 'react';
-
+import TextField from '../../views/TextField'
+import PhoneInput from './PhoneInput'
 // assets
 import flag from '../../assets/flag.svg';
 
@@ -55,17 +56,11 @@ const CheckoutForm = ({setPassengerInfo}) => {
 				</div>
 				<p>Passenger profile will be created</p>
 			</div>
-			<div className="checkout-form-inner">
-				<input placeholder="Firstname" name="firstName" onChange={onInputChange} value={values.firstName}/>
-				<input placeholder="Lastname" name="lastName" onChange={onInputChange} value={values.lastName} />
-				<input placeholder="Email" name="email" onChange={onInputChange} value={values.email} />
-			</div>
+				<TextField label="Firstname" name="firstName" onChange={onInputChange} value={values.firstName}/>
+				<TextField label="Lastname" name="lastName" onChange={onInputChange} value={values.lastName} />
+				<TextField label="Email" name="email" onChange={onInputChange} value={values.email} />
 			<div className="checkout-form-phone-container">
-				<img src={flag} alt="flag" />
-				<input className="checkout-form-extension" placeholder="+1" type="number" name="countryCode"  onChange={onInputChange} value={values.countryCode}  />
-				<div className="checkout-form-number">
-					<input placeholder="Mobile Number" name="mobileNumber"  onChange={onInputChange} value={values.mobileNumber} />
-				</div>
+			<PhoneInput />
 			</div>
 		</div>
 	);

@@ -2,9 +2,9 @@
 import React, { Fragment } from 'react';
 import { IoLocationOutline, IoLocationSharp } from 'react-icons/io5';
 import { IoIosCalendar, IoIosAirplane } from 'react-icons/io';
-import { FaGlassMartini } from 'react-icons/fa';
+import { FaGlassMartini, FaDotCircle } from 'react-icons/fa';
 import { GiFireFlower } from 'react-icons/gi';
-import { BsFillPersonFill } from 'react-icons/bs';
+import { BsFillPersonFill, BsBagFill } from 'react-icons/bs';
 import dateFormat from 'dateformat';
 const CheckoutInfo = ({
 	checkedReturn,
@@ -15,6 +15,7 @@ const CheckoutInfo = ({
 	extras,
 	total,
 	pax,
+	bags,
 	startPrice,
 	returnPrice
 }) => {
@@ -34,17 +35,25 @@ const CheckoutInfo = ({
 				<div className="checkout-summary-info-pax">
 					<BsFillPersonFill /> <p>0{pax}</p>
 				</div>
-				<p className="checkout-summary-info-price">${startPrice}</p>
-			</div>
-			<div className="checkout-summary-location">
-				<div>
-					<IoLocationOutline size={24} />
-					<p>{pickupLocation}</p>
-				</div>
-				<div>
-					<IoLocationSharp size={20} /> <p>{dropOfLocation}</p>
+				<div className="checkout-summary-info-pax">
+					<BsBagFill /> <p>0{bags}</p>
 				</div>
 			</div>
+			<div style={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'rgba(0, 112, 192, 0.1)', alignItems: 'baseline'}}>
+			<div style={{width: '100%',  backgroundColor: "transparent", marginBottom: 0}} className="checkout-summary-location">
+				<div>
+					<FaDotCircle />
+					<p style={{color: 'darkgray'}}>{pickupLocation}</p>
+				</div>
+				<div>
+				<FaDotCircle style={{color: "red"}} />
+					<p style={{color: 'darkgray'}}>{dropOfLocation}</p>
+				</div>
+			</div>
+			<p style={{fontSize:"16px", fontWeight:800, marginRight: "3px"}} className="checkout-summary-info-price">${startPrice}</p>
+
+			</div>
+
 			{checkedReturn && (
 				<Fragment>
 					<div className="checkout-summary-info">
@@ -58,18 +67,27 @@ const CheckoutInfo = ({
 							<IoIosAirplane /> <p>{secondDate.flightNumber || ''}</p>
 						</div>
 						<div className="checkout-summary-info-pax">
-							<BsFillPersonFill /> <p>{pax}</p>
+							<BsFillPersonFill /> <p>0{pax}</p>
+							
 						</div>
-						<p className="checkout-summary-info-price">${returnPrice}</p>
+							<div className="checkout-summary-info-pax">
+							<BsBagFill /> <p>0{bags}</p>
+							
+						</div>
+						
 					</div>
-					<div className="checkout-summary-location">
+					<div style={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'rgba(0, 112, 192, 0.1)', textAlign: 'baseline'}}>
+					<div style={{width: '100%',  backgroundColor: "transparent", marginBottom: 0}} className="checkout-summary-location">
 						<div>
-							<IoLocationOutline size={20} /> <p>{pickupLocation}</p>
+							<FaDotCircle />
+							 <p>{pickupLocation}</p>
 						</div>
 						<div>
-							<IoLocationSharp size={24} />
+							<FaDotCircle style={{color: "red"}} size={24} />
 							<p>{dropOfLocation}</p>
 						</div>
+					</div>
+					<p style={{fontSize:"16px", fontWeight:800, marginRight: "3px"}} className="checkout-summary-info-price">${returnPrice}</p>
 					</div>
 				</Fragment>
 			)}
@@ -80,14 +98,12 @@ const CheckoutInfo = ({
 					extras.map((item) => (
 						<div className="checkout-summary-extras-item">
 							<div>
-								<FaGlassMartini />
 								<div>
-									<p>{item.title}</p>
-									<span>Return Lrg</span>
+									<p style={{color: 'darkgray'}}>{item.title}</p>
 								</div>
 							</div>
-							<p className="checkout-summary-extras-item-quantity">x{item.quantity || 0}</p>
-							<p>${item.quantity && item.price ? item.quantity * item.price : 0}</p>
+							<p  style={{color: 'darkgray'}} className="checkout-summary-extras-item-quantity">x{item.quantity || 0}</p>
+							<p  style={{color: 'darkgray'}}>${item.quantity && item.price ? item.quantity * item.price : 0}</p>
 						</div>
 					))}
 				{/* <div className="checkout-summary-extras-item">
