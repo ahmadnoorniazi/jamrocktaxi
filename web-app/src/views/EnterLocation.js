@@ -50,7 +50,7 @@ const EnterLocation = (props) => {
 
 	const locationsData = useSelector((state) => state.pagesData.prefdefinedLocations);
 	const disabledState = !pickupAddress || !dropAddress;
-	const extraLocations = disabledState ? predefinedLoc : [];
+	const allowLocations = disabledState ? [ ...locations, ...predefinedLoc ] : [];
 
 	useEffect(() => {
 		dispatch(pageLoad('homepage'));
@@ -119,7 +119,7 @@ const EnterLocation = (props) => {
 
 		return (
 			<div className="enter-location-lower-item-wrapper" style={{ cursor: 'pointer' }}>
-				{[ ...locations, ...extraLocations ].map((location, index) => {
+				{allowLocations.map((location, index) => {
 					return (
 						<div
 							className="enter-location-lower-item"

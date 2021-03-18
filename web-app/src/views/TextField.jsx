@@ -19,7 +19,7 @@ export default function BasicTextFields({label, value, handleChange, ...props}) 
   const classes = useStyles();
 
   return (
-    <form className="main-text-field" noValidate autoComplete="off">
+    <form className="main-text-field" style={{marginBottom: 0}} noValidate autoComplete="off">
       <TextField className="main-input" id="outlined-basic" label={label} value={value} onChange={handleChange} variant="outlined" {...props}/>
     </form>
   );

@@ -66,7 +66,7 @@ const Extras = ({ page }) => {
 				</div>
 			)}
 			<ExtrasNav showCheckout={showCheckout} />
-			
+
 			<ExtrasHeading
 				info={info}
 				setInfo={setInfo}
@@ -83,7 +83,11 @@ const Extras = ({ page }) => {
 					carFare={total}
 				/>
 			)}
-			<div style={{height: "1px", backgroundColor: "gray"}} />
+			<div className="checkout-summary-price-main">
+				<h6>Total</h6>
+				<p>${cart.total ? cart.total : 0}</p>
+			</div>
+			<div style={{ height: '1px', backgroundColor: 'gray' }} />
 			<ExtrasList showToast={showToast} extras={extrasList} />
 			<ExtrasNav showCheckout={showCheckout} />
 		</div>

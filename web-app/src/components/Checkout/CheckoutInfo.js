@@ -4,7 +4,7 @@ import { IoLocationOutline, IoLocationSharp } from 'react-icons/io5';
 import { IoIosCalendar, IoIosAirplane } from 'react-icons/io';
 import { FaGlassMartini, FaDotCircle } from 'react-icons/fa';
 import { GiFireFlower } from 'react-icons/gi';
-import { BsFillPersonFill, BsBagFill } from 'react-icons/bs';
+import { BsPers, BsBag, BsPerson } from 'react-icons/bs';
 import dateFormat from 'dateformat';
 const CheckoutInfo = ({
 	checkedReturn,
@@ -33,10 +33,10 @@ const CheckoutInfo = ({
 					<IoIosAirplane /> <p>{date.flightNumber || ''}</p>
 				</div>
 				<div className="checkout-summary-info-pax">
-					<BsFillPersonFill /> <p>0{pax}</p>
+					<BsPerson /> <p>0{pax}</p>
 				</div>
 				<div className="checkout-summary-info-pax">
-					<BsBagFill /> <p>0{bags}</p>
+					<BsBag /> <p>0{bags}</p>
 				</div>
 			</div>
 			<div
@@ -44,7 +44,9 @@ const CheckoutInfo = ({
 					display: 'flex',
 					justifyContent: 'space-between',
 					backgroundColor: 'rgba(0, 112, 192, 0.1)',
-					alignItems: 'baseline'
+					alignItems: 'baseline',
+					borderRadius: '8px',
+					padding: '0 5px'
 				}}
 			>
 				<div
@@ -65,7 +67,7 @@ const CheckoutInfo = ({
 					</div>
 				</div>
 				<p
-					style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px' }}
+					style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px', color: '#0070c0' }}
 					className="checkout-summary-info-price"
 				>
 					${startPrice}
@@ -85,10 +87,10 @@ const CheckoutInfo = ({
 							<IoIosAirplane /> <p>{secondDate.flightNumber || ''}</p>
 						</div>
 						<div className="checkout-summary-info-pax">
-							<BsFillPersonFill /> <p>0{pax}</p>
+							<BsPerson /> <p>0{pax}</p>
 						</div>
 						<div className="checkout-summary-info-pax">
-							<BsBagFill /> <p>0{bags}</p>
+							<BsBag /> <p>0{bags}</p>
 						</div>
 					</div>
 					<div
@@ -96,7 +98,7 @@ const CheckoutInfo = ({
 							display: 'flex',
 							justifyContent: 'space-between',
 							backgroundColor: 'rgba(0, 112, 192, 0.1)',
-							textAlign: 'baseline'
+							alignItems: 'baseline'
 						}}
 					>
 						<div
@@ -108,12 +110,12 @@ const CheckoutInfo = ({
 								<p>{pickupLocation}</p>
 							</div>
 							<div>
-								<FaDotCircle style={{ color: 'red' }} size={24} />
+								<FaDotCircle style={{ color: 'red' }} />
 								<p>{dropOfLocation}</p>
 							</div>
 						</div>
 						<p
-							style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px' }}
+							style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px', color: '#0070c0' }}
 							className="checkout-summary-info-price"
 						>
 							${returnPrice}
@@ -122,20 +124,31 @@ const CheckoutInfo = ({
 				</Fragment>
 			)}
 
-			<p className="checkout-summary-extras-text">Trip Extras</p>
-			<div className="checkout-summary-extras">
+			<div className="checkout-summary-extras" style={{ marginTop: '10px' }}>
 				{Array.isArray(extras) &&
 					extras.map((item) => (
 						<div className="checkout-summary-extras-item">
 							<div>
 								<div>
-									<p style={{ color: 'darkgray' }}>{item.title}</p>
+									<p
+										style={{
+											color: 'darkgray',
+											fontWeight: 'normal',
+											fontSize: '14px',
+											color: 'gray'
+										}}
+									>
+										{item.title}
+									</p>
 								</div>
 							</div>
-							<p style={{ color: 'darkgray' }} className="checkout-summary-extras-item-quantity">
+							<p
+								style={{ color: 'darkgray', fontWeight: 'normal', fontSize: '14px', color: 'gray' }}
+								className="checkout-summary-extras-item-quantity"
+							>
 								x{item.quantity || 0}
 							</p>
-							<p style={{ color: 'darkgray' }}>
+							<p style={{ color: 'darkgray', fontWeight: 'normal', fontSize: '14px', color: 'gray' }}>
 								${item.quantity && item.price ? item.quantity * item.price : 0}
 							</p>
 						</div>

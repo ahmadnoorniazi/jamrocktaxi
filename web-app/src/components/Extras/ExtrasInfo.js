@@ -35,13 +35,20 @@ const ExtrasInfo = ({ pickupAddress, dropAddress, extras, total, carFare }) => {
 						<div className="extras-summary-extras-item">
 							{console.log('exxxxxxxxxxx', ext)}
 							<div>
-								<p className="ml-1">
+								<p style={{ color: 'gray', fontSize: '14px', fontWeight: 'normal' }} className="ml-1">
 									{ext.title}
 									{`(${Object.values(ext.options).join(',')})`}
 								</p>
 							</div>
-							<p className="extras-summary-extras-item-quantity">x{ext.quantity}</p>
-							<p className="ml-1">${ext.price}</p>
+							<p
+								style={{ color: 'gray', fontSize: '14px', fontWeight: 'normal' }}
+								className="extras-summary-extras-item-quantity"
+							>
+								x{ext.quantity}
+							</p>
+							<p style={{ color: 'gray', fontSize: '14px', fontWeight: 'normal' }} className="ml-1">
+								${ext.price}
+							</p>
 						</div>
 					))}
 			</div>

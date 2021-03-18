@@ -23,25 +23,25 @@ const CheckoutReturnLocation = ({ locationFirst, locationLast, firstLogo, second
 	return (
 		<div className="checkout-location">
 			<div className="checkout-location-left">
-				<div className="checkout-return-location-left-top">
+				{/* <div className="checkout-return-location-left-top">
 					<IoLocationOutline />
 					<p>{locationFirst}</p>
-				</div>
+				</div> */}
 				<div className="checkout-location-left-mid">
 				
 						<CheckoutDateTimePicker label="Pickup Date & Time" getDate={setDate} />
 						<TextField label="Flight Number" handleChange={handleReturnNumber} value={value} />
 				</div>
-				<div className="checkout-return-location-left-last">
+				{/* <div className="checkout-return-location-left-last">
 					<IoLocationSharp />
 					<p>{locationLast}</p>
-				</div>
+				</div> */}
 			</div>
-			<div className="checkout-location-right">
+			{/* <div className="checkout-location-right">
 				<img src={firstLogo} alt="location-logo" />
 				<div />
 				<img src={secondLogo} alt="location-logo" />
-			</div>
+			</div> */}
 		</div>
 	);
 };

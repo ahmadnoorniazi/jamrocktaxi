@@ -7,26 +7,25 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles((theme) => ({
-  formControl: {
-    minWidth: 120,
-	width: '100%',
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
+	formControl: {
+		minWidth: 120,
+		width: '100%'
+	},
+	selectEmpty: {
+		marginTop: theme.spacing(2)
+	}
 }));
 
 const ExtrasVipDropdown = ({ options, title, selected, setSelected, defaultValue, initialValues, name }) => {
 	const [ active, setActive ] = useState(false);
-	const [ value, setValue ] = useState("");
+	const [ value, setValue ] = useState('');
 
-const classes = useStyles();
+	const classes = useStyles();
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
-	setSelected({ ...initialValues, [name]: event.target.value });
-
-  };
+	const handleChange = (event) => {
+		setValue(event.target.value);
+		setSelected({ ...initialValues, [name]: event.target.value });
+	};
 	const toggleDropdown = () => {
 		setActive(!active);
 	};
@@ -42,30 +41,25 @@ const classes = useStyles();
 		}
 
 		return options.map((option, i) => {
-			return (
-				<MenuItem
-				value={option.value}	
-				>
-					{option.label}
-				</MenuItem>
-			);
+			return <MenuItem value={option.value}>{option.label}</MenuItem>;
 		});
 	};
 
 	return (
 		<div className="dropdown">
-			  <FormControl variant="outlined" className={classes.formControl}>
-        <InputLabel id="demo-simple-select-outlined-label">{title}</InputLabel>
-        <Select
-          labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-          value={selected}
-          onChange={handleChange}
-          label={title}
-        >
-			{renderOptions()}
-        </Select>
-      </FormControl>
+			<FormControl variant="outlined" className={classes.formControl}>
+				<InputLabel id="demo-simple-select-outlined-label">{title}</InputLabel>
+				<Select
+					labelId="demo-simple-select-outlined-label"
+					id="demo-simple-select-outlined"
+					style={{ backgroundColor: '#fff' }}
+					value={selected}
+					onChange={handleChange}
+					label={title}
+				>
+					{renderOptions()}
+				</Select>
+			</FormControl>
 		</div>
 	);
 };

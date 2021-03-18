@@ -346,7 +346,7 @@ header {
 		}
 	}
 	.calendar-input {
-		width: 50% !important;
+		width: 66% !important;
 	}
 	.checkout-payment-form-card-num {
 		width: 100% !important;
@@ -400,6 +400,18 @@ header {
 	}
 	.enter-location-main-div {
 		margin-right: 0 !important;
+	}
+	.booking-summary {
+		padding: 0 !important;
+	}
+	.booking-summary-location {
+		div {
+			margin-top: 2px !important;
+			margin-bottom: 2px !important;
+		}
+	}
+	.main-text-field{
+		margin-bottom: 10px !important;
 	}
 }
 

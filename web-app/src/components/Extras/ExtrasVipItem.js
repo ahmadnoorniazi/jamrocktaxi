@@ -26,6 +26,8 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 	const [ airport, setAirport ] = useState(-1);
 	const [ paxOne, setPaxOne ] = useState(-1);
 	const [ paxTwo, setPaxTwo ] = useState(-1);
+	const comb = Object.values(values).join(',');
+	const ExtraPrice = dropdowns.combinations[comb] || 0;
 
 	useEffect(
 		() => {
@@ -57,7 +59,7 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 						onClick={() => setInfo(!info)}
 					/>
 				</div>
-				<div className="extras-item-info-container" style={{alignItems: "center"}}>
+				<div className="extras-item-info-container" style={{ alignItems: 'center' }}>
 					<p>
 						{airport === -1 && paxOne === -1 && paxTwo === -1 ? (
 							'Fr'
@@ -89,12 +91,11 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 				<Fragment>
 					<div className="extras-vip-item-input-container">
 						{dropdowns.optionsList.map((item) => (
-							
 							<ExtrasVipInput
-								title={`SELECT THE ${item.name}`}
+								title={`${item.name}`}
 								options={item.options}
 								name={item.name}
-								defaultValue={`SELECT THE ${item.name}`}
+								defaultValue={`${item.name}`}
 								setSelected={setValues}
 								selected={values[item.name]}
 								initialValues={values}
@@ -119,21 +120,24 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 							selected={paxTwo}
 						/> */}
 					</div>
-					<div className="extas-vip-item-btn-container">
-						<button onClick={() => setDropdown(false)}>Cancel</button>
-						<button
-							onClick={() => {
-								const comb = Object.values(values).join(',');
-								const price = dropdowns.combinations[comb] || 0;
-								console.log(comb, 'finalllllllllllllllll', price);
-								onAddExtras({ ...extra, price, options: values });
-							}}
-							disabled={!isValid}
-							className="extra-nav-btn extra-nav-btn-2"
-							style={{ color: '#0070C0', backgroundColor: !isValid ? 'grey !important' : '' }}
-						>
-							Add Me
-						</button>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+						<div>
+							<p style={{ fontSize: '16px', fontWeight: 600 }}>Price: {ExtraPrice}</p>
+						</div>
+						<div className="extas-vip-item-btn-container">
+							<button onClick={() => setDropdown(false)}>Cancel</button>
+							<button
+								onClick={() => {
+									console.log(comb, 'finalllllllllllllllll', price);
+									onAddExtras({ ...extra, price: ExtraPrice, options: values });
+								}}
+								disabled={!isValid}
+								className="extra-nav-btn extra-nav-btn-2"
+								style={{ color: '#0070C0', backgroundColor: !isValid ? 'grey !important' : '' }}
+							>
+								Add Me
+							</button>
+						</div>
 					</div>
 				</Fragment>
 			)}
