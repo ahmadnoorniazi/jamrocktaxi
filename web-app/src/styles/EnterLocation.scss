@@ -1,131 +1,147 @@
 @import "colors";
 
-.form-control{
-  width: 100% !important;
+.form-control {
+	width: 100% !important;
 }
-.checkout-payment-form-card-num{
-  width: 33%
+.checkout-payment-form-card-num {
+	width: 33%;
 }
-.checkout-payment-form-card-expiry{
-    width: 33%
+.checkout-payment-form-card-expiry {
+	width: 33%;
+}
+.checkout-payment-form-card-cvc {
+	width: 33%;
+}
+.checkout-payment-form-name {
+	width: 100%;
+	margin-bottom: 10px !important;
+}
+.booking-pickup-text-extras {
+	font-weight: normal !important;
+	color: gray !important;
+}
+.booking-pickup-text {
+	font-weight: normal !important;
+	color: gray !important;
+}
+.enter-location-lower-item-content-main {
+	font-weight: normal !important;
+	color: gray !important;
+}
+.enter-location-lower-item-content-description {
+	font-weight: normal !important;
+	color: gray !important;
+}
 
-}
-.checkout-payment-form-card-cvc{
-    width: 33%
-}
-.checkout-payment-form-name{
-  width: 100%;
-  margin-bottom: 10px !important;
-}
 .enter-location {
-  height: 85vh;
-  display: flex;
-  flex-flow: column;
+	height: 85vh;
+	display: flex;
+	flex-flow: column;
 
-  .enter-location-upper {
-    .enter-location-back {
-      margin: 20px 20px;
-      border-radius: 50%;
-      display: inline-block;
-      height: 40px;
-      width: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
-      color: $textColor;
-      cursor: pointer;
-    }
+	.enter-location-upper {
+		.enter-location-back {
+			margin: 20px 20px;
+			border-radius: 50%;
+			display: inline-block;
+			height: 40px;
+			width: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.5rem;
+			box-shadow: 0 3px 9px rgba(0, 0, 0, 0.5);
+			color: $textColor;
+			cursor: pointer;
+		}
 
-    .enter-location-input {
-      width: 90%;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      height: 30px;
-      border-radius: 8px;
-      cursor: pointer;
+		.enter-location-input {
+			width: 90%;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			height: 30px;
+			border-radius: 8px;
+			cursor: pointer;
 
-      svg {
-        font-size: 1.5rem;
-      }
+			svg {
+				font-size: 1.5rem;
+			}
 
-      input {
-        flex-grow: 1;
-        border: none;
-        outline: none;
-        background-color: transparent;
-        cursor: pointer;
+			input {
+				flex-grow: 1;
+				border: none;
+				outline: none;
+				background-color: transparent;
+				cursor: pointer;
 
-        &:focus {
-          border: none;
-          outline: none;
-          font-size: 20px;
-        }
-        &::placeholder {
-          color: #000;
-        }
-      }
-    }
-  }
-  .enter-location-lower {
-    flex: 1;
-    overflow-y: scroll;
-    .enter-location-lower-item-wrapper {
-      border-top: 1px solid #ccc;
-      margin: 5px 0;
-    }
-    .enter-location-lower-item {
-      width: 90%;
-      margin: 5px auto;
-      border-bottom: 1px solid #ccc;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      padding: 0 20px;
-    }
-    .enter-location-lower-item-content {
-      flex-grow: 1;
+				&:focus {
+					border: none;
+					outline: none;
+					font-size: 20px;
+				}
+				&::placeholder {
+					color: #000;
+				}
+			}
+		}
+	}
+	.enter-location-lower {
+		flex: 1;
+		overflow-y: scroll;
+		.enter-location-lower-item-wrapper {
+			border-top: 1px solid #ccc;
+			margin: 5px 0;
+		}
+		.enter-location-lower-item {
+			width: 90%;
+			margin: 5px auto;
+			border-bottom: 1px solid #ccc;
+			height: 60px;
+			display: flex;
+			align-items: center;
+			padding: 0 20px;
+		}
+		.enter-location-lower-item-content {
+			flex-grow: 1;
 
-      h6 {
-        margin: 0;
-        font-size: 14px;
-      }
-      p {
-        margin: 0;
-        margin-top: 5px;
-        opacity: 0.5;
-        font-size: 13px;
-      }
-    }
-    svg {
-      color: $textColor;
-    }
-  }
-  .enter-location-show_prices {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px 0;
+			h6 {
+				margin: 0;
+				font-size: 14px;
+			}
+			p {
+				margin: 0;
+				margin-top: 5px;
+				opacity: 0.5;
+				font-size: 13px;
+			}
+		}
+		svg {
+			color: $textColor;
+		}
+	}
+	.enter-location-show_prices {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 10px 0;
 
-    div {
-      width: 152px;
-      height: 46px;
-      background-color: $textColor;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
+		div {
+			width: 152px;
+			height: 46px;
+			background-color: $textColor;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			color: white;
+			border-radius: 6px;
+			cursor: pointer;
 
-      p {
-        margin: 0;
-        font-size: 14px;
-        font-weight: bold;
-      }
-    }
-  }
+			p {
+				margin: 0;
+				font-size: 14px;
+				font-weight: bold;
+			}
+		}
+	}
 }

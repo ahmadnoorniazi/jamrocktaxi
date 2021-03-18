@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
 import { BiX } from 'react-icons/bi';
 import { FaRoute, FaDotCircle } from 'react-icons/fa';
-import { MdLocationOn } from 'react-icons/md'
+import { MdLocationOn } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import GoogleMapsAutoComplete from '../components/GoogleMapsAutoComplete';
 import GoogleAutoComplete from '../components/GoogleAutoComplete';
@@ -50,7 +50,7 @@ const EnterLocation = (props) => {
 
 	const locationsData = useSelector((state) => state.pagesData.prefdefinedLocations);
 	const disabledState = !pickupAddress || !dropAddress;
-	const extraLocations = disabledState ? predefinedLoc : []
+	const extraLocations = disabledState ? predefinedLoc : [];
 
 	useEffect(() => {
 		dispatch(pageLoad('homepage'));
@@ -128,8 +128,10 @@ const EnterLocation = (props) => {
 							onClick={() => handleItemClick(location)}
 						>
 							<div className="enter-location-lower-item-content">
-								<h6 className="enter-location-lower-item-content-main">{location.structured_formatting.main_text}</h6>
-								<p>{location.description}</p>
+								<h6 className="enter-location-lower-item-content-main">
+									{location.structured_formatting.main_text}
+								</h6>
+								<p className="enter-location-lower-item-content-description">{location.description}</p>
 							</div>
 						</div>
 					);
@@ -193,70 +195,104 @@ const EnterLocation = (props) => {
 		<div className="enter-location">
 			<div className="enter-location-upper">
 				<Link to="/">
-					<div className="enter-location-back" style={{backgroundColor: "#fff"}}>
+					<div className="enter-location-back" style={{ backgroundColor: '#fff' }}>
 						<IoArrowBack />
 					</div>
-				</Link>	
-				<div className="enter-location-main-cont" style={{display: 'flex', flexDirection: 'row', marginLeft: "40px", marginRight: "40px", padding: "10px", backgroundColor: "rgba(0, 112, 192, 0.1)"}}>
-				<div style={{width: "100%", marginRight: "20px"}}>
-			<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: "5px"}}>
-				<div>
-						<FaDotCircle size={15} style={{color: "#0070c0"}}/>
+				</Link>
+				<div
+					className="enter-location-main-cont"
+					style={{
+						display: 'flex',
+						flexDirection: 'row',
+						marginLeft: '40px',
+						marginRight: '40px',
+						padding: '10px',
+						backgroundColor: 'rgba(0, 112, 192, 0.1)'
+					}}
+				>
+					<div className="enter-location-main-div" style={{ width: '100%', marginRight: '20px' }}>
+						<div
+							style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '5px' }}
+						>
+							<div>
+								<FaDotCircle size={15} style={{ color: '#0070c0' }} />
+							</div>
+							<div
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									width: '100%',
+									justifyContent: 'space-between'
+								}}
+							>
+								<GoogleAutoComplete
+									type="From"
+									callFrom={true}
+									callFocus={true}
+									setFocus={setFocus}
+									focus={focusValue}
+									selectedValue={valueFrom}
+									optionsList={OptionsList}
+									setSelectedValue={setValueFrom}
+									name="From"
+								/>
+								<button
+									style={{ background: 'transparent', border: 'none' }}
+									onClick={() => {
+										setValueFrom('');
+										setDropAddress('');
+									}}
+								>
+									<BiX />
+								</button>
+							</div>
 						</div>
-					<div style={{display: "flex", alignItems: 'center', width: "100%"}}>
-				<GoogleAutoComplete
-					type="From"
-					callFrom={true}
-					callFocus={true}
-					setFocus={setFocus}
-					focus={focusValue}
-					selectedValue={valueFrom}
-					optionsList={OptionsList}
-					setSelectedValue={setValueFrom}
-					name="From"
-				/>
-				<button style={{background: 'transparent', border: "none"}} onClick={() => {
-					setValueFrom("")
-					setDropAddress("")
-				}}>
-				<BiX />
-				</button>
-
-				</div>
-				</div>
-				<div style={{backgroundColor: "#0070c0", height:"2px"}} />
-				<div  style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginTop: "5px"}}>
-					<div>
-					<FaDotCircle size={15} style={{ color: 'red'}} />
+						<div style={{ backgroundColor: '#0070c0', height: '2px' }} />
+						<div
+							style={{
+								display: 'flex',
+								flexDirection: 'row',
+								alignItems: 'center',
+								marginTop: '5px'
+							}}
+						>
+							<div>
+								<FaDotCircle size={15} style={{ color: 'red' }} />
+							</div>
+							<div
+								style={{
+									display: 'flex',
+									alignItems: 'center',
+									width: '100%',
+									justifyContent: 'space-between'
+								}}
+							>
+								<GoogleAutoComplete
+									type="To"
+									callFrom={false}
+									selectedValue={valueTo}
+									setFocus={setFocus}
+									focus={focusValue}
+									optionsList={OptionsList}
+									setSelectedValue={setValueTo}
+									disabled={!valueFrom}
+									name="To"
+								/>
+								{console.log('jjjjjjjj', valueTo)}
+								{console.log('vvvvvvvvv', valueFrom)}
+								<button
+									style={{ background: 'transparent', border: 'none' }}
+									onClick={() => {
+										setValueTo('');
+										setPickupAddress('');
+									}}
+								>
+									<BiX />
+								</button>
+							</div>
+						</div>
 					</div>
-					<div style={{display: "flex", alignItems: 'center', width: "100%"}}>
-				<GoogleAutoComplete
-					type="To"
-					callFrom={false}
-					selectedValue={valueTo}
-					setFocus={setFocus}
-					focus={focusValue}
-					optionsList={OptionsList}
-					setSelectedValue={setValueTo}
-					disabled={!valueFrom}
-					name="To"
-				/>
-				{console.log("jjjjjjjj", valueTo)}
-				{console.log("vvvvvvvvv", valueFrom)}
-				<button style={{background: 'transparent', border: "none"}} onClick={() => {
-					setValueTo("")
-					setPickupAddress("")
-				}}>
-				<BiX />
-				</button>
-
-					</div>
-				
-			</div>
-
-			</div>
-			</div>	
-		
+				</div>
 			</div>
 			<div className="enter-location-lower">
 				{option ? (
@@ -276,20 +312,19 @@ const EnterLocation = (props) => {
 					<img className="loader" src={loader} alt="loader" />
 				</div>
 			)}
-			{!disabledState &&
-			<button
-				className="enter-location-show_prices"
-
-				disabled={disabledState}
-				onClick={onShowPrices}
-				style={{ border: 'none', background: "none" }}
-			>
-				<div style={{ backgroundColor: disabledState ? 'grey' : '' }}>
-					<img src={priceTag} alt="price_tag" />
-					<p>Show Prices</p>
-				</div>
-			</button>
-}
+			{!disabledState && (
+				<button
+					className="enter-location-show_prices"
+					disabled={disabledState}
+					onClick={onShowPrices}
+					style={{ border: 'none', background: 'none' }}
+				>
+					<div style={{ backgroundColor: disabledState ? 'grey' : '' }}>
+						<img src={priceTag} alt="price_tag" />
+						<p>Show Prices</p>
+					</div>
+				</button>
+			)}
 		</div>
 	);
 };

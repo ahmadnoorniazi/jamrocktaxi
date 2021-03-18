@@ -39,19 +39,37 @@ const CheckoutInfo = ({
 					<BsBagFill /> <p>0{bags}</p>
 				</div>
 			</div>
-			<div style={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'rgba(0, 112, 192, 0.1)', alignItems: 'baseline'}}>
-			<div style={{width: '100%',  backgroundColor: "transparent", marginBottom: 0}} className="checkout-summary-location">
-				<div>
-					<FaDotCircle />
-					<p style={{color: 'darkgray'}}>{pickupLocation}</p>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					backgroundColor: 'rgba(0, 112, 192, 0.1)',
+					alignItems: 'baseline'
+				}}
+			>
+				<div
+					style={{ width: '100%', backgroundColor: 'transparent', marginBottom: 0 }}
+					className="checkout-summary-location"
+				>
+					<div>
+						<FaDotCircle />
+						<p className="booking-pickup-text-extras" style={{ color: 'darkgray' }}>
+							{pickupLocation}
+						</p>
+					</div>
+					<div>
+						<FaDotCircle style={{ color: 'red' }} />
+						<p className="booking-pickup-text-extras" style={{ color: 'darkgray' }}>
+							{dropOfLocation}
+						</p>
+					</div>
 				</div>
-				<div>
-				<FaDotCircle style={{color: "red"}} />
-					<p style={{color: 'darkgray'}}>{dropOfLocation}</p>
-				</div>
-			</div>
-			<p style={{fontSize:"16px", fontWeight:800, marginRight: "3px"}} className="checkout-summary-info-price">${startPrice}</p>
-
+				<p
+					style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px' }}
+					className="checkout-summary-info-price"
+				>
+					${startPrice}
+				</p>
 			</div>
 
 			{checkedReturn && (
@@ -68,26 +86,38 @@ const CheckoutInfo = ({
 						</div>
 						<div className="checkout-summary-info-pax">
 							<BsFillPersonFill /> <p>0{pax}</p>
-							
 						</div>
-							<div className="checkout-summary-info-pax">
+						<div className="checkout-summary-info-pax">
 							<BsBagFill /> <p>0{bags}</p>
-							
-						</div>
-						
-					</div>
-					<div style={{display: 'flex', justifyContent: 'space-between', backgroundColor: 'rgba(0, 112, 192, 0.1)', textAlign: 'baseline'}}>
-					<div style={{width: '100%',  backgroundColor: "transparent", marginBottom: 0}} className="checkout-summary-location">
-						<div>
-							<FaDotCircle />
-							 <p>{pickupLocation}</p>
-						</div>
-						<div>
-							<FaDotCircle style={{color: "red"}} size={24} />
-							<p>{dropOfLocation}</p>
 						</div>
 					</div>
-					<p style={{fontSize:"16px", fontWeight:800, marginRight: "3px"}} className="checkout-summary-info-price">${returnPrice}</p>
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: 'space-between',
+							backgroundColor: 'rgba(0, 112, 192, 0.1)',
+							textAlign: 'baseline'
+						}}
+					>
+						<div
+							style={{ width: '100%', backgroundColor: 'transparent', marginBottom: 0 }}
+							className="checkout-summary-location"
+						>
+							<div>
+								<FaDotCircle />
+								<p>{pickupLocation}</p>
+							</div>
+							<div>
+								<FaDotCircle style={{ color: 'red' }} size={24} />
+								<p>{dropOfLocation}</p>
+							</div>
+						</div>
+						<p
+							style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px' }}
+							className="checkout-summary-info-price"
+						>
+							${returnPrice}
+						</p>
 					</div>
 				</Fragment>
 			)}
@@ -99,11 +129,15 @@ const CheckoutInfo = ({
 						<div className="checkout-summary-extras-item">
 							<div>
 								<div>
-									<p style={{color: 'darkgray'}}>{item.title}</p>
+									<p style={{ color: 'darkgray' }}>{item.title}</p>
 								</div>
 							</div>
-							<p  style={{color: 'darkgray'}} className="checkout-summary-extras-item-quantity">x{item.quantity || 0}</p>
-							<p  style={{color: 'darkgray'}}>${item.quantity && item.price ? item.quantity * item.price : 0}</p>
+							<p style={{ color: 'darkgray' }} className="checkout-summary-extras-item-quantity">
+								x{item.quantity || 0}
+							</p>
+							<p style={{ color: 'darkgray' }}>
+								${item.quantity && item.price ? item.quantity * item.price : 0}
+							</p>
 						</div>
 					))}
 				{/* <div className="checkout-summary-extras-item">
