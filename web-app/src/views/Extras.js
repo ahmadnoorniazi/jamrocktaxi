@@ -30,6 +30,7 @@ const Extras = ({ page }) => {
 	useEffect(
 		() => {
 			let data = [];
+			console.log("dataaaaaaaaaaaa0",  page);
 			if (page && page.items && page.items[0].fields) {
 				const extras = page.items[0].fields.extrasList;
 				data = extras.map((item) => ({

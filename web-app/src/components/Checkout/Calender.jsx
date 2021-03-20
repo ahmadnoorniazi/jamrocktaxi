@@ -8,8 +8,6 @@ const useStyles = makeStyles((theme) => ({
 		flexWrap: 'wrap'
 	},
 	textField: {
-		marginLeft: theme.spacing(1),
-		marginRight: theme.spacing(1),
 		width: '100%',
 		input: {
 			padding: '18.5px 0px'

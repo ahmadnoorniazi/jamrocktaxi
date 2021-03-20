@@ -115,7 +115,7 @@ const CheckoutInfo = ({
 							</div>
 						</div>
 						<p
-							style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px', color: '#0070c0' }}
+							style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px', color: 'darkgray' }}
 							className="checkout-summary-info-price"
 						>
 							${returnPrice}

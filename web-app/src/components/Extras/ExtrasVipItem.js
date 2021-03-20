@@ -80,7 +80,10 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 							<input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
 						</div>
 					) : (
-						<button onClick={() => setDropdown(true)} style={{ color: '#0070C0' }}>
+						<button
+							onClick={() => setDropdown(true)}
+							style={{ color: '#0070C0', padding: '2px 10px', borderRadius: '5px', fontWeight: 600 }}
+						>
 							Add Me
 						</button>
 					)}
@@ -122,7 +125,7 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 					</div>
 					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
 						<div>
-							<p style={{ fontSize: '16px', fontWeight: 600 }}>Price: {ExtraPrice}</p>
+							<p style={{ fontSize: '16px', fontWeight: 600 }}>Price: ${ExtraPrice}</p>
 						</div>
 						<div className="extas-vip-item-btn-container">
 							<button onClick={() => setDropdown(false)}>Cancel</button>

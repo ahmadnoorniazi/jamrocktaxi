@@ -52,10 +52,6 @@ const ExtrasInfo = ({ pickupAddress, dropAddress, extras, total, carFare }) => {
 						</div>
 					))}
 			</div>
-			<div className="extras-summary-price">
-				<h6>Total</h6>
-				<p>${total}</p>
-			</div>
 		</div>
 	);
 };

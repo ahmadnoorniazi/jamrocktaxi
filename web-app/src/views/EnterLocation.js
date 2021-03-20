@@ -204,7 +204,6 @@ const EnterLocation = (props) => {
 					style={{
 						display: 'flex',
 						flexDirection: 'row',
-					
 						padding: '10px',
 						backgroundColor: 'rgba(0, 112, 192, 0.1)'
 					}}
