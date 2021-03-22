@@ -1,6 +1,9 @@
 // libs
 import React, { useState, Fragment, useContext, useEffect } from 'react';
 import Select from './DetailSelect'
+import { loadStripe } from "@stripe/stripe-js";
+import axios from 'axios';
+
 // styles
 import '../styles/Checkout.scss';
 
@@ -25,6 +28,7 @@ import airplane from '../assets/aeroplane.svg';
 import building from '../assets/building.svg';
 import price from '../assets/price-tag.svg';
 import { FirebaseContext } from 'common';
+const stripePromise = loadStripe("pk_test_51IXAV6L6Jaloc0FipdN7yUSp2AGqtQJgViDcVsI9Ily6FouNUDKnheDeL53t18tQTj06QGUOevOserP80bUthNmH00atmaXKGa");
 
 const Checkout = () => {
 	// state
@@ -94,6 +98,27 @@ const Checkout = () => {
 			})
 		);
 	};
+
+	
+	const handleClick = async (event) => {
+		const stripe = await stripePromise;
+	
+		const response = await axios.post("https://us-central1-jamrocktaxi-b40ae.cloudfunctions.net/getMessage");
+	
+		const session = await response.json();
+	
+		// When the customer clicks on the button, redirect them to Checkout.
+		const result = await stripe.redirectToCheckout({
+		  sessionId: session.id,
+		});
+	
+		if (result.error) {
+			console.log('errorrrrrrrrrrrr')
+		  // If `redirectToCheckout` fails due to a browser or network
+		  // error, display the localized error message to your customer
+		  // using `result.error.message`.
+		}
+	  };
 
 	return (
 		<div className="checkout">
@@ -175,7 +200,7 @@ const Checkout = () => {
 			)}
 
 			<CheckoutForm setPassengerInfo={setPassengerInfo} />
-			<CheckoutPayment terms={terms} setTerms={setTerms} confirmBooking={confirmBooking} valid={valid} />
+			<CheckoutPayment onHandlePay={handleClick} terms={terms} setTerms={setTerms} confirmBooking={confirmBooking} valid={valid} />
 		</div>
 	);
 };

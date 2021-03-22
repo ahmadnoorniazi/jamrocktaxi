@@ -10,12 +10,13 @@ import TextField from '@material-ui/core/TextField';
 // components
 import CheckoutSwitch from './CheckoutSwitch';
 
-const CheckoutPayment = ({ terms, setTerms, confirmBooking, valid }) => {
+const CheckoutPayment = ({ terms, setTerms, confirmBooking, valid, onHandlePay }) => {
 	const history = useHistory();
 
 	const onClick = () => {
-		confirmBooking();
-		history.push('/order-complete');
+		// confirmBooking();
+		// history.push('/order-complete');
+		onHandlePay()
 	};
 
 	return (
@@ -56,7 +57,7 @@ const CheckoutPayment = ({ terms, setTerms, confirmBooking, valid }) => {
 					<TextField className="checkout-payment-form-card-cvc" label="CVV"  variant="outlined" />
 				</div>
 			</div>
-			<button disabled={!valid} onClick={onClick} className="checkout-payment-btn"  variant="outlined">
+			<button  onClick={onClick} className="checkout-payment-btn"  variant="outlined">
 				Pay
 			</button>
 		</div>

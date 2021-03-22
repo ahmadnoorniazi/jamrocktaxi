@@ -477,3 +477,7 @@ exports.user_signup = functions.https.onRequest(async (request, response) => {
         response.send({ error: "User Not Created" });
     }
 });
+
+exports.getMessage =  require('./webPayment/index');
+
+  
