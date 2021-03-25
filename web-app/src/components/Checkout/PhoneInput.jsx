@@ -10,7 +10,7 @@ const Phone = ({phone, setPhone}) => {
   value={phone}
   onChange={setPhone}
 />
-    )
+  )
 }
 
 export default Phone;

@@ -15,6 +15,8 @@ exports.stripe = require('./providers/stripe');
 
 
 exports.get_providers = functions.https.onRequest((request, response) => {
+    response.set("Access-Control-Allow-Origin", "*");
+
     let arr = [];
     for (let i = 0; i < providers.length; i++) {
         arr.push({
@@ -251,7 +253,7 @@ const RequestPushMsg = async (token, title, msg) => {
     }
 }
 
-exports.newBooking = functions.database.ref('/bookings/{bookingId}')
+exports.newBooking = functions.database.ref('/0/{bookingId}')
     .onCreate((snapshot, context) => {
         const booking = snapshot.val();
         booking.key = context.params.bookingId;
@@ -272,7 +274,47 @@ exports.newBooking = functions.database.ref('/bookings/{bookingId}')
                     }
                 }
             });
+   
+exports.bookingScheduler = functions.pubsub.schedule('every 5 minutes').onRun((context) => {
+    admin.database().ref('/bookings').orderByChild("status").equalTo('NEW').once("value", (snapshot) => {
+        let bookings = snapshot.val();
+        if (bookings) {
+            for (let key in bookings) {
+                let booking = bookings[key];
+                booking.key = key;
+                let date1 = new Date();
+                let date2 = new Date(booking.tripdate);
+                let diffTime = date2 - date1;
+                let diffMins = diffTime / (1000 * 60);
+                if (diffMins > 0 && diffMins < 15 && booking.bookLater && !booking.requestedDrivers) {
+                    admin.database().ref('/users').orderByChild("queue").equalTo(false).once("value", (ddata) => {
+                        let drivers = ddata.val();
+                        if (drivers) {
+                            for (let dkey in drivers) {
+                                let driver = drivers[dkey];
+                                driver.key = dkey;
+                                if (driver.usertype === 'driver' && driver.approved === true && driver.driverActiveStatus === true && driver.location) {
+                                    let originalDistance = getDistance(booking.pickup.lat, booking.pickup.lng, driver.location.lat, driver.location.lng);
+                                    if (originalDistance <= 10 && driver.carType === booking.carType) {
+                                        admin.database().ref('bookings/' + booking.key + '/requestedDrivers/' + driver.key).set(true);
+                                        RequestPushMsg(driver.pushToken, language.notification_title, language.new_booking_notification);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+                if (diffMins < -15) {
+                    admin.database().ref("bookings/" + booking.key + "/requestedDrivers").remove();
+                    admin.database().ref('bookings/' + booking.key).update({
+                        status: 'CANCELLED',
+                        reason: 'RIDE AUTO CANCELLED. NO RESPONSE'
+                    });
+                }
+            }
         }
+    });
+});     }
     });
 
 exports.bookingScheduler = functions.pubsub.schedule('every 5 minutes').onRun((context) => {
@@ -425,7 +467,6 @@ const addToWallet = async (uid,amount) =>{
 
 exports.user_signup = functions.https.onRequest(async (request, response) => {
     response.set("Access-Control-Allow-Origin", "*");
-    response.set("Access-Control-Allow-Headers", "Content-Type");
     let userDetails = request.body.regData;
     try {
         let regData = {
@@ -478,6 +519,6 @@ exports.user_signup = functions.https.onRequest(async (request, response) => {
     }
 });
 
-exports.getMessage =  require('./webPayment/index');
+exports.oncheckout =  require('./webPayment/index');
 
   

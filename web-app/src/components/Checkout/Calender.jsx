@@ -15,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function DateAndTimePickers({ label }) {
+export default function DateAndTimePickers({ label, value, onChangeDate }) {
 	const classes = useStyles();
-
+console.log("value", value)
 	return (
 		<form className={`${classes.container} calendar-input`} noValidate>
 			<TextField
@@ -25,8 +25,9 @@ export default function DateAndTimePickers({ label }) {
 				label={label}
 				variant="outlined"
 				type="datetime-local"
-				format="yyyy-mm-dd"
-				defaultValue="2017-05-24T10:30"
+				value={value}
+				onChange={(e) => onChangeDate(e.target.value)}
+				defaultValue={value}
 				className={classes.textField}
 				InputLabelProps={{
 					shrink: true

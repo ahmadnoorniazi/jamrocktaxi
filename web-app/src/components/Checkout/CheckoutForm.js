@@ -27,7 +27,12 @@ const CheckoutForm = ({setPassengerInfo}) => {
 	};
 
 	const onInputChange = (e) => {
+		console.log("uuuuuuuuuuuuuuuuu",  e.target)
 		setValues({...values, [e.target.name]: e.target.value})
+	}
+	const onNumberChange = (v) => {
+		console.log("uuuuuuuuuuuuuuuuu",  v)
+		setValues({...values, mobileNumber: v})
 	}
 
 
@@ -60,7 +65,7 @@ const CheckoutForm = ({setPassengerInfo}) => {
 				<TextField label="Lastname" name="lastName" onChange={onInputChange} value={values.lastName} />
 				<TextField label="Email" name="email" onChange={onInputChange} value={values.email} />
 			<div className="checkout-form-phone-container">
-			<PhoneInput />
+			<PhoneInput phone={values.mobileNumber} setPhone={onNumberChange} />
 			</div>
 		</div>
 	);

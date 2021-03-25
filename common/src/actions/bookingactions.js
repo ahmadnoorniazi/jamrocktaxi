@@ -42,12 +42,14 @@ export const addBooking = (bookingData) => (dispatch) => (firebase) => {
 		tripdate: bookingData.bookLater ? bookingData.tripdate : today,
 		bookingDate: today,
 		otp: otp,
-		booking_type_web: bookingData.booking_type_web
+		booking_type_web: bookingData.booking_type_web,
+		tripData:bookingData.tripData || {}
 	};
 
 	bookingRef
 		.push(data)
 		.then((res) => {
+			console.log('rrrrrrres from firebase',res)
 			var bookingKey = res.key;
 			dispatch({
 				type: CONFIRM_BOOKING_SUCCESS,

@@ -3,6 +3,7 @@ import React, { useState, Fragment, useContext, useEffect } from 'react';
 import Select from './DetailSelect'
 import { loadStripe } from "@stripe/stripe-js";
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 // styles
 import '../styles/Checkout.scss';
@@ -47,7 +48,30 @@ const Checkout = () => {
 	const cart = useSelector((state) => state.cart);
 	const { total, car, extras } = cart || {};
 	console.log('extrassssssssssssssss', extras);
-	const { pickup, dropOf, maxPassengers, maxBags, estimates, name } = car.rideData || {};
+	const { pickup, dropOf, maxPassengers, maxBags, estimates, name, image } = car.rideData || {};
+	const history = useHistory();
+
+	useEffect(() => {
+		// Check to see if this is a redirect back from Checkout
+		const query = new URLSearchParams(window.location.search);
+	
+		if (query.get("success")) {
+			const localData = window.localStorage.getItem("cartData")
+			const parseData = JSON.parse(localData)
+
+			if(parseData.pickup) {
+				confirmBooking(parseData)
+				history.push('/order-complete')
+			}
+		  const message = "Order placed! You will receive an email confirmation."
+		}
+	
+		if (query.get("canceled")) {
+		  
+			const message = "Order canceled -- continue to shop around and checkout when you're ready."
+		  
+		}
+	  }, []);
 
 	useEffect(
 		() => {
@@ -56,8 +80,9 @@ const Checkout = () => {
 					passengersInfo.firstName &&
 					passengersInfo.lastName &&
 					passengersInfo.email &&
-					passengersInfo.countryCode &&
-					passengersInfo.mobileNumber
+					passengersInfo.mobileNumber && 
+					pickup && pickup.structured_formatting && pickup.structured_formatting.main_text &&
+					dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text
 				) {
 					setValid(true);
 				} else {
@@ -68,10 +93,6 @@ const Checkout = () => {
 		[ passengersInfo ]
 	);
 
-	console.log('passengers iNFOOOOOO', passengersInfo);
-	console.log('tripStartData iNFOOOOOO', tripStartData);
-	console.log('tripReturnData iNFOOOOOO', tripReturnData);
-	console.log('estimatesssssssss', estimates);
 	const returnPrice =
 		(estimates &&
 			estimates.priceDetails &&
@@ -81,37 +102,52 @@ const Checkout = () => {
 	const startPrice =
 		(estimates && estimates.priceDetails && estimates.priceDetails.fields && estimates.priceDetails.fields.price) ||
 		0;
-	const fullTotal = checkedReturn ? total + returnPrice : total;
 
-	const confirmBooking = () => {
+		const fullTotal = checkedReturn ? total + returnPrice : total;
+
+
+	const confirmBooking = (tripData) => {
 		dispatch(
-			addBooking({
-				pickup,
-				drop: dropOf,
-				carDetails: car.rideData,
-				userDetails: passengersInfo,
-				estimate: estimates,
-				tripdate: new Date(tripStartData.startDate).toString(),
-				bookLater: false,
-				booking_type_web: true,
-				settings: { otp_secure: false }
-			})
+			addBooking(tripData)
 		);
 	};
 
 	
 	const handleClick = async (event) => {
+		const allData = {
+			pickup,
+			drop: dropOf,
+			carDetails: car.rideData,
+			userDetails: passengersInfo,
+			estimate: estimates,
+			tripdate: new Date(tripStartData.startDate).toString(),
+			bookLater: false,
+			booking_type_web: true,
+			settings: { otp_secure: false },
+			tripData: { 
+				totalCost: fullTotal,
+				returnTotal: returnPrice || 0,
+				pax,
+				bags,
+				extras
+
+			}
+		}
 		const stripe = await stripePromise;
+		// const requestOptions = {
+		// 	method: 'POST',
+		// 	headers: { 'Content-Type': 'application/json' },
+		// 	body: JSON.stringify()
+		// };
+		const session = await axios.post("http://localhost:5000/jamrocktaxi-b40ae/us-central1/oncheckout/ahmad", {image, fullTotal, name, pickup: pickup && pickup.structured_formatting && pickup.structured_formatting.main_text, dropOf:dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text},{headers: {"Access-Control-Allow-Origin": "*"}});
 	
-		const response = await axios.post("https://us-central1-jamrocktaxi-b40ae.cloudfunctions.net/getMessage");
-	
-		const session = await response.json();
-	
+		window.localStorage.setItem("cartData", JSON.stringify(allData));
+
 		// When the customer clicks on the button, redirect them to Checkout.
 		const result = await stripe.redirectToCheckout({
-		  sessionId: session.id,
+		  sessionId: session.data.id,
 		});
-	
+		console.log('resultttttttttttttttttttttttt', result);
 		if (result.error) {
 			console.log('errorrrrrrrrrrrr')
 		  // If `redirectToCheckout` fails due to a browser or network

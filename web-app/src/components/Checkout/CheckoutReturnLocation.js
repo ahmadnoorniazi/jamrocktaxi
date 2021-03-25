@@ -4,10 +4,12 @@ import { IoLocationOutline, IoLocationSharp } from 'react-icons/io5';
 
 import CheckoutDateTimePicker from './Calender';
 import TextField from '../../views/TextField'
+var dateFormat = require("dateformat");
+var now = new Date();
 
 const CheckoutReturnLocation = ({ locationFirst, locationLast, firstLogo, secondLogo, setSelectedData }) => {
 	const [value, setValue] = useState("")
-	const [date, setDate] = useState(new Date())
+	const [date, setDate] = useState(dateFormat(now, "yyyy-mm-dd'T'HH:MM"))
 
 	useEffect(() => {
 		setSelectedData({
@@ -29,7 +31,7 @@ const CheckoutReturnLocation = ({ locationFirst, locationLast, firstLogo, second
 				</div> */}
 				<div className="checkout-location-left-mid">
 				
-						<CheckoutDateTimePicker label="Pickup Date & Time" getDate={setDate} />
+						<CheckoutDateTimePicker label="Pickup Date & Time" value={date} onChangeDate={setDate} />
 						<TextField label="Flight Number" handleChange={handleReturnNumber} value={value} />
 				</div>
 				{/* <div className="checkout-return-location-left-last">

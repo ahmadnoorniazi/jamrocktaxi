@@ -23,20 +23,20 @@ const BookingHistory = () => {
       { title: language.booking_id, field: 'id' },
       { title: language.booking_date, field: 'tripdate', render: rowData => rowData.tripdate?new Date(rowData.tripdate).toLocaleString(dateStyle):null},
       { title: language.car_type, field: 'carType' },
-      { title: language.customer_name,field: 'customer_name'},
+      { title: language.customer_name,field: 'customer_name', render: rowData => rowData.customerData && rowData.customerData.firstName   ? `${rowData.customerData.firstName}  ${rowData.customerData.lastName}`: null },
       { title: language.pickup_address, field: 'pickupAddress' },
       { title: language.drop_address, field: 'dropAddress' },
       { title: language.assign_driver, field: 'driver_name' },
       { title: language.booking_status, field: 'status', render: rowData => <span>{language[rowData.status]}</span> },
       { title: language.otp, field: 'otp', render: rowData => rowData.status ==='NEW' || rowData.status === 'ACCEPTED' ?<span>{rowData.otp}</span>:null },
-      { title: language.trip_cost, field: 'trip_cost' },
-      { title: language.trip_start_time, field: 'trip_start_time' },
+      { title: language.trip_cost, field: 'trip_cost', render: rowData => rowData.tripData && rowData.tripData.totalCost   ? rowData.tripData.totalCost : 0 },
+      { title: language.trip_start_time, field: 'trip_start_time', render: rowData => rowData.tripdate?new Date(rowData.tripdate).toLocaleString(dateStyle):null },
       { title: language.trip_end_time, field: 'trip_end_time' },
       { title: language.vehicle_no, field: 'vehicle_number' },  
       { title: language.trip_cost_driver_share, field: 'driver_share'},
       { title: language.convenience_fee, field: 'convenience_fees'},
       { title: language.discount_ammount, field: 'discount'},      
-      { title: language.Customer_paid, field: 'customer_paid'},
+      { title: language.Customer_paid, field: 'customer_paid',  render: rowData => rowData.tripData && rowData.tripData.totalCost   ? rowData.tripData.totalCost : 0 },
       { title: language.payment_mode, field: 'payment_mode'},
       { title: language.payment_gateway, field: 'gateway'},
       { title: language.cash_payment_amount, field: 'cashPaymentAmount'},
@@ -47,7 +47,7 @@ const BookingHistory = () => {
   const [openConfirm, setOpenConfirm] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState('');
   const bookinglistdata = useSelector(state => state.bookinglistdata);
-
+  console.log("bookinglistdata", bookinglistdata)
   useEffect(()=>{
         if(bookinglistdata.bookings){
             setData(bookinglistdata.bookings);

@@ -23,10 +23,10 @@ const CheckoutInfo = ({
 		<div className="checkout-summary">
 			<div className="checkout-summary-info">
 				<div className="checkout-summary-info-date">
-					<IoIosCalendar /> <p>{dateFormat(date.startDate, 'dd-mm-yy') || ''}</p>
+					<IoIosCalendar /> <p>{dateFormat(date.startData, 'dd-mm-yy') || ''}</p>
 				</div>
 				<div className="checkout-summary-time-container">
-					<p>{dateFormat(date.startDate, 'HH:MM') || ''}</p>
+					<p>{dateFormat(date.startData, 'HH:MM') || ''}</p>
 				</div>
 
 				<div className="checkout-summary-info-flight">
@@ -67,7 +67,7 @@ const CheckoutInfo = ({
 					</div>
 				</div>
 				<p
-					style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px', color: '#0070c0' }}
+					style={{ fontSize: '16px', fontWeight: 800, marginRight: '3px', color: 'darkgray' }}
 					className="checkout-summary-info-price"
 				>
 					${startPrice}
@@ -107,11 +107,11 @@ const CheckoutInfo = ({
 						>
 							<div>
 								<FaDotCircle />
-								<p>{pickupLocation}</p>
+								<p style={{ color: 'gray', fontWeight: "normal" }}>{dropOfLocation}</p>
 							</div>
 							<div>
 								<FaDotCircle style={{ color: 'red' }} />
-								<p>{dropOfLocation}</p>
+								<p style={{ color: 'gray', fontWeight: "normal"}}>{pickupLocation}</p>
 							</div>
 						</div>
 						<p
@@ -139,6 +139,7 @@ const CheckoutInfo = ({
 										}}
 									>
 										{item.title}
+										{`(${Object.values(item.options).join(',')})`}
 									</p>
 								</div>
 							</div>

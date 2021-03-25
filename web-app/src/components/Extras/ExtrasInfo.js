@@ -33,7 +33,6 @@ const ExtrasInfo = ({ pickupAddress, dropAddress, extras, total, carFare }) => {
 				{Array.isArray(extras) &&
 					extras.map((ext) => (
 						<div className="extras-summary-extras-item">
-							{console.log('exxxxxxxxxxx', ext)}
 							<div>
 								<p style={{ color: 'gray', fontSize: '14px', fontWeight: 'normal' }} className="ml-1">
 									{ext.title}

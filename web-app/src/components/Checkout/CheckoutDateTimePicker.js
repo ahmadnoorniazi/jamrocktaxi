@@ -1,11 +1,13 @@
 // libs
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
+var dateFormat = require("dateformat");
+var now = new Date();
 
 import 'react-datepicker/dist/react-datepicker.css';
 
 const CheckoutDateTimePicker = ({getDate = () =>{}}) => {
-	const [ startDate, setStartDate ] = useState(new Date());
+	const [ startDate, setStartDate ] = useState(dateFormat(now, "isoDateTime"));
 
 	return (
 		<DatePicker

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // libs
 import { Link } from 'react-router-dom';
 import { IoArrowBack } from 'react-icons/io5';
@@ -13,6 +13,22 @@ import '../styles/OrderComplete.scss';
 
 const OrderComplete = () => {
 	const bookingData = useSelector((state) => state.bookingdata.booking);
+
+	useEffect(() => {
+		// Check to see if this is a redirect back from Checkout
+		const query = new URLSearchParams(window.location.search);
+	
+		if (query.get("success")) {
+		  const message = "Order placed! You will receive an email confirmation."
+		}
+	
+		if (query.get("canceled")) {
+		  
+			const message = "Order canceled -- continue to shop around and checkout when you're ready."
+		  
+		}
+	  }, []);
+
 	return (
 		<div className="order-complete">
 			<Link to="/checkout" className="order-back">
