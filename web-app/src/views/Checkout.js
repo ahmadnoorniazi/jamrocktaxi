@@ -43,6 +43,7 @@ const Checkout = () => {
 	const [ passengersInfo, setPassengerInfo ] = useState({});
 	const [ valid, setValid ] = useState({});
 	const { api } = useContext(FirebaseContext);
+	const bookingData = useSelector((state) => state.bookingdata.booking);
 	const { addBooking } = api;
 	const dispatch = useDispatch();
 	const cart = useSelector((state) => state.cart);
@@ -60,7 +61,7 @@ const Checkout = () => {
 			const parseData = JSON.parse(localData)
 
 			if(parseData.pickup) {
-				confirmBooking(parseData)
+				confirmBooking(parseData, sendEmail)
 				history.push('/order-complete')
 			}
 		  const message = "Order placed! You will receive an email confirmation."
@@ -106,16 +107,22 @@ const Checkout = () => {
 		const fullTotal = checkedReturn ? total + returnPrice : total;
 
 
-	const confirmBooking = (tripData) => {
+	const confirmBooking = (tripData,email) => {
 		dispatch(
-			addBooking(tripData)
+			addBooking(tripData, email)
 		);
 	};
 
+	const sendEmail = async (data) => {
+		await axios.post("https://jamrocktaxi-b40ae.web.app/oncheckout/sendEmail",{...data})
+	}
 	
 	const handleClick = async (event) => {
+		const journey = `${estimates && (estimates.estimateDistance /1000).toFixed()} Km ${estimates && (estimates.estimateTime /60).toFixed()}M`
+		const extrasTotal = extras && Array.isArray(extras) && extras.reduce((acc, curr) => acc += curr.price * curr.quantity,0)
 		const allData = {
 			pickup,
+			dest: passengersInfo.email,
 			drop: dropOf,
 			carDetails: car.rideData,
 			userDetails: passengersInfo,
@@ -129,10 +136,17 @@ const Checkout = () => {
 				returnTotal: returnPrice || 0,
 				pax,
 				bags,
-				extras
-
+				extras,
+				paymentStatus: 'success',
+				isReturn: checkedReturn,
+				journey: journey,
+				...tripStartData,
+				...tripReturnData,
+				extrasCost:extrasTotal
 			}
 		}
+		history.push('/checkout?success=true');
+		
 		const stripe = await stripePromise;
 		// const requestOptions = {
 		// 	method: 'POST',
@@ -142,12 +156,10 @@ const Checkout = () => {
 		const session = await axios.post("http://localhost:5000/jamrocktaxi-b40ae/us-central1/oncheckout/ahmad", {image, fullTotal, name, pickup: pickup && pickup.structured_formatting && pickup.structured_formatting.main_text, dropOf:dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text},{headers: {"Access-Control-Allow-Origin": "*"}});
 	
 		window.localStorage.setItem("cartData", JSON.stringify(allData));
-
 		// When the customer clicks on the button, redirect them to Checkout.
 		const result = await stripe.redirectToCheckout({
 		  sessionId: session.data.id,
 		});
-		console.log('resultttttttttttttttttttttttt', result);
 		if (result.error) {
 			console.log('errorrrrrrrrrrrr')
 		  // If `redirectToCheckout` fails due to a browser or network

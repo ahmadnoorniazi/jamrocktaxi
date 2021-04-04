@@ -133,6 +133,7 @@ const ExtrasVipItem = ({ extra, showToast }) => {
 								onClick={() => {
 									console.log(comb, 'finalllllllllllllllll', price);
 									onAddExtras({ ...extra, price: ExtraPrice, options: values });
+									setQuantity(1)
 								}}
 								disabled={!isValid}
 								className="extra-nav-btn extra-nav-btn-2"
