@@ -149,7 +149,7 @@ const FirebaseProvider = ({ children }) => {
 					updateProfile(userAuthData, updateData)(dispatch)(firebase),
 				monitorProfileChanges: () => (dispatch) => monitorProfileChanges()(dispatch)(firebase),
 				clearLoginError: () => (dispatch) => clearLoginError()(dispatch)(firebase),
-				addBooking: (bookingData) => (dispatch) => addBooking(bookingData)(dispatch)(firebase),
+				addBooking: (bookingData, email) => (dispatch) => addBooking(bookingData, email)(dispatch)(firebase),
 				clearBooking: () => (dispatch) => clearBooking()(dispatch)(firebase),
 				fetchBookings: (uid, role) => (dispatch) => fetchBookings(uid, role)(dispatch)(firebase),
 				updateBooking: (booking) => (dispatch) => updateBooking(booking)(dispatch)(firebase),

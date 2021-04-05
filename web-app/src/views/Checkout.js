@@ -29,7 +29,7 @@ import airplane from '../assets/aeroplane.svg';
 import building from '../assets/building.svg';
 import price from '../assets/price-tag.svg';
 import { FirebaseContext } from 'common';
-const stripePromise = loadStripe("pk_test_51IXAV6L6Jaloc0FipdN7yUSp2AGqtQJgViDcVsI9Ily6FouNUDKnheDeL53t18tQTj06QGUOevOserP80bUthNmH00atmaXKGa");
+const stripePromise = loadStripe("pk_live_J0gkAWFRO4yNALAEPKUXR0RO00tGV8Wpka");
 
 const Checkout = () => {
 	// state
@@ -114,7 +114,8 @@ const Checkout = () => {
 	};
 
 	const sendEmail = async (data) => {
-		await axios.post("https://jamrocktaxi-b40ae.web.app/oncheckout/sendEmail",{...data})
+		await axios.post("https://us-central1-jamrocktaxi-b40ae.cloudfunctions.net/oncheckout/sendEmail",{...data})
+		await axios.post("https://us-central1-jamrocktaxi-b40ae.cloudfunctions.net/oncheckout/createProfile", data.userDetails)
 	}
 	
 	const handleClick = async (event) => {
@@ -144,16 +145,14 @@ const Checkout = () => {
 				...tripReturnData,
 				extrasCost:extrasTotal
 			}
-		}
-		history.push('/checkout?success=true');
-		
+		}		
 		const stripe = await stripePromise;
 		// const requestOptions = {
 		// 	method: 'POST',
 		// 	headers: { 'Content-Type': 'application/json' },
 		// 	body: JSON.stringify()
 		// };
-		const session = await axios.post("http://localhost:5000/jamrocktaxi-b40ae/us-central1/oncheckout/ahmad", {image, fullTotal, name, pickup: pickup && pickup.structured_formatting && pickup.structured_formatting.main_text, dropOf:dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text},{headers: {"Access-Control-Allow-Origin": "*"}});
+		const session = await axios.post("https://us-central1-jamrocktaxi-b40ae.cloudfunctions.net/oncheckout/ahmad", {image, fullTotal, name, pickup: pickup && pickup.structured_formatting && pickup.structured_formatting.main_text, dropOf:dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text},{headers: {"Access-Control-Allow-Origin": "*"}});
 	
 		window.localStorage.setItem("cartData", JSON.stringify(allData));
 		// When the customer clicks on the button, redirect them to Checkout.
@@ -179,7 +178,7 @@ const Checkout = () => {
 				maxPassengers={maxPassengers || 0}
 			/>
 			{!info && (
-				<div className="checkout-summary-price-main">
+				<div className="checkout-summary-price-main" style={{borderBottom: "1px solid gray"}}>
 					<h6>Total</h6>
 					<p>${fullTotal || 0}</p>
 				</div>
@@ -217,7 +216,7 @@ const Checkout = () => {
 						selected={pax}
 					/>
 				</div>
-				<div className="col-6">
+				<div className="col-6" style={{paddingLeft: 0}}>
 					<Select
 						title="No. of Bags"
 						options={Array.from(Array(maxBags ? maxBags + 1 : 0 + 1).keys())}

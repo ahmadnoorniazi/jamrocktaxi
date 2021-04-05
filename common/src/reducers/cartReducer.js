@@ -11,8 +11,9 @@ const setExtras = (state, extra) => {
 		(item) => item.title === extra.title && JSON.stringify(item.options) === JSON.stringify(extra.options)
 	);
 	if (exist) {
+		console.log('existtttttttttttt', exist)
 		return state.extras.map((item) => {
-			if (item.title === extra.title) {
+			if (item.title === extra.title && JSON.stringify(item.options) === JSON.stringify(extra.options) ) {
 				item.quantity = item.quantity + extra.quantity;
 				return item;
 			}

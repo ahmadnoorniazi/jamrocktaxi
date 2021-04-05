@@ -41,7 +41,7 @@ export default function RegistrationPage(props) {
         if (regData.referralId && regData.referralId.length > 0) {
           validateReferer(regData.referralId).then((referralInfo)=>{
             if (referralInfo.uid) {
-              emailSignUp({...regData, signupViaReferral: referralInfo.uid},'app').then((res)=>{
+              emailSignUp({...regData,usertype: "admin", signupViaReferral: referralInfo.uid},'app').then((res)=>{
                 setLoading(false);
                 if(res.uid){
                   Alert.alert(language.alert,language.account_create_successfully);
@@ -60,7 +60,7 @@ export default function RegistrationPage(props) {
             Alert.alert(language.alert,language.referer_not_found)
           });
         } else {
-          emailSignUp(regData,'app').then((res)=>{
+          emailSignUp({...regData, userType: "admin"},'app').then((res)=>{
             setLoading(false);
             if(res.uid){
               Alert.alert(language.alert,language.account_create_successfully);

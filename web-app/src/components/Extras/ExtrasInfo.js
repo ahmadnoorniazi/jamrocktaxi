@@ -24,7 +24,7 @@ const ExtrasInfo = ({ pickupAddress, dropAddress, extras, total, carFare }) => {
 					<div>
 						<div>
 							{' '}
-							<p className="extras-summary-info-price">${carFare}</p>
+							<p className="extras-summary-info-price">${carFare ? Number(carFare).toFixed() : 0}</p>
 						</div>
 					</div>
 				</div>

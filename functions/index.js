@@ -519,6 +519,4 @@ exports.user_signup = functions.https.onRequest(async (request, response) => {
     }
 });
 
-exports.oncheckout =  require('./webPayment/index');
-
-  
+exports.oncheckout = require('./webPayment/index');

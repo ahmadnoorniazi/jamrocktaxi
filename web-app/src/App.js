@@ -107,9 +107,8 @@ function App() {
 							<Route exact path="/order-mail" component={OrderMail} />
 							<Route path="/about-us" component={AboutUs} />
 							<Route path="/privacy-policy" component={PrivacyPolicy} />
-							{features.WfeaturesebsitePagesEnabled ? (
 								<Route path="/register" component={RegisterPage} />
-							) : null}
+							{console.log("giiiiiiiiiiiiiiiiiiiiiiiiiiiiii", features.WebsitePagesEnabled)}
 							{features.WebsitePagesEnabled ? <Route path="/login" component={LoginPage} /> : null}
 							{features.WebsitePagesEnabled ? (
 								<Route path="/" component={Home} />

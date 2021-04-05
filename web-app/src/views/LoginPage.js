@@ -91,6 +91,7 @@ export default function LoginPage(props) {
         }
       });
     }
+    console.log("authhhhhhhhhhhhhh", auth);
     if (auth.info) {
       if(auth.info.profile){
         let role = auth.info.profile.usertype;
@@ -99,9 +100,13 @@ export default function LoginPage(props) {
         }
         else if (role==='driver'){
           props.history.push('/bookings');
+        }  
+        else if (role === 'rider'){
+          props.history.push('/bookings');
         }
         else {
-          features.WebsitePagesEnabled?props.history.push('/'):props.history.push('/bookings');
+          console.log("comesssssssssss to elseeeeee")
+          features.WebsitePagesEnabled ? props.history.push('/'):props.history.push('/bookings');
         }
       }else{
         if(!activeReg){

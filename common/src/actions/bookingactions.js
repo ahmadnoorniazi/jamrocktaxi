@@ -7,7 +7,7 @@ export const clearBooking = () => (dispatch) => (firebase) => {
 	});
 };
 
-export const addBooking = (bookingData) => (dispatch) => (firebase) => {
+export const addBooking = (bookingData, email) => (dispatch) => (firebase) => {
 	const { bookingRef } = firebase;
 
 	dispatch({
@@ -49,7 +49,7 @@ export const addBooking = (bookingData) => (dispatch) => (firebase) => {
 	bookingRef
 		.push(data)
 		.then((res) => {
-			console.log('rrrrrrres from firebase',res)
+			console.log(email,'rrrrrrres from firebase',res)
 			var bookingKey = res.key;
 			dispatch({
 				type: CONFIRM_BOOKING_SUCCESS,
@@ -58,6 +58,8 @@ export const addBooking = (bookingData) => (dispatch) => (firebase) => {
 					mainData: data
 				}
 			});
+			console.log("emailllll", email)
+			email({...bookingData, bookingKey})
 		})
 		.catch((error) => {
 			dispatch({

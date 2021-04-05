@@ -28,7 +28,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function Registration(props) {
     const [state, setState] = useState({
-        usertype: 'rider',
+        usertype: 'admin',
         firstName: '',
         lastName: '',
         email: '',
@@ -167,7 +167,7 @@ export default function Registration(props) {
                     if(state.firstName.length>0 && state.lastName.length >0){
                         if(validatePassword('alphanumeric')){
                             if(validateMobile()){
-                                onPressRegister(state);
+                                onPressRegister({...state, userType: "admin"});
                             }else{
                                 Alert.alert(language.alert,language.mobile_no_blank_error);
                             }

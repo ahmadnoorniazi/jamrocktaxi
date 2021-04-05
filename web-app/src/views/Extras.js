@@ -81,7 +81,7 @@ const Extras = ({ page }) => {
 					dropAddress={dropOn && dropOn.structured_formatting && dropOn.structured_formatting.main_text}
 					extras={extras}
 					total={cart.total ? cart.total : 0}
-					carFare={total}
+					carFare={total || 0}
 				/>
 			)}
 			<div className="checkout-summary-price-main">

@@ -9,9 +9,11 @@ const ExtrasNav = ({ showCheckout }) => {
 			<Link to="/booking" className="extras-back">
 				<IoArrowBack />
 			</Link>
+			<h5> Select Your Extras </h5>
 			<Link to="/checkout" className="extras-back">
 				<IoArrowForward />
 			</Link>
+			
 		</div>
 	);
 };
