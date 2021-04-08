@@ -1,0 +1,17 @@
+[debug] [2021-04-07T11:42:59.107Z] ----------------------------------------------------------------------
+[debug] [2021-04-07T11:42:59.110Z] Command:       /home/naeem/.nvm/versions/node/v12.20.1/bin/node /home/naeem/.nvm/versions/node/v12.20.1/bin/firebase deploy
+[debug] [2021-04-07T11:42:59.110Z] CLI Version:   9.9.0
+[debug] [2021-04-07T11:42:59.110Z] Platform:      linux
+[debug] [2021-04-07T11:42:59.110Z] Node Version:  v12.20.1
+[debug] [2021-04-07T11:42:59.110Z] Time:          Wed Apr 07 2021 16:42:59 GMT+0500 (Pakistan Standard Time)
+[debug] [2021-04-07T11:42:59.111Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-04-07T11:42:59.117Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-04-07T11:42:59.117Z] > authorizing via signed-in user (jamrocktaxi@gmail.com)
+[debug] [2021-04-07T11:42:59.117Z] [iam] checking project jamrocktaxi-b40ae for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2021-04-07T11:42:59.119Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-04-07T11:42:59.119Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-04-07T11:42:59.713Z] <<< HTTP RESPONSE 200 {"date":"Wed, 07 Apr 2021 11:43:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-04-07T11:42:59.732Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/jamrocktaxi-b40ae:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]}

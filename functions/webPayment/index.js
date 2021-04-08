@@ -7,7 +7,7 @@ app.use(cors({ origin: true }));
 
 const functions = require('firebase-functions');
 
-const stripe = require('stripe')('sk_live_1aNALVGxXgXPVFDqp9pgywPz004mRvaBLh');
+const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
 
 const YOUR_DOMAIN = 'https://jamrocktaxi-b40ae.web.app/checkout';
 
@@ -61,6 +61,6 @@ app.post('/createProfile', async (req, res) => {
   }
 
 });
-  
+
 
 module.exports = functions.https.onRequest(app);
