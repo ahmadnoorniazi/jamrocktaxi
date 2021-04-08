@@ -29,7 +29,7 @@ import airplane from '../assets/aeroplane.svg';
 import building from '../assets/building.svg';
 import price from '../assets/price-tag.svg';
 import { FirebaseContext } from 'common';
-const stripePromise = loadStripe("pk_live_J0gkAWFRO4yNALAEPKUXR0RO00tGV8Wpka");
+const stripePromise = loadStripe("pk_test_TYooMQauvdEDq54NiTphI7jx");
 
 const Checkout = () => {
 	// state
@@ -55,7 +55,7 @@ const Checkout = () => {
 	useEffect(() => {
 		// Check to see if this is a redirect back from Checkout
 		const query = new URLSearchParams(window.location.search);
-	
+
 		if (query.get("success")) {
 			const localData = window.localStorage.getItem("cartData")
 			const parseData = JSON.parse(localData)
@@ -66,11 +66,11 @@ const Checkout = () => {
 			}
 		  const message = "Order placed! You will receive an email confirmation."
 		}
-	
+
 		if (query.get("canceled")) {
-		  
+
 			const message = "Order canceled -- continue to shop around and checkout when you're ready."
-		  
+
 		}
 	  }, []);
 
@@ -81,7 +81,7 @@ const Checkout = () => {
 					passengersInfo.firstName &&
 					passengersInfo.lastName &&
 					passengersInfo.email &&
-					passengersInfo.mobileNumber && 
+					passengersInfo.mobileNumber &&
 					pickup && pickup.structured_formatting && pickup.structured_formatting.main_text &&
 					dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text
 				) {
@@ -117,7 +117,7 @@ const Checkout = () => {
 		await axios.post("https://us-central1-jamrocktaxi-b40ae.cloudfunctions.net/oncheckout/sendEmail",{...data})
 		await axios.post("https://us-central1-jamrocktaxi-b40ae.cloudfunctions.net/oncheckout/createProfile", data.userDetails)
 	}
-	
+
 	const handleClick = async (event) => {
 		const journey = `${estimates && (estimates.estimateDistance /1000).toFixed()} Km ${estimates && (estimates.estimateTime /60).toFixed()}M`
 		const extrasTotal = extras && Array.isArray(extras) && extras.reduce((acc, curr) => acc += curr.price * curr.quantity,0)
@@ -132,7 +132,7 @@ const Checkout = () => {
 			bookLater: false,
 			booking_type_web: true,
 			settings: { otp_secure: false },
-			tripData: { 
+			tripData: {
 				totalCost: fullTotal,
 				returnTotal: returnPrice || 0,
 				pax,
@@ -145,7 +145,7 @@ const Checkout = () => {
 				...tripReturnData,
 				extrasCost:extrasTotal
 			}
-		}		
+		}
 		const stripe = await stripePromise;
 		// const requestOptions = {
 		// 	method: 'POST',
@@ -153,7 +153,7 @@ const Checkout = () => {
 		// 	body: JSON.stringify()
 		// };
 		const session = await axios.post("https://us-central1-jamrocktaxi-b40ae.cloudfunctions.net/oncheckout/ahmad", {image, fullTotal, name, pickup: pickup && pickup.structured_formatting && pickup.structured_formatting.main_text, dropOf:dropOf && dropOf.structured_formatting && dropOf.structured_formatting.main_text},{headers: {"Access-Control-Allow-Origin": "*"}});
-	
+
 		window.localStorage.setItem("cartData", JSON.stringify(allData));
 		// When the customer clicks on the button, redirect them to Checkout.
 		const result = await stripe.redirectToCheckout({
