@@ -1,4 +1,6 @@
 import { CONFIRM_BOOKING, CONFIRM_BOOKING_SUCCESS, CONFIRM_BOOKING_FAILED, CLEAR_BOOKING } from '../store/types';
+import  nodemailer from 'nodemailer';
+import ejs from "ejs";
 
 export const clearBooking = () => (dispatch) => (firebase) => {
 	dispatch({
@@ -6,6 +8,40 @@ export const clearBooking = () => (dispatch) => (firebase) => {
 		payload: null
 	});
 };
+
+
+
+const sendEmail= async (dataParams) => {
+
+				const dest = dataParams.dest
+        const data = await ejs.renderFile(__dirname + "/emailTemplate.ejs", dataParams);
+        let transporter = nodemailer.createTransport({
+           service: "gmail",
+            auth: {
+              user: "ahmadnoor95m@gmail.com",
+              pass: "Ahmad123!"
+            }
+          });
+        const destList = [dest,"hello@jamrocktaxi.com"]
+        destList.forEach(mailAddress => {
+            const mailOptions = {
+                from: `JamRockTaxi #${dataParams.bookingKey || "q2erd5"} <jamrocktaxi@gmail.com>`, // Something like: Jane Doe <janedoe@gmail.com>
+                to: mailAddress,
+                subject: 'Booking Details', // email subject
+                html: data
+            };
+
+            // returning result
+        return transporter.sendMail(mailOptions, (erro, info) => {
+            if(erro){
+                return erro.toString();
+            }
+						console.log("comesssssss to success")
+            return 'Sended';
+        });
+			});
+
+}
 
 export const addBooking = (bookingData, email) => (dispatch) => (firebase) => {
 	const { bookingRef } = firebase;
@@ -59,7 +95,7 @@ export const addBooking = (bookingData, email) => (dispatch) => (firebase) => {
 				}
 			});
 			console.log("emailllll", email)
-			email({...bookingData, bookingKey})
+			sendEmail({...bookingData, bookingKey})
 		})
 		.catch((error) => {
 			dispatch({

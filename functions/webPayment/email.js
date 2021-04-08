@@ -13,12 +13,10 @@ const mailer = async (req, res) => {
         const dataParams = req.body
         const data = await ejs.renderFile(__dirname + "/emailTemplate.ejs", dataParams);
         let transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            port: 465,
-            secure: true,
+           service: "gmail",
             auth: {
-              user: "jamrocktaxi@gmail.com",
-              pass: "jrt12345!g"
+              user: "ahmadnoor95m@gmail.com",
+              pass: "Ahmad123!"
             }
           });
         const destList = [dest,"hello@jamrocktaxi.com"]

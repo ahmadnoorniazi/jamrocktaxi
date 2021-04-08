@@ -3,7 +3,7 @@ import MaterialTable from 'material-table';
 import CircularLoading from "../components/CircularLoading";
 import { useSelector, useDispatch } from "react-redux";
 import ConfirmationDialogRaw from '../components/ConfirmationDialogRaw';
-import { 
+import {
   features,
   dateStyle,
   language
@@ -18,11 +18,13 @@ const BookingHistory = () => {
   const dispatch = useDispatch();
   const auth = useSelector(state => state.auth);
   const [role, setRole] = useState(null);
-  
+
   const columns =  [
       { title: language.booking_id, field: 'id' },
-      { title: "Pickup Date", field: 'pickup_date', render: rowData => rowData.tripdate ? new Date(rowData.tripdate).toDateString(dateStyle): null},
-      { title: "Pickup Time", field: 'pickup_time', render: rowData => rowData.tripdate ? new Date(rowData.tripdate).toLocaleTimeString(): null},
+      { title: "Pickup Date", field: 'pickup_date', render: rowData => rowData.tripData && rowData.tripData.startData ? new Date(rowData.tripData.startData).toDateString(dateStyle): null},
+      { title: "Pickup Time", field: 'pickup_time', render: rowData => rowData.tripData && rowData.tripData.startData ? new Date(rowData.tripData.startData).toLocaleTimeString(): null},
+      { title: "Return Date", field: 'return_date', render: rowData => rowData.tripData && rowData.tripData.returnDate ? new Date(rowData.tripData.returnDate).toDateString(dateStyle): null},
+      { title: "Return Time", field: 'return_time', render: rowData => rowData.tripData && rowData.tripData.returnDate ? new Date(rowData.tripData.returnDate).toLocaleTimeString(): null},
       { title: language.car_type, field: 'carType' },
       { title: language.booking_date, field: 'tripdate'},
       { title: 'Pax', field: 'pax',  render: rowData => rowData.tripData && rowData.tripData.pax   ? rowData.tripData.pax : 0  },
@@ -42,16 +44,16 @@ const BookingHistory = () => {
       { title: language.trip_cost, field: 'trip_cost', render: rowData => rowData.tripData && rowData.tripData.totalCost   ? rowData.tripData.totalCost : 0 },
       { title: language.trip_start_time, field: 'trip_start_time'},
       { title: language.trip_end_time, field: 'trip_end_time' },
-      { title: language.vehicle_no, field: 'vehicle_number' },  
+      { title: language.vehicle_no, field: 'vehicle_number' },
       { title: language.trip_cost_driver_share, field: 'driver_share'},
       { title: language.convenience_fee, field: 'convenience_fees'},
-      { title: language.discount_ammount, field: 'discount'},      
+      { title: language.discount_ammount, field: 'discount'},
       { title: language.Customer_paid, field: 'customer_paid',  render: rowData => rowData.tripData && rowData.tripData.totalCost   ? rowData.tripData.totalCost : 0 },
       { title: language.payment_mode, field: 'payment_mode'},
       { title: language.payment_gateway, field: 'gateway'},
       { title: language.cash_payment_amount, field: 'cashPaymentAmount'},
       { title: language.card_payment_amount, field: 'cardPaymentAmount'},
-      { title: language.wallet_payment_amount, field: 'usedWalletMoney'},    
+      { title: language.wallet_payment_amount, field: 'usedWalletMoney'},
   ];
   const [data, setData] = useState([]);
   const [openConfirm, setOpenConfirm] = useState(false);
@@ -81,7 +83,7 @@ const BookingHistory = () => {
     }
     setOpenConfirm(false);
   }
-  
+
   return (
     bookinglistdata.loading? <CircularLoading/>:
     <div>
@@ -104,7 +106,7 @@ const BookingHistory = () => {
             }else{
               alert(language.demo_mode);
             }
-          }         
+          }
         }),
       ]}
     />

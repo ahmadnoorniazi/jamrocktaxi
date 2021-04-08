@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style type="text/css">
+  .main-bar{
+    display: flex;
+    justify-content: space-between;
+  }
+
+  </style>
+</head>
+<body class="container">
+
+<header style="text-align:center;">
+    <img style="width:auton; height:auto" src="https://images.ctfassets.net/i0qn7cowska1/vs1DN10QT7J1O6hhjP5ZW/927ac9f8031aa693f146c894618c61db/davee-copyjuf43.png" alt="app-logo" />
+    <p style="color: black;">Thanks for choosing JamRock Taxi Ltd.</p>
+    <p style="color: black;">we received your booking and it's been processed</p>
+</header>
+
+<main style="text-align: center;">
+    <div style="padding: 10px;background-color: rgba(0, 112, 192, 0.1);margin-right: 10px;
+    margin-left: 10px; border-radius: 5px
+">
+        <p style="color: black;margin: 0; font-weight: normal; margin-right: 15px;">Name : <span style="font-weight: normal; color: gray;">
+            Dave Elliot
+        </span></p>
+        <p style="color: black; margin: 0; font-weight: normal; margin-right: 15px;">Mobile : <span style="font-weight: normal; color: gray;">
+          +447595152720
+        </span></p>
+        <p style="color: black; margin: 0; font-weight: normal; margin-right: 15px;">Email : <span style="font-weight: normal; color: gray;">
+          jamrocktaxi@gmail.com
+        </span></p>
+        <p style="color: black; margin: 0; font-weight: normal; margin-right: 15px;">Booking Number : <span style="font-weight: normal; color: gray;">
+          <%= bookingKey %>
+        </span></p>
+        <p style="color: black; margin: 0; font-weight: normal; margin-right: 15px;">Payment Method : <span style="font-weight: normal; color: gray;">
+          Payment Method
+        </span></p>
+        <p style="color: black; margin: 0; font-weight: normal; margin-right: 15px;">Vehicle Type : <span style="font-weight: normal; color: gray;">
+          <%= carDetails.name %>
+        </span></p>
+
+        </div>
+        <div style="margin-right: 10px;
+        margin-left: 10px;
+    ">
+      <div class="main-bar">
+        <p style="color: black; margin-right: 15px">D: <span style="font-weight: normal; color: gray"><%= new Date(tripData.startData).toDateString() %></span></p>
+        <p style="color: black; margin-right: 15px">T: <span style="font-weight: normal; color: gray"><%= new Date(tripData.startData).toLocaleTimeString() %></span></p>
+        <p style="color: black; margin-right: 15px">F: <span style="font-weight: normal; color: gray"><%= tripData.flightNumber %></span></p>
+        <p style="color: black; margin-right: 15px">P: <span style="font-weight: normal; color: gray"><%= tripData.bags %></span></p>
+        <p style="color: black; margin-right: 15px">B: <span style="font-weight: normal; color: gray"><%= tripData.pax %></span></p>
+      </div>
+    <div style="background-color: rgba(0, 112, 192, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+        <p style="font-weight: normal; color: black; margin: 0;">Fr: <span  style="font-weight: normal; color: gray">
+          <%= pickup.structured_formatting.main_text %>
+        </span></p>
+        <p style="font-weight: normal; color: black; margin: 0;">To: <span  style="font-weight: normal; color: gray"> <%= drop.structured_formatting.main_text %>
+        </span> </p>
+    </div>
+    <% if(tripData.isReturn){ %>
+      <div class="main-bar">
+      <p style="color: black; margin-right: 15px;">D: <span style="font-weight: normal; color: gray;"><%= new Date(tripData.returnDate).toDateString() %></span></p>
+      <p style="color: black; margin-right: 15px;">T: <span style="font-weight: normal; color: gray;"><%= new Date(tripData.returnDate).toLocaleTimeString() %></span></p>
+    </div>
+    <div style="background-color: rgba(0, 112, 192, 0.1); padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+      <p style="font-weight: normal; color: black; margin: 0;">Fr: <span  style="font-weight: normal; color: gray;">
+        <%= pickup.structured_formatting.main_text %>
+      </span></p>
+      <p style="font-weight: normal; color: black; margin: 0;">To: <span  style="font-weight: normal; color: gray"> <%= drop.structured_formatting.main_text %>
+      </span> </p>
+  </div>
+  <% } %>
+  <div style="background-color: rgba(0, 112, 192, 0.1); padding: 10px; border-radius: 5px;">
+
+  <% tripData.extras.forEach(function(item) { %>
+    <div style="display: flex;">
+      <p style="font-weight: normal; color: gray; margin: 0;"> <%= item.title %></p>
+      <span style="margin-left: 3px;">(<%= Object.values(item.options).join(',') %>)</span>
+      <p style="font-weight: normal; color: gray; margin: 0;margin-left: 15px;"> x<%= item.quantity %></p>
+    </div>
+<% }); %>
+
+</div>
+
+  <div style="background-color: rgba(0, 112, 192, 0.1); padding: 10px; border-radius: 5px; margin-top: 10px">
+      <p style="font-weight: normal; color: black; margin: 0;">Notes:<span style="color: gray"> <%= userDetails.note || "" %> </span></p>
+  </div>
+
+    </div>
+    <div style="margin-right: 10px;
+        margin-left: 10px;
+    ">
+    <div style="background-color: rgba(0, 112, 192, 0.1); padding: 10px; border-radius: 5px; margin-top: 10px">
+      <table style="width: 100%;">
+        <tr>
+            <th style="text-align: initial">Items</th>
+            <th style="text-align: right">Price</th>
+        </tr>
+        <tr>
+            <td>Pickup</td>
+            <td style="text-align: right;  color: gray"> $ <%= tripData.returnTotal %>  </td>
+        </tr>
+        <tr>
+          <td>Return</td>
+          <td style="text-align: right;  color: gray">$ <%= tripData.returnTotal %> </td>
+        </tr>
+        <tr>
+          <td>Extras</td>
+          <td style="text-align: right; color: gray"> $ <%= tripData.extrasCost || 0 %> </td>
+        </tr>
+        <tr>
+          <td>Total</td>
+          <td style="text-align: right;  color: gray"> $ <%= tripData.totalCost %>  </td>
+        </tr>
+    </table>
+    </div>
+
+    </div>
+</main>
+
+<footer style="text-align: center">
+    <p style="font-weight: normal; color: black">Get the JamRockTaxi App</p>
+    <div>
+        <img style="width:70px; height:auto; margin-right: 20px;"  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnqscoO9dd5Bl77O1YGiHDJPYUBUHoRvZtxQ&usqp=CAU" alt="play-store" />
+        <img style="width:70px; height:auto;"  src="https://i.pinimg.com/originals/45/13/0a/45130a9d775c2aefcc124f96f69dbe9a.jpg" alt="app-store" />
+    </div>
+</footer>
+
+</body>
+</html>
